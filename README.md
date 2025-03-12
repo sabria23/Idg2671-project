@@ -4,9 +4,13 @@ instalations: we have:
 "react-dom": "^19.0.0",
 
 ## for the backend:
- "ejs": "^3.1.10",
- "express": "^4.21.2",
- "mongoose": "^8.12.1"
+ "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mongoose": "^8.12.1"
+  }
 
 ## endpoints for dashboard
   GET /studies - Display studies on the dashboard.  
