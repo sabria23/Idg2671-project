@@ -1,3 +1,6 @@
+to run the server: make sure you are in the root direcotry and not inside backend nor frontend, in therminal type: npm run server
+- we are using the EJ6, so express is using in the package.json "type": "module"
+
 instalations: we have:
 ## for front-end:
 "react": "^19.0.0",
@@ -10,6 +13,7 @@ instalations: we have:
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mongoose": "^8.12.1"
+     "nodemon": "^3.1.9"
   }
 
 ## endpoints for dashboard
