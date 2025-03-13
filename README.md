@@ -10,15 +10,15 @@ instalations: we have:
 "react-dom": "^19.0.0",
 
 ## for the backend:
- "dependencies": {
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
     "colors": "^1.4.0",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.12.1"
-     "nodemon": "^3.1.9",
-     "bcryptjs": "^3.0.2",
-  }
+  },
 
 ## endpoints for dashboard
   GET /studies - Display studies on the dashboard.  
