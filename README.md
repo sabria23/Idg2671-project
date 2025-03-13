@@ -25,7 +25,13 @@ instalations: we have:
   GET /studies/:studyId/export - Export data (accessed from the export data page).
 
 ## endpoints for createStudy
+  POST /studies - Post created studies to the database and the dashboard.
+  GET /studies/:studyId - Gets the study based on the id from the databse to the prieviw/ edit study page
+  PUT /studies/:studyId - edits the study in the prieview/ edit study page
 
+  POST /artifacts - Post artifacts to the artifacts collection in the database for "later use"
+  GET /artifacts/:studyId - Get artifacts from the artifacts collection
+  
 
 ## endpoints for login.Registration
 
