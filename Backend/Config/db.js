@@ -1,29 +1,49 @@
 import mongoose from "mongoose";
-import dotenv from 'dotenv';
-dotenv.config();
 
-
-const mongoUri = process.env.MONGO_URI;
-console.log('MONGO_URI:', process.env.MONGO_URI);
-
-// Connect to the 'Users' database and the 'Studies-and-participants' database using mongoose.connect
-export const connectToDatabases = async () => {
+// Connect to Users Database
+const connectToUsersDB = async () => {
     try {
-        // Connect to the 'Users' database
-        await mongoose.connect(`${mongoUri}/Users`, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log(`MongoDB Connected to Users DB`);
+        console.log('MONGO_URI1 from .env:', process.env.MONGO_URI1);
+        const usersDB = mongoose.createConnection(process.env.MONGO_URI1);
 
-        // Now connect to the 'Studies-and-participants' database
-        await mongoose.connect(`${mongoUri}/Studies-and-participants`, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+        usersDB.on("connected", () => {
+            console.log("MongoDB Connected to Users DB");
         });
-        console.log(`MongoDB Connected to Studies DB`);
+
+        usersDB.on("error", (error) => {
+            console.error("Error connecting to Users database:", error);
+        });
+
+        return usersDB; // Returning the connection object if needed elsewhere
     } catch (error) {
-        console.error('Error connecting to the databases:', error);
+        console.error("Error connecting to Users database:", error);
         process.exit(1);
     }
+};
+
+// Connect to Studies Database
+const connectToStudiesDB = async () => {
+    try {
+        console.log('MONGO_URI2 from .env:', process.env.MONGO_URI2);
+        const studiesDB = mongoose.createConnection(process.env.MONGO_URI2);
+
+        studiesDB.on("connected", () => {
+            console.log("MongoDB Connected to Studies DB");
+        });
+
+        studiesDB.on("error", (error) => {
+            console.error("Error connecting to Studies database:", error);
+        });
+
+        return studiesDB; // Returning the connection object if needed elsewhere
+    } catch (error) {
+        console.error("Error connecting to Studies database:", error);
+        process.exit(1);
+    }
+};
+
+// Function to connect both databases
+export const connectToDatabases = async () => {
+    await connectToUsersDB();
+    await connectToStudiesDB();
 };
