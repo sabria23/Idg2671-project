@@ -16,7 +16,8 @@ instalations: we have:
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mongoose": "^8.12.1"
-     "nodemon": "^3.1.9"
+     "nodemon": "^3.1.9",
+     "bcryptjs": "^3.0.2",
   }
 
 ## endpoints for dashboard
