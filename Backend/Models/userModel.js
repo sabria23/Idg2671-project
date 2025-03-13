@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema({
 },
 //timestamps gives autimatically info about when the account was created and udpated
 {
-    timestamps: true
+    timestamps: true, collection: "users-admin"
 })
 
 //model name is User

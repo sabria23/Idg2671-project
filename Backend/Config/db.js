@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
 
+// Enable Mongoose debug mode to log all MongoDB queries to the console
+mongoose.set('debug', true);
+
 // Connect to Users Database
 const connectToUsersDB = async () => {
     try {
         const usersDB = await mongoose.createConnection(process.env.MONGO_URI1).asPromise(); 
+        console.log(process.env.MONGO_URI1);  // Check if the URI is correct
+
         console.log(`MongoDB Connected to Users DB: ${usersDB.host}`.cyan.underline);
         return usersDB; // Return the connection instance
     } catch (error) {
