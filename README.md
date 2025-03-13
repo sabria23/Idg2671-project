@@ -1,5 +1,6 @@
 to run the server: make sure you are in the root direcotry and not inside backend nor frontend, in therminal type: npm run server
-- we are using the EJ6, so express is using in the package.json "type": "module"
+- P.S. if that does not work it could be that you need to go to your Backend folder and then try running npm run server
+- we are using the ES6, so express is using in the package.json "type": "module"
 
 - if you making any changes in the .env, save the file and restart the server
 
