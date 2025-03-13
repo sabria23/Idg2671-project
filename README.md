@@ -1,8 +1,8 @@
-to run the server: make sure you are in the root direcotry and not inside backend nor frontend, in therminal type: npm run server
+to run the server: make sure you are in the root direcotry and not inside backend nor frontend, in the terminal type: npm run server
 - P.S. if that does not work it could be that you need to go to your Backend folder and then try running npm run server
 - we are using the ES6, so express is using in the package.json "type": "module"
-
-- if you making any changes in the .env, save the file and restart the server
+- if you make any changes in the .env, save the file and restart the server
+- Please use POSTMAN/thunder or whatever other api client checker before moving any further after creating routes 🥹🥹🥹
 
 instalations: we have:
 ## for front-end:
@@ -32,3 +32,8 @@ instalations: we have:
 
 
 ## endpoints for survey
+
+## TUTORIALS USED FOR CREATING THIS PROJECT: 
+- https://mongoosejs.com/docs/connections.html#multiple_connections (article explaining how to connnect 2 databses on one connection, in particular about parts: 
+.asPromise() and event-based handling .on() )
+- setting up server and the main API backend: https://www.youtube.com/watch?v=-0exw-9YJBo&list=PLillGF-RfqbbQeVSccR9PGKHzPJSWqcsm + what Aleksei has teached us in the class

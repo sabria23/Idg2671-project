@@ -6,7 +6,6 @@ import { dirname, resolve } from "path";
 import router from './Routes/dashRoutes.js';
 import {connectToDatabases} from "./Config/db.js";
 
-
 dotenv.config();
 // Get the current directory of the ES module (server.js)
 const __filename = fileURLToPath(import.meta.url);
