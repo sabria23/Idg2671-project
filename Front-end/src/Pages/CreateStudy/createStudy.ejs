@@ -1,0 +1,63 @@
+import navBar from "/Front-end/src/Components/NavBar.js"
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a new study</title>
+</head>
+<body>
+    <!-- The nav bar-->
+    <nav></nav>
+
+    <!-- The main content-->
+        <h1>Create a new study</h1>
+        <p></p>
+
+        <div>
+            <label for="studyTitle">Study Title</label>
+            <input type="text" name="studyTitle" placeholder="Shot descriptive title">
+
+            <label for="studyDescription">Study Description</label>
+            <input type="text" name="studyDescription" placeholder="Give a description of what the study will contain">
+        </div>
+
+        <div>
+            <h2>Add Artifacts (Images, Video, Text, Audio)</h2>
+            <select name="artifacts" id="artifactOption">
+                <!--Add option with js-->
+            </select>
+            <input type="file" name="artifactFile">
+            <p></p>
+        </div>
+
+        <div>
+            <h2>Questions</h2>
+            <div>
+                <!--Add question button-->
+            </div>
+            <div>
+                <h2></h2>
+                <p></p>
+            </div>
+            <div>
+                <h2>Question Setting</h2>
+                <label for="questionText">Question Text</label>
+                <input type="text" name="questionText" placeholder="e.g. Which color do you like the best?">
+                <label for="selectedArtifacts">Artifact(s)</label>
+                <select name="selectedArtifacts" id="">
+                    <!--The selected artifacts will be shown in here-->
+                </select>
+                <label for="questionType">Question Type</label>
+                <select name="questionType" id="">
+                    <!--Add options here-->
+                </select>
+                <label for="multipleChoiseOptions">Multiple Choise Options</label>
+                <!--Input Radio Buttons for the multiple choise questions-->
+                <label for="layoutTemplate">Layout Template</label>
+                <!--Add a select with two templates images/ radiobutton with templates images-->
+            </div>
+        </div>
+</body>
+</html>
