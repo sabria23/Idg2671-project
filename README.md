@@ -22,23 +22,46 @@ instalations: we have:
 
 ## endpoints for dashboard
   GET /studies - Display studies on the dashboard.  
-  DELETE /studies/:studyId - Delete a study.  
-  GET /studies/:studyId + PUT /studies/:studyId - Edit a study (using the create study page).  
-  GET /studies/:studyId/export - Export data (accessed from the export data page).
+  DELETE /studies/:studyId - Delete a study.   
+
+  button dashboard: GET /studies/studyId -> linked to the export page
+  button export: GET /studies/studyId/questions/responses/export -> export to "json" file
+  button edith: PUT /studies/studyId -> link to the preview page
+  button recruite: GET /studies/studyId -> event based client server dispatch 
 
 ## endpoints for createStudy
   POST /studies - Post created studies to the database and the dashboard.
   GET /studies/:studyId - Gets the study based on the id from the databse to the prieviw/ edit study page
   PUT /studies/:studyId - edits the study in the prieview/ edit study page
 
-  POST /artifacts - Post artifacts to the artifacts collection in the database for "later use"
-  GET /artifacts/:studyId - Get artifacts from the artifacts collection
-  
+  POST /fileSystemLocation - Post artifacts to the artifacts collection in the database for "later use"
+  PUT /studies/:studyId/questions/artifacts -> for updating artifacts from the study
+  PUT /studies/studyId/questions/:questionId -> update unique question 
+  DELETE /studies/studyId/artifactId -> delete artifact from create study
+  DELETE /studies/studyId/questionId -> delete spesific question 
 
 ## endpoints for login.Registration
-
+  http://localhost:8000/api/users
+  POST ('/') -> post user when he/she register themselves 
+  POST ('/login') -> post logged in user after checking that he/she has register themsleves
+  GET ('/me) -> retrieve the user that has logged in
 
 ## endpoints for survey
+  GET /studies/studyId -> "preview"
+  POST 
+
+  regarding sessions:
+  app.use(/api/sessions)
+  POST / -> create a new user session for those that are invited via generated random link (when a user start the study)
+  GET /:sessionId -> get a specific session
+  POST /:sessionId/responses -> post answesr in database when a user submit their answers
+
+  regarding pariticpantId -> if lefti decided to invite people manually
+  app.use(/api/participants)
+  When creating the "random" link it will send out a unique participantId in the end of the url
+  POST /:participantId/responses
+
+
 
 ## TUTORIALS USED FOR CREATING THIS PROJECT: 
 - https://mongoosejs.com/docs/connections.html#multiple_connections (article explaining how to connnect 2 databses on one connection, in particular about parts: 

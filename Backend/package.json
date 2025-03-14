@@ -3,15 +3,25 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+<<<<<<< HEAD
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+=======
   "type": "module",
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js"
+>>>>>>> 1085968382677e4c1589f9cf4e56975ffc670a56
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mongoose": "^8.12.1"
+=======
     "bcryptjs": "^3.0.2",
     "colors": "^1.4.0",
     "dotenv": "^16.4.7",
@@ -22,5 +32,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
+>>>>>>> 1085968382677e4c1589f9cf4e56975ffc670a56
   }
 }
