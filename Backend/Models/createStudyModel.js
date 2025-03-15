@@ -8,10 +8,16 @@ const createStudy = mongoose.Schema({
     },
     "title": {
         String,
-        required: true
+        required: true,
     },
     "description": {
         String,
         required: true
+    },
+    "questions": {
+        String
+        /*embedded: //artifacts [
+
+        ]*/
     }
 });
