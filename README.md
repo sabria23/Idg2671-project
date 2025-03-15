@@ -21,8 +21,21 @@ instalations: we have:
   },
 
 ## endpoints for dashboard
-  GET /studies - Display studies on the dashboard.  
-  DELETE /studies/:studyId - Delete a study.   
+  GET /api/dash-studies   - Get all studies for the logged-in researcher
+  ??(POST /api/dash-studies    - Create a new study)
+  DELETE /api/dash-studies/:studyId             - Delete a study 
+  GET /api/dash-studies/:studyId    - Get a specific study (for edit page)
+  GET /api/dash-studies/:studyId/recruitment    - Access recruitment page for a study
+  GET /api/dash-studies/:studyId/export         - Access export page for a study
+
+  for the recruitment page: 
+  POST /api/dash-studies/:studyId/generate-link - Generate shareable link
+  POST /api/dash-studies/:studyId/participants  - Add participant emails manually
+  GET /api/dash-studies/:studyId/participants   - View all invited participants
+
+  export action page: 
+  GET /api/dash-studies/:studyId/responses      - Get all responses for a study
+  GET /api/dash-studies/:studyId/export-json    - Download study data as JSON
 
   button dashboard: GET /studies/studyId -> linked to the export page
   button export: GET /studies/studyId/questions/responses/export -> export to "json" file
