@@ -3,7 +3,7 @@ import colors from "colors";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
-import router from './Routes/dashRoutes.js';
+import dashRouter from './Routes/dashRoutes.js';
 import userRouter from './Routes/userRoutes.js';
 import {connectToDatabases} from "./Config/db.js";
 
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 // put your routes downbelow:
-app.use('/api/dash-studies', router);
+app.use('/api/dash-studies', dashRouter);
 app.use('/api/users', userRouter);
 
 

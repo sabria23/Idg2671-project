@@ -1,6 +1,6 @@
 import express from "express";
 import {dashController} from "../Controllers/dashController.js";
-const router = express.Router();
+const dashRouter = express.Router();
 
 // GET /dash-studies - Display studies on the dashboard.  
 router.get('/', dashController.getAllStudies);
@@ -13,7 +13,7 @@ router.put('/:studyId', dashController.updateStudy);
 // DELETE /dash-studies/:studyId - Delete a study.
 router.delete('/:studyId', dashController.deleteStudy);
 
-export default router;
+export default dashRouter;
 
 
 
