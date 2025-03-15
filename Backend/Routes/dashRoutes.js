@@ -3,15 +3,15 @@ import {dashController} from "../Controllers/dashController.js";
 const dashRouter = express.Router();
 
 // GET /dash-studies - Display studies on the dashboard.  
-router.get('/', dashController.getAllStudies);
+dashRouter.get('/', dashController.getAllStudies);
 
 
 // GET /dash-studies/:studyId + PUT /studies/:studyId - Edit a study (using the create study page).  
-router.put('/:studyId', dashController.updateStudy);
+dashRouter.put('/:studyId', dashController.updateStudy);
 
 
 // DELETE /dash-studies/:studyId - Delete a study.
-router.delete('/:studyId', dashController.deleteStudy);
+dashRouter.delete('/:studyId', dashController.deleteStudy);
 
 export default dashRouter;
 
