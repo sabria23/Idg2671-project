@@ -21,26 +21,18 @@ instalations: we have:
   },
 
 ## endpoints for dashboard
-  GET /api/dash-studies   - Get all studies for the logged-in researcher
-  ??(POST /api/dash-studies    - Create a new study)
-  DELETE /api/dash-studies/:studyId             - Delete a study 
-  GET /api/dash-studies/:studyId    - Get a specific study (for edit page)
-  GET /api/dash-studies/:studyId/recruitment    - Access recruitment page for a study
-  GET /api/dash-studies/:studyId/export         - Access export page for a study
+Dashboard APIs (your responsibility):
+- GET /api/dash-studies - List all studies for the dashboard
+- DELETE /api/dash-studies/:studyId - Delete a study
+- GET /api/dash-studies/:studyId/responses - Get responses for export
+- GET /api/dash-studies/:studyId/export-json - Export as JSON
 
-  for the recruitment page: 
-  POST /api/dash-studies/:studyId/generate-link - Generate shareable link
-  POST /api/dash-studies/:studyId/participants  - Add participant emails manually
-  GET /api/dash-studies/:studyId/participants   - View all invited participants
+Study Creation/Editing APIs (your teammate's responsibility):
+- POST /api/studies - Create a new study
+- GET /api/studies/:studyId - Get a specific study for editing
+- PUT /api/studies/:studyId - Update an existing study
 
-  export action page: 
-  GET /api/dash-studies/:studyId/responses      - Get all responses for a study
-  GET /api/dash-studies/:studyId/export-json    - Download study data as JSON
-
-  button dashboard: GET /studies/studyId -> linked to the export page
-  button export: GET /studies/studyId/questions/responses/export -> export to "json" file
-  button edith: PUT /studies/studyId -> link to the preview page
-  button recruite: GET /studies/studyId -> event based client server dispatch 
+In this scenario, the "get study by ID" endpoint wouldn't be in your dashboard routes - it would be in your teammate's study routes, since it's part of the edit functionality they're responsible for.
 
 ## endpoints for createStudy
   POST /studies - Post created studies to the database and the dashboard.
