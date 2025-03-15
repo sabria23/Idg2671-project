@@ -21,13 +21,18 @@ instalations: we have:
   },
 
 ## endpoints for dashboard
-  GET /studies - Display studies on the dashboard.  
-  DELETE /studies/:studyId - Delete a study.   
+Dashboard APIs (your responsibility):
+- GET /api/dash-studies - List all studies for the dashboard
+- DELETE /api/dash-studies/:studyId - Delete a study
+- GET /api/dash-studies/:studyId/responses - Get responses for export
+- GET /api/dash-studies/:studyId/export-json - Export as JSON
 
-  button dashboard: GET /studies/studyId -> linked to the export page
-  button export: GET /studies/studyId/questions/responses/export -> export to "json" file
-  button edith: PUT /studies/studyId -> link to the preview page
-  button recruite: GET /studies/studyId -> event based client server dispatch 
+Study Creation/Editing APIs (your teammate's responsibility):
+- POST /api/studies - Create a new study
+- GET /api/studies/:studyId - Get a specific study for editing
+- PUT /api/studies/:studyId - Update an existing study
+
+In this scenario, the "get study by ID" endpoint wouldn't be in your dashboard routes - it would be in your teammate's study routes, since it's part of the edit functionality they're responsible for.
 
 ## endpoints for createStudy
   POST /studies - Post created studies to the database and the dashboard.
