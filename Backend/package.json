@@ -7,23 +7,21 @@
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js"
-
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ejs": "^3.1.10",
-    "express": "^4.21.2",
-    "mongoose": "^8.12.1",
     "bcryptjs": "^3.0.2",
     "colors": "^1.4.0",
     "dotenv": "^16.4.7",
-    "jsonwebtoken": "^9.0.2"
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.12.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
   }
 }
-
-
