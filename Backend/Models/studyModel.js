@@ -17,7 +17,7 @@ const questionSchema = new mongoose.Schema({
         required: true
     },
     artifacts: [artifactSchema], // uses the seperate artifactsSchema
-    options: [String] //for multiple choce question (i think)
+    options: [String], //for multiple choce question (i think)
     /* required: {
         type: Boolean,
         default: true
