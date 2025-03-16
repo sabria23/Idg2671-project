@@ -1,6 +1,6 @@
 import mongoose  from "mongoose";
 
-const createStudy = mongoose.Schema({
+const studySchema = mongoose.Schema({
     "user": {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -21,3 +21,7 @@ const createStudy = mongoose.Schema({
         ]*/
     }
 });
+
+const Study = mongoose.model('Study', studySchema);
+
+export default Study;

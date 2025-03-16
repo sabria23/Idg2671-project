@@ -1,5 +1,6 @@
 // i define routes in routes folder and the functionlaity with callbacks fucntions declaring status and messages go here
 import { v4 as uuidv4 } from "uuid";
+import Study from '../Models/studyModel.js';
 
 // @desc Get all studies
 // @route GET /api/dash-studies
