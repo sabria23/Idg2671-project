@@ -20,6 +20,15 @@ instalations: we have:
     "mongoose": "^8.12.1"
   },
 
+# GENERAL INTERACTION FLOW FOR DASHBOARD: 
+* List all studies
+* Delete studies
+* Handle study status (publish/unpublish)
+* Get responses for export
+* Generate participation links
+* Add participant invitations
+* Implement pagination, sort, search studies
+
 ## endpoints for dashboard
 - get    /api/studies -> display all studies on dash
 - delete /api/studies/:studyId -> delete a study
@@ -28,16 +37,35 @@ instalations: we have:
 - post   /api/studies/:studyId/public-url  -> generate a URL link for publsihed study
 - post   /api/studies/:studyId/invitations -> add participant emails to speific study
 
-## endpoints for createStudy
-  - POST /studies - Post created studies to the database and the dashboard.
-  - GET /studies/:studyId - Gets the study based on the id from the databse to the prieviw/ edit study page
-  - PUT /studies/:studyId - edits the study in the prieview/ edit study page
+# GENERAL INTERACTION FLOW FOR CREATY-STUDY PAGE: 
+* Create new studies
+* Get single study for editing
+* Update study details (title, descipriton, quesitons, artifacts)
+* Add artifact and questions
+* Delete questions 
+* Remove artifacts from the question but not colleciton (if the same artifact is being reused in multiple studies)
+* Implement pagination, sort, search (like after name maybe) for artifacts
+* seperate page for a preview (how the survey will look like when publishing)
 
-  - POST /fileSystemLocation - Post artifacts to the artifacts collection in the database for "later use"
-  - PUT /studies/:studyId/questions/artifacts -> for updating artifacts from the study
-   -PUT /studies/studyId/questions/:questionId -> update unique question 
-  - DELETE /studies/studyId/artifactId -> delete artifact from create study
-  - DELETE /studies/studyId/questionId -> delete spesific question 
+## endpoints for createStudy
+# endpoint related to study 
+- post  /api/studies -> create a new study 
+- get   /api/studies/studid -> for editing and (preview purpose)
+- patch /api/studies/studyid -> (update title, or desc, or asnwer options etc)
+- get /api/studies/studyId/preview -> special formating for previw page of that study 
+
+# endpoint related to artifact management 
+- post   /api/studies/studid/questions/questionid/artifcats -> uplaod artifcats
+- get    /api/artifacts -> for pagination, sorting (desc, asc)
+- delete /api/studies/studid/quesitons/questionId/artifcats/artifactsId (rmeove from question)
+- delete /api/artifacts/:artifactId -> delete from the collection
+
+# endpoints related to questions
+- post   /api/studies/studyid/questions -> create a question
+- patch  /api/studies/studyid/questions/questionId -> update question
+- delete /api/studies/:studyId/questions/:questionId
+
+
 
 ## endpoints for login.Registration
   http://localhost:8000/api/users
