@@ -47,7 +47,6 @@ instalations: we have:
 * Implement pagination, sort, search (like after name maybe) for artifacts
 * seperate page for a preview (how the survey will look like when publishing)
 
-## endpoints for createStudy
 # endpoint related to study 
 - post  /api/studies -> create a new study 
 - get   /api/studies/studid -> for editing and (preview purpose)
@@ -66,27 +65,39 @@ instalations: we have:
 - delete /api/studies/:studyId/questions/:questionId
 
 
+# GENERAL INTERACTION FLOW FOR AUTHENTICAITON/LOGIN PAGE: 
+- Implement authentication functionality
+   - create a new user
+   - hash the passwrod 
+   - return user data (wihotu password) and a token (amybe)
+- Generate JWT token once user has logged in
+- Set HTTP-only cookie for better securitt
+- ALL endpoints must be protected for study creaiton and management (emilie and modesta)
 
 ## endpoints for login.Registration
-  http://localhost:8000/api/users
-  - POST ('/') -> post user when he/she register themselves 
-  - POST ('/login') -> post logged in user after checking that he/she has register themsleves
-  - GET ('/me) -> retrieve the user that has logged in
+- post /api/auth/register -> create a new user
+- psot /api/auth/login -> authenticates user credentials, sets HTTP-only cookie 
+- post /api/auth/logout -> clear the autentication token 
+- get /api/auth/user -> return current user data based on token 
+- post /api/auth/forgot-password -> password reset (optional)
+- post /api/auth/reset-passwrod -> (optional)
+
+
+# GENERAL INTERACTION FLOW FOR PARTICIPATE -PAGE: 
+- iniatal access to the page (generate unique session ID)
+- display study intro page
+- if required provide with demographics
+- track study progressions (user answers if someone wants to abandon)
+- track completion (if question is skipepd or un-answered sett null value)
+- implement pagination for questions (display one question at a time)
+- what happens if someone resumes to the session -> make sure if a partially completed session exits with the same identifier, return that instead of giving them new study
+- should we prevent multiple submissions??
 
 ## endpoints for survey
-  - GET /studies/studyId -> "preview"
-  - POST 
-
-  regarding sessions:
-  - app.use(/api/sessions)
-  - POST / -> create a new user session for those that are invited via generated random link (when a user start the study)
- -  GET /:sessionId -> get a specific session
-  - POST /:sessionId/responses -> post answesr in database when a user submit their answers
-
-  regarding pariticpantId -> if lefti decided to invite people manually
-  - app.use(/api/participants)
-  - When creating the "random" link it will send out a unique participantId in the end of the url
-  - POST /:participantId/responses
+- get /api/studies/studyId/preview -> the same layout that people taken the study will see (really not sure about htis)
+- post /api/studies/studyid/sessions -> creates a new session once the participants starts the study
+- post /api/studies/studyid/sessions/sessionId/questionId -> stores reeponses for each question 
+- patch /api/studies/studyid/sessions/sessionId/questionId -> if user decided to go back and change their answer
 
 
 
