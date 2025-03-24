@@ -11,6 +11,7 @@ dashRouter.get('/', dashController.getAllStudies);
 dashRouter.delete('/:studyId', dashController.deleteStudy);
 
 // Get responses for a study (for export page)
+// Consider adding pagination if you expect a large number of responses
 dashRouter.get('/:studyId/sessions/responses', dashController.getResponses);
 
 // update status of the study (publish/unpubloshed)
@@ -20,8 +21,7 @@ dashRouter.patch('/:studyId/public', dashController.updateStudyStatus);
 dashRouter.post('/:studyId/public-url', dashController.generateLink);
 
 // Add participants via email
-// iM NOT HAPPY ABOUT THIS ENDPOINT
-dashRouter.post('/:studyId/participants', dashController.addParticipants);
+dashRouter.post('/:studyId/invitations', dashController.addParticipants);
 
 export default dashRouter;
 
