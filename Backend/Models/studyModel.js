@@ -54,9 +54,7 @@ const studySchema = mongoose.Schema({
         default: 0
     }
 }, {
-    collection: "studies"
 });
 
-const Study = mongoose.model('Study', studySchema);
+export default mongoose.model('Study', studySchema);
 
-export default Study;
