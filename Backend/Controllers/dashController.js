@@ -2,17 +2,12 @@
 import { v4 as uuidv4 } from "uuid";
 import Study from '../Models/studyModel.js';
 
+
 // @desc Get all studies
 // @route GET /api/dash-studies
 // @access Private (after auth is added)
 const getAllStudies = async (req, res) => {
-    try {
-        const studies = await Study.find({}); // Fetch all studies
-        res.status(200).json(studies);
-    } catch (error) {
-        console.error("Error fetching studies:", error);
-        res.status(500).json({ message: "Failed to fetch studies" });
-    }
+   
 };
 
 // @desc Delete a study
@@ -20,19 +15,7 @@ const getAllStudies = async (req, res) => {
 // @access Private (after auth is added)
 // IMPORTANT THE REQ.PARAMS.STUDYID i think i need to use this oen for the postman
 const deleteStudy = async (req, res) => {
-    try {
-        const studyId = req.params.studyId;
-        const deletedStudy = await Study.findByIdAndDelete(studyId);
 
-        if (!deletedStudy) {
-            return res.status(404).json({ message: "Study not found" });
-        }
-
-        res.status(200).json({ message: `Study ${studyId} deleted successfully` });
-    } catch (error) {
-        console.error("Error deleting study:", error);
-        res.status(500).json({ message: "Failed to delete study" });
-    }
 };
 
 // @desc Get responses for a study (for export page)
