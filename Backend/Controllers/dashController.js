@@ -63,6 +63,9 @@ const addParticipants = (req, res) => {
     res.status(200).json({ message: `Add participants to study ${req.params.studyId}` });
 };
 
+const updateStudyStatus = (req, res) => {
+    res.status(200).json({ message: `Add participants to study ${req.params.studyId}` });
+};
 
 export const dashController = {
     getAllStudies,
@@ -70,6 +73,7 @@ export const dashController = {
     getResponses,
     exportJson,
     generateLink,
-    addParticipants
+    addParticipants,
+    updateStudyStatus
 };
 

@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 // put your routes downbelow:
-app.use('/api/dash-studies', dashRouter);
+app.use('/api/studies', dashRouter);
 app.use('/api/users', userRouter);
 
 
