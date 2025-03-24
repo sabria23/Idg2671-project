@@ -1,4 +1,4 @@
 .env
-.DB_Store
+.DS_Store
 .node_modules
 
