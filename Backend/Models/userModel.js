@@ -1,29 +1,25 @@
-// here you define the shcema for user-admin
 import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema({
     "username": { 
         type: String,
-        required: [true, 'Please create a username']
+        required: true
     },
     "name": { 
         type: String,
-        required: [true, 'Please enter a name']
+        required: true
     },
     "email": { 
         type: String,
-        required: [true, 'Please enter an email'],
-        unique: true
+        required: true,
     },
     "password": { 
         type: String,
-        required: [true, 'Please add a password']
+        required: true,
     },
 },
-//timestamps gives autimatically info about when the account was created and udpated
 {
-    timestamps: true, collection: "users-admin"
+    timestamps: true
 })
 
-//model name is User
 export default mongoose.model('User', userSchema);

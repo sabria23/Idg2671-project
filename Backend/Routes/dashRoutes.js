@@ -3,21 +3,24 @@ import {dashController} from "../Controllers/dashController.js";
 const dashRouter = express.Router();
 
 // Get all studies for the dashboard
+// /api/studies
 dashRouter.get('/', dashController.getAllStudies);
 
 // Delete a study from the dashboard
+// api/studies/sutudyId
 dashRouter.delete('/:studyId', dashController.deleteStudy);
 
 // Get responses for a study (for export page)
-dashRouter.get('/:studyId/responses', dashController.getResponses);
+dashRouter.get('/:studyId/sessions/responses', dashController.getResponses);
 
-// Export study data as JSON
-dashRouter.get('/:studyId/responses/export-json', dashController.exportJson);
+// update status of the study (publish/unpubloshed)
+dashRouter.patch('/:studyId/public', dashController.updateStudyStatus);
 
-// Generate a unique shareable link for a study
-dashRouter.post('/:studyId/generate-link', dashController.generateLink);
+//generate a URL link to publish that quiz
+dashRouter.post('/:studyId/public-url', dashController.generateLink);
 
 // Add participants via email
+// iM NOT HAPPY ABOUT THIS ENDPOINT
 dashRouter.post('/:studyId/participants', dashController.addParticipants);
 
 export default dashRouter;
