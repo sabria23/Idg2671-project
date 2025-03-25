@@ -6,7 +6,7 @@ import { dirname, resolve } from "path";
 import dashRouter from './Routes/dashRoutes.js';
 import userRouter from './Routes/userRoutes.js';
 import connectToDB from "./Config/db.js";
-
+import errorHandler from "./Middleware/errorHandler.js";
 
 // Get the current directory of the ES module (server.js)
 const __filename = fileURLToPath(import.meta.url);
@@ -23,8 +23,9 @@ app.use(express.urlencoded({extended: false}));
 
 // put your routes downbelow:
 app.use('/api/studies', dashRouter);
-app.use('/api/users', userRouter);
+app.use('/api/auth', userRouter);
 
+app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`))
 
