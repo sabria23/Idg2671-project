@@ -1,0 +1,2 @@
+# testig get all studies
+GET http://localhost:8000/api/studies
