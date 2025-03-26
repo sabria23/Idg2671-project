@@ -1,0 +1,19 @@
+# Register a new username
+
+POST http://localhost:8000/api/auth/register
+
+
+{
+    "_id": "67e2ae07f019d2191787788d",
+    "username": "jack",
+    "email": "jac2333@gmail.com"
+}
+
+# Login user
+POST http://localhost:8000/api/auth/login
+
+
+{
+    "_id": "67e2c8518f5b6184af3b777e",
+    "username": "Ella"
+}
