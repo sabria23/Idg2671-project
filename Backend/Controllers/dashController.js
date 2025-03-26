@@ -152,9 +152,57 @@ const generateLink = async (req, res, next) => {
 // @route POST /api/studies/:studyId/participants
 // @access Private (after auth is added)
 const emailInvitaitons = async (req, res, next) => {
-    res.status(200).json({ message: `Add participants to study ${req.params.studyId}` });
-};
+    try {
+    const {studyId} = req.params;
+    const { emails } = req.body;
+    // Validate that emails exists, is an array, and isn't empty
+    // This is important because we want to process multiple email invitations at once
+    // The frontend should send: { "emails": ["user1@example.com", "user2@example.com"] }
+    if (!emails || !Array.isArray(emails) || emails.length === 0) {
+        const error = new Error('Please provide an array of email addresses');
+        error.statusCode = 400;
+        return next(error);
+      }
+     const study = await Study.findById(studyId);
+     if (!study) {
+        const error = new Error('Study not found');
+        error.statusCode = 404;
+        return next(error);
+     }
 
+     if (!study.published) {
+        const error = new Error('Cannot invite pariticpants to an unpublished study');
+        error.statusCode = 400;
+        return next(error);
+     }
+
+     //create invitation records for each email
+     const invitations = [];
+
+     for (const email of emails) {
+        //generate a unique token for eahc invitation
+        // NEED TO FIND IFNO REGARIDNG THIS
+        const invitationToken = crypto.randomBytes(20).toString('hex');
+
+        const invitation = new StudyInvitation({
+            studyId,
+            email,
+            invitationToken,
+            status: 'pending'
+        });
+        await invitation.save();
+        invitations.push(invitation);
+     }
+     res.status(200).json({
+        message: `${emails.length} participants have been invited to the study`,
+        studyId,
+        invitationCount: invitations.length
+     });
+    } catch (error) {
+        next(error);
+    }
+    
+};
 
 export const dashController = {
     getAllStudies,
