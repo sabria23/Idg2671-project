@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 const studyInvitationSchema = new mongoose.Schema({
     studyId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,7 +15,7 @@ const studyInvitationSchema = new mongoose.Schema({
       default: 'pending'
     },
     invitationToken: {
-        type: string,
+        type: String,
         required: true,
         unique: true
     },
