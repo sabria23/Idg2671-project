@@ -1,6 +1,9 @@
 // i define routes in routes folder and the functionlaity with callbacks fucntions declaring status and messages go here
 import { v4 as uuidv4 } from "uuid";
 import Study from '../Models/studyModel.js';
+import Session from '../Models/participantModel.js';
+import StudyInvitation from '../Models/invitationModel.js';
+
 
 // @desc Get all studies
 // @route GET /api/studies
@@ -49,36 +52,108 @@ const deleteStudy = async (req, res, next) => {
 // @route GET /api/studies/:studyId/responses
 // @access Private (after auth is added)
 // Consider adding pagination if you expect a large number of responses
-const getResponses = (req, res, next) => {
-    res.status(200).json({ message: `Get responses for study ${req.params.studyId}` });
+const getResponses = async (req, res, next) => {
+    try {
+        const { studyId } = req.params;
+        const sessions = await Session.find({ studyId: studyId });
+
+        if (!sessions || sessions.length === 0) {
+            return res.status(200).json({
+                data: [],
+                message: 'No responses found for this study'
+            }); 
+        }
+
+        res.status(200).json({
+            count: sessions.length,
+            data: sessions
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 
 // @desc update status of the study (publish/unpubloshed)
 // @route PATCH /api/studies/:studyId/public
 // @access Private (after auth is added)
-const updateStudyStatus = (req, res, next) => {
-    res.status(200).json({ message: ` You have published study ${req.params.studyId}, get your URl Link` });
+// what if i have shared that that study and then unplish ti after some time
+// have logcs so that the study is not accessible to participants after some time maybe?
+const updateStudyStatus = async (req, res, next) => {
+   try {
+    const {studyId} = req.params;
+    const {published} = req.body;
+    //validation that published is a boolean => i think this sort of validaiton can go in the validator 
+    if (typeof published !== 'boolean') {
+        const error = new Error('Published status must be a boolean value');
+        error.statusCode = 400;
+        return next(error);
+    }
+
+    const study = await Study.findById(studyId);
+    if (!study) {
+        const error = new Error('Study not found');
+        error.statusCode = 404;
+        return next(error);
+    }
+    // after finding the right study, update its status
+    study.published = published;
+    await study.save();
+
+    res.status(200).json({
+        message: published
+        ? `Study is now available, Get URL link to share  with Others!`
+        : `Study has been unpublsihed and is no longer available to participants`,
+        data: {
+            studyId: study._id,
+            title: study.title,
+            published: study.published
+        }
+    });
+   } catch (error) {
+    next(error);
+   }
 }
 
 // @desc generate a URL link to publish that quiz
 // @route POST /api/studies/:studyId/generate-link
+// IDONT TUHINK THIS GENERATES A UNIQUE URL!!!!
 // @access Private (after auth is added)
-const generateLink = (req, res, next) => {
-    res.status(200).json({ message: `Generate link for study ${req.params.studyId}` });
+const generateLink = async (req, res, next) => {
+    try {
+        const {studyId } = req.params;
+        const study = await Study.findById(studyId);
+        if (!study) {
+            const error = new Error('study not found');
+            error.statusCode = 404;
+            return next(error);
+        }
+
+        if (!study.published) {
+            const error = new Error('Cannot generate link for unpublished study');
+            error.statusCode = 400;
+            return next(error);
+        }
+
+        const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
+        const studyUrl = `${baseUrl}/participate/${studyId}`;
+
+        res.status(200).json({
+            message: 'Study link generated succesfully',
+            title: study.title,
+            studyUrl: studyUrl
+        });
+    } catch (error) {
+        next(error);
+    }
 };
-
-
 
 // @desc Add participants via email
 // @route POST /api/studies/:studyId/participants
 // @access Private (after auth is added)
-const emailInvitaitons = (req, res, next) => {
+const emailInvitaitons = async (req, res, next) => {
     res.status(200).json({ message: `Add participants to study ${req.params.studyId}` });
 };
-
-
-
 
 
 export const dashController = {
