@@ -74,13 +74,7 @@ const updateStudyStatus = async (req, res, next) => {
    try {
     const {studyId} = req.params;
     const {published} = req.body;
-    //validation that published is a boolean => i think this sort of validaiton can go in the validator 
-    if (typeof published !== 'boolean') {
-        const error = new Error('Published status must be a boolean value');
-        error.statusCode = 400;
-        return next(error);
-    }
-
+    
     // Check authorization and get the study
     const study = await checkStudyAuthorization(studyId, req.user._id, "update");
 
