@@ -31,44 +31,37 @@ export const getSurvey = async (req, res, next) => {
     }
 };
 
-// Creates the session for the participant
+// @desc create a new session for participants to track anonym participants
 export const createSession = async (req, res, next) => {
     try {
-        const {participantId} = req.body;
+        //const {participantId} = req.body;
         const {studyId} = req.params;
 
-        if (!participantId){
-            const error = new Error('ParticipantId is required');
-            error.statusCode = 400;
-            throw error;
+        // Optional: get demographics data if provided
+        // const { demographics } = req.body;
+
+        // Check if study exists and is published
+        const study = await Study.findById(studyId);
+        if (!study || !study.published) {
+            const error = new Error('Study not found or not available');
+            error.statusCode = 404;
+            return next(error);
         }
 
-        // Check if there is an existing session
-        let session = await session.findOne({
-            study: studyId,
-            participantId,
-            isComplete: false
-        });
-
-        // If there is a session resume
-        if (session) {
-            return res.status(200).json({
-                message: 'Resumed session',
-                session
-            });
-        }
-
-        // If not then make new one
-        session = new session({
-            study: studyId,
-            participantId
+          // Create new session
+          const session = new Session({
+            studyId,
+            deviceInfo,
+            demographics: demographics || {},
+            isCompleted: false,
+            responses: []
         });
 
         await session.save();
 
         res.status(201).json({
-            message: 'New session created',
-            session
+            message: 'Session created successfully',
+            sessionId: session._id
         });
     } catch (err) {
         next(err);
