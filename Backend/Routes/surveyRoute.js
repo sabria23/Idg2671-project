@@ -1,5 +1,5 @@
 import express from "express";
-import { getSurvey, createSession, submitAnswer, updateAnswer } from "../Controllers/surveyController"; // Controllers
+import { getSurvey, createSession, submitAnswer, updateAnswer } from "../Controllers/surveyController.js"; // Controllers
 //import {} from ''; // Validation
 
 const surveyRouter = express.Router();
