@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
 import dashRouter from './Routes/dashRoutes.js';
 import userRouter from './Routes/userRoutes.js';
+import studyRouter from './Routes/studyRoutes';
 import connectToDB from "./Config/db.js";
 import errorHandler from "./Middleware/errorHandler.js";
 
@@ -24,6 +25,7 @@ app.use(express.urlencoded({extended: false}));
 // put your routes downbelow:
 app.use('/api/studies', dashRouter);
 app.use('/api/auth', userRouter);
+app.use('/api/studies', studyRouter);
 
 app.use(errorHandler);
 

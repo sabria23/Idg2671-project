@@ -2,56 +2,38 @@ import express from 'express';
 import { studyController } from '../Controllers/studyController.js';
 const studyRouter = express.Router();
 
-// Use validate controllers on all the routes
-    // validateCreateStudies
-    // validateCreateQuestions
-    // validateUploadArtifacts
-
-    // validateGetStudyById
-    // validateGetArtifacts
-    // validateGetStudyPreview 
-
-    // validatePatchStudyById
-    // validatePatchQuestionById
-
-    // validateDeleteArtifactById
-    
-
-
 //----------------POST(CREATE)----------------------------
 // Create new study
-studyRouter.post('/studies', );
+studyRouter.post('/studies', studyController.createStudy);
 
 // Upload artifacts
-studyRouter.post('/studies/:studyId/questions/:questionId/artifacts');
+studyRouter.post('/studies/:studyId/questions/:questionId/artifacts', studyController.uploadArtifact);
 
 // Create a question
-studyRouter.post('/studies/:studyId/questions');
+studyRouter.post('/studies/:studyId/questions', studyController.createQuestion);
 
 //----------------GET-------------------------------------
 // Get study for preview, for editing
-studyRouter.get('/studies/:studyId');
+studyRouter.get('/studies/:studyId', studyController.getStudyById);
 
 // Get artifacts for pagination, sorting
-studyRouter.get('/artifacts');
-
-// Special formatting for preview page of the study
-studyRouter.get('/studies/:studyId/preview');
-
+studyRouter.get('/artifacts', studyController.getArtifacts);
 
 //----------------PATCH(UPDATE)-----------------------
 // Update a study (title, answer options etc)
-studyRouter.patch('/studies/:studyId');
+studyRouter.patch('/studies/:studyId', studyController.patchStudyById);
 
 // Update question
-studyRouter.patch('/studies/:studyId/question/:questionId');
+studyRouter.patch('/studies/:studyId/question/:questionId', studyController.patchQuestionById);
 
 //----------------DELETE----------------------------------
 // Delete/remove artifact from question
-studyRouter.delete('/studies/:studyId/questions/:questionId/artifacts/:artifactsId');
+studyRouter.delete('/studies/:studyId/questions/:questionId/artifacts/:artifactsId', studyController.deleteArtifactFromQuestion);
 
 // Delete artifact from the collection
-studyRouter.delete('/artifacts/:artifactId');
+studyRouter.delete('/artifacts/:artifactId', studyController.deleteArtifactFromCollection);
 
 // Delete question from study 
-studyRouter.delete('/studies/:studyId/questions/:questionId');
+studyRouter.delete('/studies/:studyId/questions/:questionId', studyController.deleteQuestionById);
+
+export default studyRouter;
