@@ -1,4 +1,5 @@
-import Study from "../Models/studyModel.js"
+import Study from "../Models/studyModel.js";
+import Session from "../Models/participantModel.js";
 
 export const getSurvey = async (req, res, next) => {
     try {
