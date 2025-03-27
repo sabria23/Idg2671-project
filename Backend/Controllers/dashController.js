@@ -3,14 +3,15 @@ import { v4 as uuidv4 } from "uuid";
 import Study from '../Models/studyModel.js';
 import Session from '../Models/participantModel.js';
 import StudyInvitation from '../Models/invitationModel.js';
-
+import crytpo from "crypto";
+import checkStudyAuthorization from "../Utils/authHelperFunction.js";
 
 // @desc Get all studies
 // @route GET /api/studies
 // @access Private (after auth is added)
 const getAllStudies = async (req, res, next ) => {
    try {
-    const studies = await Study.find();
+    const studies = await Study.find({ creator: req.user._id });
     res.status(200).json(studies);
    } catch (error) {
     next(error);
@@ -31,17 +32,9 @@ const deleteStudy = async (req, res, next) => {
             return next(error);
         }
         //check if the logged-in user is the creator of the study
-        // the study.creator menaing study colelction attribute creator, toString convert the ID to string,
-        // req.user._id => menainf find the request parameter from the user collection's id generetd by mongodb
-        // set it also to string (ha begge som string i tilfelle en er stringog en er object sånn at == faktisk fungere som er like)
-        //UNCOMMENT THIS ONCE IT IS WORKING
-        /*if (study.creator.toString() !== req.user._id.toString()) {
-            const error = new Error('Not authorized to delete this study');
-            error.statusCode = 403;
-            return next(error);
-        }*/
+        await checkStudyAuthorization(studyId, req.user._id, "delete");
+        
         await Study.findByIdAndDelete(studyId);
-
         res.status(200).json({message: 'Study deleted seccessfully'});
     } catch (error) {
         next(error);
@@ -50,11 +43,22 @@ const deleteStudy = async (req, res, next) => {
 
 // @desc Get responses for a study (for export page)
 // @route GET /api/studies/:studyId/responses
-// @access Private (after auth is added)
-// Consider adding pagination if you expect a large number of responses
+// @access Private
 const getResponses = async (req, res, next) => {
     try {
         const { studyId } = req.params;
+        
+        // First check if the study belongs to the user
+        const study = await Study.findById(studyId);
+        if (!study) {
+            const error = new Error('Study not found');
+            error.statusCode = 404;
+            return next(error);
+        }
+        
+        //check if the logged-in user is the creator of the study
+        await checkStudyAuthorization(studyId, req.user._id, "access responses for");
+        
         const sessions = await Session.find({ studyId: studyId });
 
         if (!sessions || sessions.length === 0) {
@@ -96,6 +100,10 @@ const updateStudyStatus = async (req, res, next) => {
         error.statusCode = 404;
         return next(error);
     }
+
+    // Check authorization and get the study
+    const studyAuth = await checkStudyAuthorization(studyId, req.user._id, "update");
+
     // after finding the right study, update its status
     study.published = published;
     await study.save();
@@ -129,6 +137,9 @@ const generateLink = async (req, res, next) => {
             return next(error);
         }
 
+         // Check authorization and get the study
+        const studyAuth = await checkStudyAuthorization(studyId, req.user._id, "get url link");
+
         if (!study.published) {
             const error = new Error('Cannot generate link for unpublished study');
             error.statusCode = 400;
@@ -148,6 +159,12 @@ const generateLink = async (req, res, next) => {
     }
 };
 
+// helper funciton
+const generateRandomToken = (bytes = 20) => {
+    return [...Array(bytes)]
+      .map(() => Math.floor(Math.random() * 256).toString(16).padStart(2, '0'))
+      .join('');
+  };
 // @desc Add participants via email
 // @route POST /api/studies/:studyId/participants
 // @access Private (after auth is added)
@@ -170,6 +187,9 @@ const emailInvitaitons = async (req, res, next) => {
         return next(error);
      }
 
+      // Check authorization and get the study
+        const studyAuth = await checkStudyAuthorization(studyId, req.user._id, "invate");
+
      if (!study.published) {
         const error = new Error('Cannot invite pariticpants to an unpublished study');
         error.statusCode = 400;
@@ -182,7 +202,7 @@ const emailInvitaitons = async (req, res, next) => {
      for (const email of emails) {
         //generate a unique token for eahc invitation
         // NEED TO FIND IFNO REGARIDNG THIS
-        const invitationToken = crypto.randomBytes(20).toString('hex');
+        const invitationToken = generateRandomToken();
 
         const invitation = new StudyInvitation({
             studyId,
