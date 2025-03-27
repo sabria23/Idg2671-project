@@ -88,7 +88,7 @@ export const submitAnswer = async (req, res, next) => {
         session.responses.push({
             questionId,
             participantAnswer: skipped ? null : answer,
-            asnwerType: asnwerType,
+            answerType: answerType,
             skipped: !!skipped
         });
 
