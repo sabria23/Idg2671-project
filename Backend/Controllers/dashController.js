@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Study from '../Models/studyModel.js';
 import Session from '../Models/participantModel.js';
 import StudyInvitation from '../Models/invitationModel.js';
-import crytpo from "crypto";
+import crypto from "crypto";
 import checkStudyAuthorization from "../Utils/authHelperFunction.js";
 
 // @desc Get all studies
@@ -25,12 +25,7 @@ const getAllStudies = async (req, res, next ) => {
 const deleteStudy = async (req, res, next) => {
     try {
         const {studyId} = req.params;
-        const study = await Study.findById(studyId);
-        if (!study) {
-            const error = new Error('Study not found');
-            error.statusCode = 404;
-            return next(error);
-        }
+       
         //check if the logged-in user is the creator of the study
         await checkStudyAuthorization(studyId, req.user._id, "delete");
         
@@ -47,14 +42,6 @@ const deleteStudy = async (req, res, next) => {
 const getResponses = async (req, res, next) => {
     try {
         const { studyId } = req.params;
-        
-        // First check if the study belongs to the user
-        const study = await Study.findById(studyId);
-        if (!study) {
-            const error = new Error('Study not found');
-            error.statusCode = 404;
-            return next(error);
-        }
         
         //check if the logged-in user is the creator of the study
         await checkStudyAuthorization(studyId, req.user._id, "access responses for");
@@ -94,15 +81,8 @@ const updateStudyStatus = async (req, res, next) => {
         return next(error);
     }
 
-    const study = await Study.findById(studyId);
-    if (!study) {
-        const error = new Error('Study not found');
-        error.statusCode = 404;
-        return next(error);
-    }
-
     // Check authorization and get the study
-    const studyAuth = await checkStudyAuthorization(studyId, req.user._id, "update");
+    const study = await checkStudyAuthorization(studyId, req.user._id, "update");
 
     // after finding the right study, update its status
     study.published = published;
@@ -130,15 +110,9 @@ const updateStudyStatus = async (req, res, next) => {
 const generateLink = async (req, res, next) => {
     try {
         const {studyId } = req.params;
-        const study = await Study.findById(studyId);
-        if (!study) {
-            const error = new Error('study not found');
-            error.statusCode = 404;
-            return next(error);
-        }
-
+       
          // Check authorization and get the study
-        const studyAuth = await checkStudyAuthorization(studyId, req.user._id, "get url link");
+        const study = await checkStudyAuthorization(studyId, req.user._id, "get url link");
 
         if (!study.published) {
             const error = new Error('Cannot generate link for unpublished study');
@@ -180,15 +154,9 @@ const emailInvitaitons = async (req, res, next) => {
         error.statusCode = 400;
         return next(error);
       }
-     const study = await Study.findById(studyId);
-     if (!study) {
-        const error = new Error('Study not found');
-        error.statusCode = 404;
-        return next(error);
-     }
 
       // Check authorization and get the study
-        const studyAuth = await checkStudyAuthorization(studyId, req.user._id, "invate");
+        const study = await checkStudyAuthorization(studyId, req.user._id, "invate");
 
      if (!study.published) {
         const error = new Error('Cannot invite pariticpants to an unpublished study');

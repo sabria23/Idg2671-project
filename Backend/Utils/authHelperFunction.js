@@ -1,7 +1,7 @@
 import Study from "../Models/studyModel.js";
 // Helper function to check if user is authorized to access a study on dashboard
 const checkStudyAuthorization = async (studyId, userId, action = "access") => {
-    const studyAuth = await Study.findById(studyId);
+    const study = await Study.findById(studyId);
     
     if (!study) {
       const error = new Error('Study not found');
