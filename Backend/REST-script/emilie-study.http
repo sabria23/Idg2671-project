@@ -1,60 +1,39 @@
 #----------------------POST(CREATE)-------------------------
 # Create new study
 POST http://localhost:8000/api/studies
-Content-Type: application/json
-
-{
-    "creator": "67e4171fc74a7ebb4912f78b",
-    "title": "A comparison study",
-    "description": "A study that compare images",
-    "published": true,
-    "questions": [
-        {
-            "questionText": "Which has the best colors?",
-            "questionType": "comparison",
-            "fileContent": [
-                {
-                    "fileUrl": "http://example.com/file1.png",
-                    "fileType": "image/png"
-                }
-            ],
-            "options":[
-                {
-                    "value": "option1",
-                    "label": "Option 1"
-                },
-                {
-                    "value": "option2",
-                    "label": "Option 2"
-                }
-            ]
-        }
-    ]
-}
+#Content-Type: application/json
 
 # Create a question
-#POST http://localhost:8000/api/studies/
+POST http://localhost:8000/api/studies/:studyId/questions
+#Content-Type: application/json
+
+# Upload artifacts
+#POST http://localhost:8000/api/studies/67e5409dba51089a97c387ae/questions/67e5409dba51089a97c387af/artifacts
+
 
 #---------------------GET-----------------------------------
 # Get study by id
-#GET 
+GET http://localhost:8000/api/studies/:studyId
 
 # Get artifacts for sorting
-#GET 
+#GET http://localhost:8000/api/studies/artifacts
 
 #---------------------PATCH(UPDATE)-------------------------
 # Update study by id
-#PATCH 
+PATCH http://localhost:8000/api/studies/:stuyId
+Content-Type: application/json
+
 
 # Update question in study
-#PATCH 
+PATCH http://localhost:8000/api/studies/:studyId/questions/:questionId
+Content-Type: application/json
 
 #---------------------DELETE--------------------------------
 # Delete/remove artifact from question
-#DELETE 
+DELETE http://localhost:8000/api/studies/:studyId/questions/:questionId/artifacts/:artifactId
 
 # Delete a artifact from the collection
-#DELETE 
+#DELETE http://localhost:8000/api/studies/artifacts/:artifactId
 
 # Delete a question from study
-#DELETE
+DELETE http://localhost:8000/api/studies/:studyId/questions/:questionId
