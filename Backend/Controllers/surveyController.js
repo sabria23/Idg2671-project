@@ -2,7 +2,7 @@ import Study from "../Models/studyModel.js";
 import Session from "../Models/participantModel.js";
 
 //@desc retrieve and return study's data fro paritipants
-// @route GET /api/studies/...
+// @route GET /api/studies//:studyId/survey
 export const getSurvey = async (req, res, next) => {
     try {
        const study = await Study.findById(req.params.studyId);
@@ -31,55 +31,50 @@ export const getSurvey = async (req, res, next) => {
     }
 };
 
-// Creates the session for the participant
+// @desc create a new session for participants to track anonym participants
+// @route POST /api/studies/:studyid/sessions/
 export const createSession = async (req, res, next) => {
     try {
-        const {participantId} = req.body;
+        //const {participantId} = req.body;
         const {studyId} = req.params;
 
-        if (!participantId){
-            const error = new Error('ParticipantId is required');
-            error.statusCode = 400;
-            throw error;
+        // Optional: get demographics data if provided
+        // const { demographics } = req.body;
+
+        // Check if study exists and is published
+        const study = await Study.findById(studyId);
+        if (!study || !study.published) {
+            const error = new Error('Study not found or not available');
+            error.statusCode = 404;
+            return next(error);
         }
 
-        // Check if there is an existing session
-        let session = await session.findOne({
-            study: studyId,
-            participantId,
-            isComplete: false
-        });
-
-        // If there is a session resume
-        if (session) {
-            return res.status(200).json({
-                message: 'Resumed session',
-                session
-            });
-        }
-
-        // If not then make new one
-        session = new session({
-            study: studyId,
-            participantId
+          // Create new session
+          const session = new Session({
+            studyId,
+            deviceInfo,
+            demographics: demographics || {},
+            isCompleted: false,
+            responses: []
         });
 
         await session.save();
 
         res.status(201).json({
-            message: 'New session created',
-            session
+            message: 'Session created successfully',
+            sessionId: session._id
         });
     } catch (err) {
         next(err);
     }
 };
 
-// Save a participant wuestion
+// @desc save participant's answer related to quesitons
+// @route POST /api/studies/:studyid/sessions/:sessionId/:questionId
 export const submitAnswer = async (req, res, next) => {
     try {
         const {sessionId, questionId} = req.params;
-        const {answer, skipped} = req.body;
+        const {answer, skipped, answerType} = req.body;
 
         const session = await Session.findById(sessionId);
         if (!session) {
@@ -88,9 +83,12 @@ export const submitAnswer = async (req, res, next) => {
             throw error;
         }
 
+        // mangler kode som: verifyies that the question exsts in the study 
+        // after you chekced that only then you can add the responses (as done below)
         session.responses.push({
             questionId,
             participantAnswer: skipped ? null : answer,
+            asnwerType: asnwerType,
             skipped: !!skipped
         });
 
@@ -105,7 +103,8 @@ export const submitAnswer = async (req, res, next) => {
     }
 };
 
-
+// @desc Change answer to user, if they what to update their answer
+//@route PATCH /api/studies/:studyid/sessions/:sessionId/:questionId
 export const updateAnswer = async (req, res, next) => {
     try {
         const {sessionId, questionId} = req.params;
