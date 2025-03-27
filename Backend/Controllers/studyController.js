@@ -6,10 +6,11 @@ import Artifact from '../Models/artifactModel.js';
 const createStudy = async (req, res) => {
     try {
         const study = new Study({
-            creator: req.user ? req.user._id: undefined,
+            creator: req.user ? req.user._id: userId,
             title: req.title,
             description: req.description,
-            published: req.published
+            published: req.published,
+            questions: req.questions
         });
         await study.save();
         res.status(201).json({ message: 'A new study successfully created!'})

@@ -35,3 +35,5 @@ studyRouter.delete('/artifacts/:artifactId', studyController.deleteArtifactFromC
 
 // Delete question from study 
 studyRouter.delete('/studies/:studyId/questions/:questionId', studyController.deleteQuestionById);
+
+export default studyRouter;

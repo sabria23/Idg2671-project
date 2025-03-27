@@ -1,0 +1,60 @@
+#----------------------POST(CREATE)-------------------------
+# Create new study
+POST http://localhost:8000/api/studies
+Content-Type: application/json
+
+{
+    "creator": "67e4171fc74a7ebb4912f78b",
+    "title": "A comparison study",
+    "description": "A study that compare images",
+    "published": true,
+    "questions": [
+        {
+            "questionText": "Which has the best colors?",
+            "questionType": "comparison",
+            "fileContent": [
+                {
+                    "fileUrl": "http://example.com/file1.png",
+                    "fileType": "image/png"
+                }
+            ],
+            "options":[
+                {
+                    "value": "option1",
+                    "label": "Option 1"
+                },
+                {
+                    "value": "option2",
+                    "label": "Option 2"
+                }
+            ]
+        }
+    ]
+}
+
+# Create a question
+#POST http://localhost:8000/api/studies/
+
+#---------------------GET-----------------------------------
+# Get study by id
+#GET 
+
+# Get artifacts for sorting
+#GET 
+
+#---------------------PATCH(UPDATE)-------------------------
+# Update study by id
+#PATCH 
+
+# Update question in study
+#PATCH 
+
+#---------------------DELETE--------------------------------
+# Delete/remove artifact from question
+#DELETE 
+
+# Delete a artifact from the collection
+#DELETE 
+
+# Delete a question from study
+#DELETE
