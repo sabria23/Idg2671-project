@@ -49,7 +49,8 @@ const createUser = async (req, res, next) => {
 const authenticateLogin = async (req, res, next) => {
     try {
         const {username, password} = req.body 
-
+        console.log(req.body);
+        
         // checking user email
         const user = await User.findOne({username})
 
@@ -95,7 +96,18 @@ const authenticateLogout = async (req, res, next) => {
 // @access
 const getUser = async (req, res, next) => {
     try {
-        res.status(201).json({ message: "User registered success"});
+        const user = await User.findById(req.user.id).select("-password");
+        if (!user) {
+            return res.status(404).json({
+                message: "user not found"
+            });
+        }
+        res.status(200).json({
+            data: { 
+                id: user._id,
+                username: user.username
+            }
+        });
     } catch (error) {
        next(error) ;
     }
