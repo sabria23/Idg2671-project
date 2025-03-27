@@ -103,7 +103,8 @@ export const submitAnswer = async (req, res, next) => {
     }
 };
 
-
+// @desc Change answer to user, if they what to update their answer
+//@route PATCH /api/studies/:studyid/sessions/:sessionId/:questionId
 export const updateAnswer = async (req, res, next) => {
     try {
         const {sessionId, questionId} = req.params;
