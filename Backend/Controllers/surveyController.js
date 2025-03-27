@@ -1,6 +1,8 @@
 import Study from "../Models/studyModel.js";
 import Session from "../Models/participantModel.js";
 
+//@desc retrieve and return study's data fro paritipants
+// @route GET /api/studies/...
 export const getSurvey = async (req, res, next) => {
     try {
        const study = await Study.findById(req.params.studyId);
@@ -9,8 +11,21 @@ export const getSurvey = async (req, res, next) => {
         error.statusCode = 404;
         throw error;
        }
-       // Send the survey data INCOMPLETE
-       res.status(200).json('')
+
+       // Only return published studies to participants
+       if (!study.published) {
+        const error = new Error('This study is not available');
+        error.statusCode = 403;
+        return next(error);
+    }
+
+       // returning only the data needed for the survey
+       res.status(200).json({
+        id: study._id,
+        title: study.title,
+        descirption: study.description,
+        questions: study.questions
+       });
     } catch (err) {
         next(err)
     }
