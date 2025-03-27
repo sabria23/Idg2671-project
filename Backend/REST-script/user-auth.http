@@ -4,16 +4,32 @@ POST http://localhost:8000/api/auth/register
 
 
 {
-    "_id": "67e2ae07f019d2191787788d",
-    "username": "jack",
-    "email": "jac2333@gmail.com"
+    "_id": "67e53e881733edaf16e75fd8",
+    "username": "fredrik",
+    "email": "fredrik@gmail.com",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUzZTg4MTczM2VkYWYxNmU3NWZkOCIsImlhdCI6MTc0MzA3NzAwMCwiZXhwIjoxNzQ1NjY5MDAwfQ.jf2AW9LUYJAcAUuMPjJSxz3stygtTa-B7S5lPZcKNg0"
 }
+
 
 # Login user
 POST http://localhost:8000/api/auth/login
 
 
 {
-    "_id": "67e2c8518f5b6184af3b777e",
-    "username": "Ella"
+    "_id": "67e53e881733edaf16e75fd8",
+    "username": "fredrik",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUzZTg4MTczM2VkYWYxNmU3NWZkOCIsImlhdCI6MTc0MzA3NzAyMywiZXhwIjoxNzQ1NjY5MDIzfQ.bcEsx_E9822tiB8IlJo0CpZaqmg1ktqbhFJKFfHKuCo"
 }
+
+# Logout user
+http://localhost:8000/api/auth/logout
+
+# getuser
+
+{
+    "data": {
+        "id": "67e53e881733edaf16e75fd8",
+        "username": "fredrik"
+    }
+}
+

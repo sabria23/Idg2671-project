@@ -19,7 +19,7 @@ connectToDB();
 
 app.use(express.json());
 // in order to see request from the body we need this line (if using postman for example)
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
 
 // put your routes downbelow:
 app.use('/api/studies', dashRouter);
