@@ -2,7 +2,7 @@ import Study from "../Models/studyModel.js";
 import Session from "../Models/participantModel.js";
 
 //@desc retrieve and return study's data fro paritipants
-// @route GET /api/studies/...
+// @route GET /api/studies//:studyId/survey
 export const getSurvey = async (req, res, next) => {
     try {
        const study = await Study.findById(req.params.studyId);
@@ -32,6 +32,7 @@ export const getSurvey = async (req, res, next) => {
 };
 
 // @desc create a new session for participants to track anonym participants
+// @route POST /api/studies/:studyid/sessions/
 export const createSession = async (req, res, next) => {
     try {
         //const {participantId} = req.body;
@@ -68,11 +69,12 @@ export const createSession = async (req, res, next) => {
     }
 };
 
-// Save a participant wuestion
+// @desc save participant's answer related to quesitons
+// @route POST /api/studies/:studyid/sessions/:sessionId/:questionId
 export const submitAnswer = async (req, res, next) => {
     try {
         const {sessionId, questionId} = req.params;
-        const {answer, skipped} = req.body;
+        const {answer, skipped, answerType} = req.body;
 
         const session = await Session.findById(sessionId);
         if (!session) {
@@ -81,9 +83,12 @@ export const submitAnswer = async (req, res, next) => {
             throw error;
         }
 
+        // mangler kode som: verifyies that the question exsts in the study 
+        // after you chekced that only then you can add the responses (as done below)
         session.responses.push({
             questionId,
             participantAnswer: skipped ? null : answer,
+            asnwerType: asnwerType,
             skipped: !!skipped
         });
 
