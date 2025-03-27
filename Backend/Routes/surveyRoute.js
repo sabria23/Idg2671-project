@@ -19,4 +19,4 @@ surveyRouter.patch('/api/studies/:studyid/sessions/:sessionId/:questionId', upda
 // patch to update to complete? This can maybe be used for denying further accsess based on that the user has already completed
 // surveyRouter.patch('/api/studies/studyid/sessions/sessionId')?
 
-export default router;
+export default surveyRouter;
