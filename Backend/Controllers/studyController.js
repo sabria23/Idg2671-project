@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Study from '../Models/studyModel.js';
 import Artifact from '../Models/artifactModel.js';
 
@@ -5,12 +6,17 @@ import Artifact from '../Models/artifactModel.js';
 // Create a new study
 const createStudy = async (req, res) => {
     try {
+        const { creator, title, description, published, questions } = req.body;
+        if(!title || !description){
+            return res.status(400).json({ error: 'Title and description is required'});
+        }
+
         const study = new Study({
-            creator: req.user ? req.user._id: userId,
-            title: req.title,
-            description: req.description,
-            published: req.published,
-            questions: req.questions
+            creator: new mongoose.Types.ObjectId(creator),
+            title,
+            description,
+            published,
+            questions
         });
         await study.save();
         res.status(201).json({ message: 'A new study successfully created!'})
@@ -48,11 +54,11 @@ const uploadArtifact = async (req, res, next) => {
 
         // Create and save a new artifact
         const artifact = new Artifact({
-            uploadedBy: req.user ? req.user._id : undefined,
-            fileName: req.file.originalname,
-            fileType: req.fileType,
-            filePath: req.file.path,
-            usedInStudies: req.study ? req.study._id : undefined
+            uploadedBy,
+            fileName,
+            fileType,
+            filePath,
+            usedInStudies
         });
         await artifact.save();
 
@@ -148,7 +154,7 @@ const getArtifacts = async (req, res) => {
 // Reuses code from @emilirol's oblig2 in full-stack
 const patchStudyById = async (req, res) => {
     try{
-        const updateStudy = await Study.findByIdAndUpdate(req.params.quizId, req.body, {new: true});
+        const updateStudy = await Study.findByIdAndUpdate(req.params.studyId, req.body, {new: true});
         if (!updateStudy) return res.status(404).json({ message: 'Could not find study'});
 
         res.json(updateStudy);
@@ -190,7 +196,7 @@ const patchQuestionById = async (req, res) => {
 //----------------DELETE----------------------------------
 // Remove a artifact from a question
 // The code is reused from @modestat's oblig2 in full-stack
-const deleteArtifactFromQuestion = async (req, res) => {
+const deleteArtifactFromQuestion = async (req, res, next) => {
     try{
         const { studyId, questionId, artifactId } = req.params;
 
@@ -209,10 +215,9 @@ const deleteArtifactFromQuestion = async (req, res) => {
             return next(err);
         }
 
-        const artifactExists = question.artifactContent.some(
-            artifact => artifact.artifactId.toString() === fileId
+        const artifactExists = question.artifactContent?.some(
+            artifact => artifact.artifactId.toString() === artifactId.toString()
         );
-
         if (!artifactExists){
             const err = new Error('Could not find artifact in this question');
             err.statusCode = 404;
@@ -235,7 +240,7 @@ const deleteArtifactFromQuestion = async (req, res) => {
             message: 'File removed from question but still kept in artifact library'
         });
     } catch (err){
-        next(err);
+        res.status(400).json({ error: err.message});
     }
 };
 

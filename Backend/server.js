@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
 import dashRouter from './Routes/dashRoutes.js';
 import userRouter from './Routes/userRoutes.js';
-import studyRouter from './Routes/studyRoutes';
+import studyRouter from './Routes/studyRoutes.js';
 import connectToDB from "./Config/db.js";
 import errorHandler from "./Middleware/errorHandler.js";
 
