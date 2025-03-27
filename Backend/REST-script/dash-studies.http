@@ -8,7 +8,7 @@ DELETE http://localhost:8000/api/studies/67e4463d9805843f5681f25b
 
 ###
 
-GET http://localhost:8000/api/studies/67e4463d9805843f5681f24f/responses
+GET http://localhost:8000/api/studies/67e4463d9805843f5681f24f/sessions/responses
 
 ###
 
@@ -21,11 +21,11 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:8000/api/studies/67e4463d9805843f5681f24f/generate-link
+POST http://localhost:8000/api/studies/67e4463d9805843f5681f24f/public-url
 
 ###
 
-POST http://localhost:8000/api/studies/67e4463d9805843f5681f24f/participants
+POST http://localhost:8000/api/studies/67e4463d9805843f5681f24f/invitations
 Content-Type: application/json
 
 {
