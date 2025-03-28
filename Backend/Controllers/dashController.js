@@ -1,62 +1,197 @@
 // i define routes in routes folder and the functionlaity with callbacks fucntions declaring status and messages go here
 import { v4 as uuidv4 } from "uuid";
 import Study from '../Models/studyModel.js';
-
+import Session from '../Models/participantModel.js';
+import StudyInvitation from '../Models/invitationModel.js';
+import crypto from "crypto";
+import checkStudyAuthorization from "../Utils/authHelperFunction.js";
 
 // @desc Get all studies
-// @route GET /api/dash-studies
+// @route GET /api/studies
 // @access Private (after auth is added)
-const getAllStudies = async (req, res) => {
-   
+const getAllStudies = async (req, res, next ) => {
+   try {
+    const studies = await Study.find({ creator: req.user._id });
+    res.status(200).json(studies);
+   } catch (error) {
+    next(error);
+   }
 };
 
 // @desc Delete a study
-// @route DELETE /api/dash-studies/:studyId
+// @route DELETE /api/studies/:studyId
 // @access Private (after auth is added)
 // IMPORTANT THE REQ.PARAMS.STUDYID i think i need to use this oen for the postman
-const deleteStudy = async (req, res) => {
-
+const deleteStudy = async (req, res, next) => {
+    try {
+        const {studyId} = req.params;
+       
+        //check if the logged-in user is the creator of the study
+        await checkStudyAuthorization(studyId, req.user._id, "delete");
+        
+        await Study.findByIdAndDelete(studyId);
+        res.status(200).json({message: 'Study deleted seccessfully'});
+    } catch (error) {
+        next(error);
+    }
 };
 
 // @desc Get responses for a study (for export page)
-// @route GET /api/dash-studies/:studyId/responses
-// @access Private (after auth is added)
-const getResponses = (req, res) => {
-    res.status(200).json({ message: `Get responses for study ${req.params.studyId}` });
+// @route GET /api/studies/:studyId/responses
+// @access Private
+const getResponses = async (req, res, next) => {
+    try {
+        const { studyId } = req.params;
+        
+        //check if the logged-in user is the creator of the study
+        await checkStudyAuthorization(studyId, req.user._id, "access responses for");
+        
+        const sessions = await Session.find({ studyId: studyId });
+
+        if (!sessions || sessions.length === 0) {
+            return res.status(200).json({
+                data: [],
+                message: 'No responses found for this study'
+            }); 
+        }
+
+        res.status(200).json({
+            count: sessions.length,
+            data: sessions
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
-// @desc Export study data as JSON
-// @route GET /api/dash-studies/:studyId/responses/export-json
+
+// @desc update status of the study (publish/unpubloshed)
+// @route PATCH /api/studies/:studyId/public
 // @access Private (after auth is added)
-const exportJson = (req, res) => {
-    res.status(200).json({ message: `Export study ${req.params.studyId} as JSON` });
+// what if i have shared that that study and then unplish ti after some time
+// have logcs so that the study is not accessible to participants after some time maybe?
+const updateStudyStatus = async (req, res, next) => {
+   try {
+    const {studyId} = req.params;
+    const {published} = req.body;
+    
+    // Check authorization and get the study
+    const study = await checkStudyAuthorization(studyId, req.user._id, "update");
+
+    // after finding the right study, update its status
+    study.published = published;
+    await study.save();
+
+    res.status(200).json({
+        message: published
+        ? `Study is now available, Get URL link to share  with Others!`
+        : `Study has been unpublsihed and is no longer available to participants`,
+        data: {
+            studyId: study._id,
+            title: study.title,
+            published: study.published
+        }
+    });
+   } catch (error) {
+    next(error);
+   }
+}
+
+// @desc generate a URL link to publish that quiz
+// @route POST /api/studies/:studyId/generate-link
+// IDONT TUHINK THIS GENERATES A UNIQUE URL!!!!
+// @access Private (after auth is added)
+const generateLink = async (req, res, next) => {
+    try {
+        const {studyId } = req.params;
+       
+         // Check authorization and get the study
+        const study = await checkStudyAuthorization(studyId, req.user._id, "get url link");
+
+        if (!study.published) {
+            const error = new Error('Cannot generate link for unpublished study');
+            error.statusCode = 400;
+            return next(error);
+        }
+
+        const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
+        const studyUrl = `${baseUrl}/participate/${studyId}`;
+
+        res.status(200).json({
+            message: 'Study link generated succesfully',
+            title: study.title,
+            studyUrl: studyUrl
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
-// @desc Generate a unique shareable link for a study
-// @route POST /api/dash-studies/:studyId/generate-link
-// @access Private (after auth is added)
-const generateLink = (req, res) => {
-     res.status(200).json({ message: `Generate link for study ${req.params.studyId}` });
-};
-
+// helper funciton
+const generateRandomToken = (bytes = 20) => {
+    return [...Array(bytes)]
+      .map(() => Math.floor(Math.random() * 256).toString(16).padStart(2, '0'))
+      .join('');
+  };
 // @desc Add participants via email
-// @route POST /api/dash-studies/:studyId/participants
+// @route POST /api/studies/:studyId/participants
 // @access Private (after auth is added)
-const addParticipants = (req, res) => {
-    res.status(200).json({ message: `Add participants to study ${req.params.studyId}` });
-};
+const emailInvitaitons = async (req, res, next) => {
+    try {
+    const {studyId} = req.params;
+    const { emails } = req.body;
+    // Validate that emails exists, is an array, and isn't empty
+    // This is important because we want to process multiple email invitations at once
+    // The frontend should send: { "emails": ["user1@example.com", "user2@example.com"] }
+    if (!emails || !Array.isArray(emails) || emails.length === 0) {
+        const error = new Error('Please provide an array of email addresses');
+        error.statusCode = 400;
+        return next(error);
+      }
 
-const updateStudyStatus = (req, res) => {
-    res.status(200).json({ message: `Add participants to study ${req.params.studyId}` });
+      // Check authorization and get the study
+        const study = await checkStudyAuthorization(studyId, req.user._id, "invate");
+
+     if (!study.published) {
+        const error = new Error('Cannot invite pariticpants to an unpublished study');
+        error.statusCode = 400;
+        return next(error);
+     }
+
+     //create invitation records for each email
+     const invitations = [];
+
+     for (const email of emails) {
+        //generate a unique token for eahc invitation
+        // NEED TO FIND IFNO REGARIDNG THIS
+        const invitationToken = generateRandomToken();
+
+        const invitation = new StudyInvitation({
+            studyId,
+            email,
+            invitationToken,
+            status: 'pending'
+        });
+        await invitation.save();
+        invitations.push(invitation);
+     }
+     res.status(200).json({
+        message: `${emails.length} participants have been invited to the study`,
+        studyId,
+        invitationCount: invitations.length
+     });
+    } catch (error) {
+        next(error);
+    }
+    
 };
 
 export const dashController = {
     getAllStudies,
     deleteStudy,
     getResponses,
-    exportJson,
     generateLink,
-    addParticipants,
+    emailInvitaitons,
     updateStudyStatus
 };
 

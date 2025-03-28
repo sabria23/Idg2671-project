@@ -1,0 +1,38 @@
+# Testing get all studies
+GET http://localhost:8000/api/studies
+
+###
+
+# Testing delete
+DELETE http://localhost:8000/api/studies/67e4463d9805843f5681f25b
+
+###
+
+GET http://localhost:8000/api/studies/67e4463d9805843f5681f24f/sessions/responses
+
+###
+
+PATCH http://localhost:8000/api/studies/67e4463d9805843f5681f24f/public
+Content-Type: application/json
+
+{
+  "published": true
+}
+
+###
+
+POST http://localhost:8000/api/studies/67e4463d9805843f5681f24f/public-url
+
+###
+
+POST http://localhost:8000/api/studies/67e4463d9805843f5681f24f/invitations
+Content-Type: application/json
+
+{
+  "emails": [
+    "modesta@example.com",
+    "emilie@hotmail.com",
+    "marius@yahoo.com",
+    "sabrina@mail.com"
+  ]
+}

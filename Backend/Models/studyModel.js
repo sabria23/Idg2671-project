@@ -1,60 +1,50 @@
-import mongoose  from "mongoose";
+import mongoose from 'mongoose';
 
-const artifactSchema = new mongoose.Schema({
-    name: String,
-    fileType: String, //video, image, audio, text
-    filePath: String // path to the file in the filesystem
-});
-
-const questionSchema = new mongoose.Schema({
-    questionText: {
+const studySchema = new mongoose.Schema({
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  description: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  published: { //status /draft, or published
+    type: Boolean,
+    default: false
+  },
+  questions: [
+    {
+      questionText: String,
+      questionType: {
         type: String,
-        required: true
-    },
-    questionType: {
-        type: String,
-        enum: ['comparison', 'rating', 'multiple-choice', 'open-ended'],
-        required: true
-    },
-    artifacts: [artifactSchema], // uses the seperate artifactsSchema
-    options: [String], //for multiple choce question (i think)
-    /* required: {
-        type: Boolean,
-        default: true
-    }*/
-});
-
-const studySchema = mongoose.Schema({
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User', //reference to the model in userModel.js
-    },
-    title: {
-        type: String,
-        required: true,
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    status: {
-        type: String,
-        enum: ['draft', 'active', 'completed'],
-        default: 'draft'
-    },
-    questions: [questionSchema],
-    participationLink: { // participationLink is declared here because this field stores a unique link that participants can use to acces the study
-        type: String,
-        unique: true,
-        sparse: true // allows null values
-    },
-    participantCount: { // tracks who has accessed or completed the study
-        type: Number,
-        default: 0
+        enum: ['single', 'comparison']
+      },
+      fileContent: [ {
+        fileId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Artifact'
+        },
+        fileUrl: String,
+        fileType: String
+       }],
+      options: [
+        { 
+          value: String, //custom message [option A, imaage 1 etc, yes, no]
+          label: String //cusotm text set by the quiz creator, dipalyed to
+        }
+      ],
     }
+  ]
 }, {
+  timestamps: true
 });
 
 export default mongoose.model('Study', studySchema);
-
