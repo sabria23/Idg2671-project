@@ -1,12 +1,17 @@
 import mongoose from 'mongoose';
 import Study from '../Models/studyModel.js';
 import Artifact from '../Models/artifactModel.js';
+import checkStudyAuthorization from '../Utils/authHelperFunction.js';
+import upload from '../Middleware/fileUploads.js';
 
 //----------------POST(CREATE)----------------------------
 // Create a new study
 const createStudy = async (req, res) => {
     try {
+        
         const { creator, title, description, published, questions } = req.body;
+
+        await checkStudyAuthorization(req.userId);
         if(!title || !description){
             return res.status(400).json({ error: 'Title and description is required'});
         }
@@ -29,22 +34,25 @@ const createStudy = async (req, res) => {
 // The code is reused from @modestat's oblig2 in full-stack
 const uploadArtifact = async (req, res, next) => {
     try {
+        const { studyId, questionId } = req.params;
+
+        // Checks if a actual file is provided
+        const file =req.file
         if (!req.file){
             const err = new Error('Could not upload file');
             err.statusCode = 400;
             return next(err);
         }
 
-        const { studyId, questionId } = req.params;
-
-        // Find the quiz and question
+        // Find the study by id
         const study = await Study.findById(studyId);
         if (!study) {
             const err = new Error('Could not find study');
             err.statusCode = 404;
             return next(err);
         }
-        
+
+        // Find the question by id in the study
         const question = study.questions.id(questionId);
         if (!question) {
             const err = new Error('Could not find question');
@@ -54,11 +62,11 @@ const uploadArtifact = async (req, res, next) => {
 
         // Create and save a new artifact
         const artifact = new Artifact({
-            uploadedBy,
-            fileName,
-            fileType,
-            filePath,
-            usedInStudies
+            uploadedBy: req.user ? req.user._id : null,
+            fileName: req.file.originalname,
+            fileType: req.file.mimetype,
+            fileData: req.file.buffer,
+            usedInStudies: [studyId]
         });
         await artifact.save();
 
@@ -68,7 +76,7 @@ const uploadArtifact = async (req, res, next) => {
             artifactUrl: `/${req.file.path.replace(/\\/g, '/')}`,
             artifactType: req.fileType
         });
-        await quiz.save();
+        await study.save();
 
         // Add study reference to artifacts collection
         artifact.usedInStudies.push(studyId);
@@ -275,7 +283,6 @@ const deleteQuestionById = async (req, res) => {
 export const studyController ={
     createStudy,
     uploadArtifact,
-    createQuestion,
     createQuestion,
     getStudyById,
     getArtifacts,

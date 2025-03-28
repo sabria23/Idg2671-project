@@ -1,2 +1,35 @@
-# Upload artifacts
-POST 
+### Environment Variables
+@baseUrl = http://localhost:8000
+
+
+### Upload artifacts to question
+POST {{baseUrl}}/api/studies/67e5409dba51089a97c387ae/questions/67e5409dba51089a97c387af
+
+Content-Type: multipart/form-data; boundary=---BOUNDARY
+
+---BOUNDARY
+Content-Disposition: form-data; name="file"; filename="file.png
+Content-Type: image/png
+
+<./profile_picture_woman.png>
+
+### Upload artifacts to collection
+POST {{baseUrl}}/api/artifacts
+
+Content-Type: multipart/form-data; boundary=---BOUNDARY
+
+---BOUNDARY
+Content-Disposition: form-data; name="file"; filename="file.png
+Content-Type: image/png
+
+<./profile_picture_woman.png>
+
+---BOUNDARY
+Content-Disposition: form-data; name="question"
+
+What is this file?
+---BOUNDARY
+
+
+
+
