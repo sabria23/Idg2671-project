@@ -21,12 +21,17 @@
     "express-async-handler": "^1.2.0",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
+<<<<<<< HEAD
     "mongoose": "^8.12.1",
     "multer": "^1.4.5-lts.2",
 <<<<<<< HEAD
 =======
     "mongoose": "^8.13.0",
 >>>>>>> 4b5065d14c06ee6055ae5ab40daf3742ab993b1d
+=======
+    "mongoose": "^8.13.0",
+    "multer": "^1.4.5-lts.2",
+>>>>>>> e0b6d843339b919c65b245d5587da6dd1f174f63
     "uuid": "^11.1.0"
   },
   "devDependencies": {
