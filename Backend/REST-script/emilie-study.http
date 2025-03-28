@@ -1,39 +1,66 @@
+### Environment Variables
+@baseUrl = http://localhost:8000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTY4N2E5NWIyMGZlMDI1NjRjYzk4YiIsImlhdCI6MTc0MzE2MTI1NywiZXhwIjoxNzQ1NzUzMjU3fQ.sxC7hVZ8ttSVJny1vXCEbeJ6lnCO9fXtjDbKPTk4aH4
+
+### 1. Register a user (only needed first time)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "emi123",
+  "email": "emi123@example.com",
+  "password": "noobs"
+}
+
+### 2. Login to get JWT token
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "emi123",
+  "password": "noobs"
+}
+
+### Store token from login response
+@token = {{login.response.body.token}}
+
+### 3. Get current user details (to verify token works)
+GET {{baseUrl}}/api/auth/user
+Authorization: Bearer {{token}}
+
 #----------------------POST(CREATE)-------------------------
-# Create new study
-POST http://localhost:8000/api/studies
-#Content-Type: application/json
+### Create new study
+POST {{baseUrl}}/api/studies
+Content-Type: application/json
 
-# Create a question
-POST http://localhost:8000/api/studies/:studyId/questions
-#Content-Type: application/json
-
-# Upload artifacts
-#POST http://localhost:8000/api/studies/67e5409dba51089a97c387ae/questions/67e5409dba51089a97c387af/artifacts
+### Create a question
+POST {{baseUrl}}/api/studies/:studyId/questions
+Content-Type: application/json
 
 
 #---------------------GET-----------------------------------
-# Get study by id
-GET http://localhost:8000/api/studies/:studyId
+### Get study by id
+GET {{baseUrl}}/api/studies/:studyId
 
-# Get artifacts for sorting
-#GET http://localhost:8000/api/studies/artifacts
+### Get artifacts for sorting
+GET {{baseUrl}}/api/studies/artifacts
 
 #---------------------PATCH(UPDATE)-------------------------
-# Update study by id
-PATCH http://localhost:8000/api/studies/:stuyId
+### Update study by id
+PATCH {{baseUrl}}/api/studies/:stuyId
 Content-Type: application/json
 
-
-# Update question in study
-PATCH http://localhost:8000/api/studies/:studyId/questions/:questionId
+### Update question in study
+PATCH {{baseUrl}}/api/studies/:studyId/questions/:questionId
 Content-Type: application/json
 
 #---------------------DELETE--------------------------------
-# Delete/remove artifact from question
-DELETE http://localhost:8000/api/studies/:studyId/questions/:questionId/artifacts/:artifactId
+### Delete/remove artifact from question
+DELETE {{baseUrl}}/api/studies/:studyId/questions/:questionId/artifacts/:artifactId
 
-# Delete a artifact from the collection
-#DELETE http://localhost:8000/api/studies/artifacts/:artifactId
+### Delete a artifact from the collection
+DELETE {{baseUrl}}/api/studies/artifacts/:artifactId
 
-# Delete a question from study
-DELETE http://localhost:8000/api/studies/:studyId/questions/:questionId
+### Delete a question from study
+DELETE {{baseUrl}}/api/studies/:studyId/questions/:questionId
