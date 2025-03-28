@@ -1,2 +1,18 @@
-# Upload artifacts
-POST 
+### Upload artifacts to question
+POST http://localhost:8000/api/studies/67e5409dba51089a97c387ae/questions/67e5409dba51089a97c387af
+
+Content-Type: multipart/form-data; boundary=--BOUNDARY
+
+---BOUNDARY
+Content-Disposition: form-data; name="file"; filename="file.png
+
+
+### Upload artifacts to collection
+POST http://localhost:8000/api/artifacts
+
+Content-Type: multipart/form-data; boundary=--BOUNDARY
+
+---BOUNDARY
+Content-Disposition: form-data; name="file"; filename="file.png
+
+@C:\Users\emili\Desktop\profile_picture_woman.png

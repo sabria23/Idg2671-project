@@ -1,39 +1,35 @@
 #----------------------POST(CREATE)-------------------------
-# Create new study
+### Create new study
 POST http://localhost:8000/api/studies
-#Content-Type: application/json
+Content-Type: application/json
 
-# Create a question
+### Create a question
 POST http://localhost:8000/api/studies/:studyId/questions
-#Content-Type: application/json
-
-# Upload artifacts
-#POST http://localhost:8000/api/studies/67e5409dba51089a97c387ae/questions/67e5409dba51089a97c387af/artifacts
-
-
-#---------------------GET-----------------------------------
-# Get study by id
-GET http://localhost:8000/api/studies/:studyId
-
-# Get artifacts for sorting
-#GET http://localhost:8000/api/studies/artifacts
-
-#---------------------PATCH(UPDATE)-------------------------
-# Update study by id
-PATCH http://localhost:8000/api/studies/:stuyId
 Content-Type: application/json
 
 
-# Update question in study
+#---------------------GET-----------------------------------
+### Get study by id
+GET http://localhost:8000/api/studies/:studyId
+
+### Get artifacts for sorting
+GET http://localhost:8000/api/studies/artifacts
+
+#---------------------PATCH(UPDATE)-------------------------
+### Update study by id
+PATCH http://localhost:8000/api/studies/:stuyId
+Content-Type: application/json
+
+### Update question in study
 PATCH http://localhost:8000/api/studies/:studyId/questions/:questionId
 Content-Type: application/json
 
 #---------------------DELETE--------------------------------
-# Delete/remove artifact from question
+### Delete/remove artifact from question
 DELETE http://localhost:8000/api/studies/:studyId/questions/:questionId/artifacts/:artifactId
 
-# Delete a artifact from the collection
-#DELETE http://localhost:8000/api/studies/artifacts/:artifactId
+### Delete a artifact from the collection
+DELETE http://localhost:8000/api/studies/artifacts/:artifactId
 
-# Delete a question from study
+### Delete a question from study
 DELETE http://localhost:8000/api/studies/:studyId/questions/:questionId

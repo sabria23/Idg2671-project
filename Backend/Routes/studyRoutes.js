@@ -1,4 +1,6 @@
 import express from 'express';
+import multer from 'multer';
+import upload from '../Middleware/fileUploads.js';
 import { studyController } from '../Controllers/studyController.js';
 const studyRouter = express.Router();
 
