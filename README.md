@@ -4,6 +4,15 @@ to run the server: make sure you are in the root direcotry and not inside backen
 - if you make any changes in the .env, save the file and restart the server
 - Please use POSTMAN/thunder or whatever other api client checker before moving any further after creating routes 🥹🥹🥹
 
+- the current setup:
+"scripts": {
+  "start": "node server.js",
+  "server": "nodemon server.js",
+  "setup": "npm install"
+}
+- Then team members can just run npm run setup when they pull new changes.
+
+
 instalations: we have:
 ## for front-end:
 "react": "^19.0.0",
