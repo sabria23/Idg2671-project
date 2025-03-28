@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import Study from '../Models/studyModel.js';
 import Artifact from '../Models/artifactModel.js';
 import checkStudyAuthorization from '../Utils/authHelperFunction.js';
-import upload from '../Middleware/fileUploads.js';
 
 //----------------POST(CREATE)----------------------------
 // Create a new study
@@ -35,15 +34,26 @@ const createStudy = async (req, res) => {
 const uploadArtifact = async (req, res, next) => {
     try {
         const { studyId, questionId } = req.params;
-
-        // Checks if a actual file is provided
-        const file =req.file
-        if (!req.file){
+        
+        // Check if a file is provided
+        if (!req.file) {
             const err = new Error('Could not upload file');
             err.statusCode = 400;
             return next(err);
         }
-
+        
+        // Determine fileType from MIME type
+        let fileType = 'other';
+        if (req.file.mimetype.startsWith('image/')) {
+            fileType = 'image';
+        } else if (req.file.mimetype.startsWith('video/')) {
+            fileType = 'video';
+        } else if (req.file.mimetype.startsWith('audio/')) {
+            fileType = 'audio';
+        } else if (req.file.mimetype.startsWith('text/') || req.file.mimetype === 'application/pdf') {
+            fileType = 'text';
+        }
+        
         // Find the study by id
         const study = await Study.findById(studyId);
         if (!study) {
@@ -51,7 +61,7 @@ const uploadArtifact = async (req, res, next) => {
             err.statusCode = 404;
             return next(err);
         }
-
+        
         // Find the question by id in the study
         const question = study.questions.id(questionId);
         if (!question) {
@@ -59,29 +69,29 @@ const uploadArtifact = async (req, res, next) => {
             err.statusCode = 404;
             return next(err);
         }
-
+        
         // Create and save a new artifact
         const artifact = new Artifact({
-            uploadedBy: req.user ? req.user._id : null,
+            uploadedBy: req.userId || null, // Use req.userId for consistency
             fileName: req.file.originalname,
-            fileType: req.file.mimetype,
-            fileData: req.file.buffer,
+            fileType: fileType, // Use the determined fileType, not the MIME type
+            filePath: req.file.path, // Path from multer
             usedInStudies: [studyId]
         });
+        
         await artifact.save();
-
+        
         // Add artifact to a question
         question.artifactContent.push({
             artifactId: artifact._id,
             artifactUrl: `/${req.file.path.replace(/\\/g, '/')}`,
-            artifactType: req.fileType
+            artifactType: fileType // Use the local fileType variable
         });
+        
         await study.save();
-
-        // Add study reference to artifacts collection
-        artifact.usedInStudies.push(studyId);
-        await artifact.save();
-
+        
+        // No need to push studyId again since it was already added during creation
+        
         res.status(201).json({
             success: true,
             message: 'Artifact successfully uploaded',
@@ -92,7 +102,7 @@ const uploadArtifact = async (req, res, next) => {
                 filePath: artifact.filePath
             }
         });
-    } catch (err){
+    } catch (err) {
         next(err);
     }
 };
@@ -235,12 +245,12 @@ const deleteArtifactFromQuestion = async (req, res, next) => {
         // Remove the file reference from the question
         await Study.updateOne(
             { _id: studyId, 'questions._id': questionId},
-            { $pull: { 'questions.$.artifactContent': { artifactId: fileId } } }
+            { $pull: { 'questions.$.artifactContent': { artifactId: artifactId } } }
         );
 
         // Remove the study reference from file
         await Artifact.findByIdAndUpdate(
-            fileId,
+            artifactId,
             { $pull: { usedInStudies: studyId } }
         );
         res.status(200).json({
