@@ -29,7 +29,7 @@ Content-Type: application/json
 GET {{baseUrl}}/api/auth/user
 Authorization: Bearer {{token}}
 
-### 4. Create a new study
+### 4. Create a new study 
 # @name createStudy
 POST {{baseUrl}}/api/studies
 Content-Type: application/json
@@ -37,44 +37,44 @@ Authorization: Bearer {{token}}
 
 {
   "creator": "67e687a95b20fe02564cc98b",
-  "title": "Test Study for Dashboard",
+  "title": "LAST TEST FOR DASH",
   "description": "This is a test study created to test dashboard functionality",
   "published": false,
   "questions": [
     {
       "questionText": "What is your favorite color?",
-      "questionType": "multiple-choice",
+      "questionType": "single",
       "options": [
-        {"text": "Red", "value": "red"},
-        {"text": "Blue", "value": "blue"},
-        {"text": "Green", "value": "green"},
-        {"text": "Yellow", "value": "yellow"}
+        {"value": "red", "label": "Red"},
+        {"value": "blue", "label": "Blue"},
+        {"value": "green", "label": "Green"},
+        {"value": "yellow", "label": "Yellow"}
       ]
     },
     {
-      "questionText": "Please rate your experience from 1-5",
-      "questionType": "scale",
+      "questionText": "Please rate your experience",
+      "questionType": "single",
       "options": [
-        {"text": "1", "value": "1"},
-        {"text": "2", "value": "2"},
-        {"text": "3", "value": "3"},
-        {"text": "4", "value": "4"},
-        {"text": "5", "value": "5"}
+        {"value": "1", "label": "1 - Poor"},
+        {"value": "2", "label": "2 - Fair"},
+        {"value": "3", "label": "3 - Average"},
+        {"value": "4", "label": "4 - Good"},
+        {"value": "5", "label": "5 - Excellent"}
       ]
     }
   ]
 }
 
-### 5. Get all studies to verify the new study was created and get its ID
+### 5. Get all studies 
 # @name getAllStudies
 GET {{baseUrl}}/api/studies
 Authorization: Bearer {{token}}
 
-### 6. Store the first study ID from the response (for testing)
-# You might need to adjust this logic based on your actual response format
-@studyId = {{getAllStudies.response.body.0._id}}
+### 6. Store a study ID from the response
+# After getting all studies, copy a study ID and paste it below
+@studyId = 67e6927268fd9bbf59989043
 
-### 7. Get a specific study by ID
+### 7. Get specific study details
 GET {{baseUrl}}/api/studies/{{studyId}}
 Authorization: Bearer {{token}}
 
@@ -87,11 +87,15 @@ Content-Type: application/json
   "published": true
 }
 
-### 9. Generate public URL for a study
+### 9. Generate public URL for the study
 POST {{baseUrl}}/api/studies/{{studyId}}/public-url
 Authorization: Bearer {{token}}
 
-### 10. Send email invitations
+### 10. Get all responses for the study
+GET {{baseUrl}}/api/studies/{{studyId}}/sessions/responses
+Authorization: Bearer {{token}}
+
+### 11. Send email invitations
 POST {{baseUrl}}/api/studies/{{studyId}}/invitations
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -105,34 +109,25 @@ Content-Type: application/json
   ]
 }
 
-### 11. Get responses for a study (likely to be empty for a new study)
-GET {{baseUrl}}/api/studies/{{studyId}}/sessions/responses
-Authorization: Bearer {{token}}
-
-### 12. Delete the study when testing is done
-DELETE {{baseUrl}}/api/studies/{{studyId}}
-Authorization: Bearer {{token}}
-
-### 13. Get all studies again to verify deletion
-GET {{baseUrl}}/api/studies
-Authorization: Bearer {{token}}
-
-### 14. Create a question for a study (if needed)
+### 12. Create a new question for the study
 POST {{baseUrl}}/api/studies/{{studyId}}/questions
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "questionText": "What is your feedback on this test?",
-  "questionType": "text",
-  "options": []
+  "studyId": "{{studyId}}",
+  "questionText": "Do you have any additional feedback?",
+  "questionType": "single",
+  "options": [
+    {"value": "yes", "label": "Yes"},
+    {"value": "no", "label": "No"}
+  ]
 }
 
-### 15. Logout (optional)
-POST {{baseUrl}}/api/auth/logout
-Content-Type: application/json
+### 13. Delete the study
+DELETE {{baseUrl}}/api/studies/{{studyId}}
+Authorization: Bearer {{token}}
 
-{
-  "username": "modesta123",
-  "password": "iloveChicken"
-}
+### 14. Verify the study was deleted
+GET {{baseUrl}}/api/studies
+Authorization: Bearer {{token}}
