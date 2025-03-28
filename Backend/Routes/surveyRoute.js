@@ -8,13 +8,13 @@ const surveyRouter = express.Router();
 surveyRouter.get('/:studyId/survey', getSurvey);
 
 // Create a new session
-surveyRouter.post('/:studyid/sessions', createSession);
+surveyRouter.post('/:studyId/sessions', createSession);
 
 // Store responses
-surveyRouter.post('/:studyid/sessions/:sessionId/:questionId', submitAnswer);
+surveyRouter.post('/:studyId/sessions/:sessionId/:questionId', submitAnswer);
 
 // Change answer
-surveyRouter.patch('/:studyid/sessions/:sessionId/:questionId', updateAnswer);
+surveyRouter.patch('/:studyId/sessions/:sessionId/:questionId', updateAnswer);
 
 // patch to update to complete? This can maybe be used for denying further accsess based on that the user has already completed
 // surveyRouter.patch('/api/studies/studyid/sessions/sessionId')?

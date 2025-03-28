@@ -1,0 +1,78 @@
+@baseUrl = http://localhost:8000/api/survey
+@studyId = 67e4463d9805843f5681f24f
+@sessionId = 67e69c4bbaa108a4460756d6
+@questionId = 67e4463d9805843f5681f256
+
+
+
+POST {{baseUrl}}/{{studyId}}/sessions
+Content-Type: application/json
+
+{
+  "deviceInfo": "MacBookPro M2",
+  "demographics": {
+    "age": "25-35",
+    "gender": "female"
+  }
+}
+###
+
+GET {{baseUrl}}/{{studyId}}/survey?page=0&sessionId={{sessionId}}
+
+###
+POST {{baseUrl}}/{{studyId}}/sessions/{{sessionId}}/{{questionId}}
+Content-Type: application/json
+
+{
+  "answer": "Yes, definitely",
+  "answerType": "text",
+  "skipped": false
+}
+###
+
+POST {{baseUrl}}/{{studyId}}/sessions/{{sessionId}}/{{questionId}}
+Content-Type: application/json
+
+{
+  "answer": "Yes, again",
+  "answerType": "text",
+  "skipped": false
+}
+
+###
+
+PATCH {{baseUrl}}/{{studyId}}/sessions/{{sessionId}}/{{questionId}}
+Content-Type: application/json
+
+{
+  "answer": "Actually, no.",
+  "answerType": "text",
+  "skipped": false
+}
+
+###
+
+POST {{baseUrl}}/{{studyId}}/sessions/{{sessionId}}/{{questionId}}
+Content-Type: application/json
+
+{
+  "skipped": true,
+  "answerType": "text"
+}
+###
+
+GET {{baseUrl}}/{{studyId}}/survey?page=999
+
+###
+
+POST {{baseUrl}}/{{studyId}}/sessions/{{sessionId}}/invalidquestionid123
+Content-Type: application/json
+
+{
+  "answer": "Doesn't matter",
+  "answerType": "text",
+  "skipped": false
+}
+###
+
+GET {{baseUrl}}/{{studyId}}/survey?page=0&sessionId={{sessionId}}
