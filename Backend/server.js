@@ -3,7 +3,6 @@ import colors from "colors";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
-import dashRouter from './Routes/dashRoutes.js';
 import userRouter from './Routes/userRoutes.js';
 import studyRouter from './Routes/studyRoutes.js';
 import surveyRouter from "./Routes/surveyRoute.js";
@@ -25,10 +24,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 // put your routes downbelow:
-app.use('/api/studies', dashRouter);
 app.use('/api/auth', userRouter);
 app.use('/api/studies', studyRouter);
-app.use('/api/studies', surveyRouter);
+app.use('/api/survey', surveyRouter);
 
 app.use(errorHandler);
 
