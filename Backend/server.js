@@ -25,10 +25,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 // put your routes downbelow:
-app.use('/api/studies', dashRouter);
+app.use('/api/dashboard', dashRouter);
 app.use('/api/auth', userRouter);
 app.use('/api/studies', studyRouter);
-app.use('/api/studies', surveyRouter);
+app.use('/api/survey', surveyRouter);
 
 app.use(errorHandler);
 

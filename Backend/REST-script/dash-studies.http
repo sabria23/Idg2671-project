@@ -1,31 +1,99 @@
-# Testing get all studies
-GET http://localhost:8000/api/studies
+### Environment Variables
+@baseUrl = http://localhost:8000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTY4N2E5NWIyMGZlMDI1NjRjYzk4YiIsImlhdCI6MTc0MzE2MTI1NywiZXhwIjoxNzQ1NzUzMjU3fQ.sxC7hVZ8ttSVJny1vXCEbeJ6lnCO9fXtjDbKPTk4aH4
 
-###
+### 1. Register a user (only needed first time)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
 
-# Testing delete
-DELETE http://localhost:8000/api/studies/67e4463d9805843f5681f25b
+{
+  "username": "modesta123",
+  "email": "modesta@hotmail.com",
+  "password": "iloveChicken"
+}
 
-###
+### 2. Login to get JWT token
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
 
-GET http://localhost:8000/api/studies/67e4463d9805843f5681f24f/sessions/responses
+{
+  "username": "modesta123",
+  "password": "iloveChicken"
+}
 
-###
+### Store token from login response
+@token = {{login.response.body.token}}
 
-PATCH http://localhost:8000/api/studies/67e4463d9805843f5681f24f/public
+### 3. Get current user details (to verify token works)
+GET {{baseUrl}}/api/auth/user
+Authorization: Bearer {{token}}
+
+### 4. Create a new study
+# @name createStudy
+POST {{baseUrl}}/api/studies
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "creator": "67e687a95b20fe02564cc98b",
+  "title": "Test Study for Dashboard",
+  "description": "This is a test study created to test dashboard functionality",
+  "published": false,
+  "questions": [
+    {
+      "questionText": "What is your favorite color?",
+      "questionType": "multiple-choice",
+      "options": [
+        {"text": "Red", "value": "red"},
+        {"text": "Blue", "value": "blue"},
+        {"text": "Green", "value": "green"},
+        {"text": "Yellow", "value": "yellow"}
+      ]
+    },
+    {
+      "questionText": "Please rate your experience from 1-5",
+      "questionType": "scale",
+      "options": [
+        {"text": "1", "value": "1"},
+        {"text": "2", "value": "2"},
+        {"text": "3", "value": "3"},
+        {"text": "4", "value": "4"},
+        {"text": "5", "value": "5"}
+      ]
+    }
+  ]
+}
+
+### 5. Get all studies to verify the new study was created and get its ID
+# @name getAllStudies
+GET {{baseUrl}}/api/studies
+Authorization: Bearer {{token}}
+
+### 6. Store the first study ID from the response (for testing)
+# You might need to adjust this logic based on your actual response format
+@studyId = {{getAllStudies.response.body.0._id}}
+
+### 7. Get a specific study by ID
+GET {{baseUrl}}/api/studies/{{studyId}}
+Authorization: Bearer {{token}}
+
+### 8. Update study publish status
+PATCH {{baseUrl}}/api/studies/{{studyId}}/public
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "published": true
 }
 
-###
+### 9. Generate public URL for a study
+POST {{baseUrl}}/api/studies/{{studyId}}/public-url
+Authorization: Bearer {{token}}
 
-POST http://localhost:8000/api/studies/67e4463d9805843f5681f24f/public-url
-
-###
-
-POST http://localhost:8000/api/studies/67e4463d9805843f5681f24f/invitations
+### 10. Send email invitations
+POST {{baseUrl}}/api/studies/{{studyId}}/invitations
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -35,4 +103,36 @@ Content-Type: application/json
     "marius@yahoo.com",
     "sabrina@mail.com"
   ]
+}
+
+### 11. Get responses for a study (likely to be empty for a new study)
+GET {{baseUrl}}/api/studies/{{studyId}}/sessions/responses
+Authorization: Bearer {{token}}
+
+### 12. Delete the study when testing is done
+DELETE {{baseUrl}}/api/studies/{{studyId}}
+Authorization: Bearer {{token}}
+
+### 13. Get all studies again to verify deletion
+GET {{baseUrl}}/api/studies
+Authorization: Bearer {{token}}
+
+### 14. Create a question for a study (if needed)
+POST {{baseUrl}}/api/studies/{{studyId}}/questions
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "questionText": "What is your feedback on this test?",
+  "questionType": "text",
+  "options": []
+}
+
+### 15. Logout (optional)
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+
+{
+  "username": "modesta123",
+  "password": "iloveChicken"
 }
