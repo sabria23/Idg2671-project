@@ -3,6 +3,7 @@ import Study from '../Models/studyModel.js';
 import Artifact from '../Models/artifactModel.js';
 import checkStudyAuthorization from '../Utils/authHelperFunction.js';
 
+
 //----------------POST(CREATE)----------------------------
 // Create a new study
 const createStudy = async (req, res) => {
