@@ -8,11 +8,11 @@ const artifactSchema = new mongoose.Schema({
     fileName: String,
     fileType: {
       type: String,
-      enum: ['image', 'video', 'audio', 'text'],
+      enum: ['image', 'video', 'audio', 'text', 'other'],
       required: true
     },
-    filePath: {
-      type: String,
+    fileData: {
+      type: Buffer,
       required: true
     },
     usedInStudies: [{

@@ -37,30 +37,41 @@ Content-Type: application/json
 ### Create a question
 POST {{baseUrl}}/api/studies/:studyId/questions
 Content-Type: application/json
+Authorization: Bearer{{token}}
 
 
 #---------------------GET-----------------------------------
 ### Get study by id
 GET {{baseUrl}}/api/studies/:studyId
+Authorization: Bearer {{token}}
 
 ### Get artifacts for sorting
 GET {{baseUrl}}/api/studies/artifacts
+Authorization: Bearer {{token}}
 
 #---------------------PATCH(UPDATE)-------------------------
 ### Update study by id
-PATCH {{baseUrl}}/api/studies/:stuyId
+PATCH {{baseUrl}}/api/studies/:studyId
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### Update question in study
-PATCH {{baseUrl}}/api/studies/:studyId/questions/:questionId
+PATCH {{baseUrl}}/api/studies/{{studyId}}/questions/:questionId
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 #---------------------DELETE--------------------------------
 ### Delete/remove artifact from question
-DELETE {{baseUrl}}/api/studies/:studyId/questions/:questionId/artifacts/:artifactId
+@studyId = 67ea4ab9839619ffc625ddd4
+@questionId = 67ea4ab9839619ffc625dddb
+@artifactId = 67ea4ab9839619ffc625ddd2
+DELETE {{baseUrl}}/api/studies/{{studyId}}/questions/{{questionId}}/artifacts/{{artifactId}}
+Authorization: Bearer {{token}}
 
 ### Delete a artifact from the collection
 DELETE {{baseUrl}}/api/studies/artifacts/:artifactId
+Authorization: Bearer {{token}}
 
 ### Delete a question from study
 DELETE {{baseUrl}}/api/studies/:studyId/questions/:questionId
+Authorization: Bearer {{token}}

@@ -41,7 +41,7 @@ const uploadArtifact = async (req, res, next) => {
             err.statusCode = 400;
             return next(err);
         }
-        
+
         // Determine fileType from MIME type
         let fileType = 'other';
         if (req.file.mimetype.startsWith('image/')) {
@@ -75,16 +75,19 @@ const uploadArtifact = async (req, res, next) => {
             uploadedBy: req.userId || null, // Use req.userId for consistency
             fileName: req.file.originalname,
             fileType: fileType, // Use the determined fileType, not the MIME type
-            filePath: req.file.path, // Path from multer
+            fileData: req.file.buffer, // Path from multer
             usedInStudies: [studyId]
         });
         
         await artifact.save();
         
+        if(!question.artifactContent){
+            question.artifactContent = [];
+        }
         // Add artifact to a question
         question.artifactContent.push({
             artifactId: artifact._id,
-            artifactUrl: `/${req.file.path.replace(/\\/g, '/')}`,
+            //artifactUrl: `/${req.file.path.replace(/\\/g, '/')}`,
             artifactType: fileType // Use the local fileType variable
         });
         
@@ -99,7 +102,7 @@ const uploadArtifact = async (req, res, next) => {
                 id: artifact._id,
                 fileName: artifact.fileName,
                 fileType: artifact.fileType,
-                filePath: artifact.filePath
+                //filePath: artifact.filePath
             }
         });
     } catch (err) {
