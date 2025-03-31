@@ -46,7 +46,7 @@ GET {{baseUrl}}/api/studies/:studyId
 Authorization: Bearer {{token}}
 
 ### Get artifacts for sorting
-GET {{baseUrl}}/api/artifacts?sortBy=fileName
+GET {{baseUrl}}/api/artifacts
 Authorization: Bearer {{token}}
 
 #---------------------PATCH(UPDATE)-------------------------
