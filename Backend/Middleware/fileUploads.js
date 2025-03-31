@@ -1,6 +1,9 @@
 import multer from 'multer';
+import path from 'path';
+
 
 const storage = multer.memoryStorage();
+ 
 const fileFilter = (req, file, cb) => {
     const allowedTypes = [
         'image/jpeg', 'image/png', 'image/gif',
