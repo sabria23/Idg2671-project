@@ -157,8 +157,8 @@ const getStudyById = async (req, res) => {
 
 // Get all artifact for pagination, sorting (desc, asc)
 const getArtifacts = async (req, res) => {
+    const { page = 1, limit = 10, sortBy = 'fileName', order = 'desc'} = req.query;
     try{
-        const { page = 1, limit = 10, sortBy = 'fileName', order = 'desc'} = req.query;
         const artifacts = await Artifact.find()
             .sort({[sortBy]: order === 'asc' ? 1 : -1})
             .limit(Number(limit))

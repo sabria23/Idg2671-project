@@ -26,6 +26,7 @@ app.use(express.urlencoded({extended: true}));
 // put your routes downbelow:
 app.use('/api/auth', userRouter);
 app.use('/api/studies', studyRouter);
+app.use('/api/artifacts', studyRouter);
 app.use('/api/survey', surveyRouter);
 
 app.use(errorHandler);
