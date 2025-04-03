@@ -3,7 +3,7 @@ import React from 'react'
 // Pages
 import LoginPage from "./pages/auth/LoginPage";
 import SignupPage from './pages/auth/SignupPage';
-//import DashboardPage from './pages/DashboardPage';
+import DashboardPage from './pages/dashboard/DashPage';
 import CreateStudyPage from './pages/studies/CreateStudyPage';
 //import StudyParticipationPage from './pages/StudyParticipationPage';
 //import NotFoundPage from './pages/NotFoundPage';
@@ -19,6 +19,7 @@ const App = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<SignupPage />} />
             <Route path="/study/:studyId" element={<CreateStudyPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
   
           {/* Protected routes 
           <Route path="/dashboard" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
