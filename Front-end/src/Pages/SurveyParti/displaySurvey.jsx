@@ -3,7 +3,7 @@ import 'displaySurvay.css'
 
 return (
     <>
-        
+
     </>
 );
-export default desplaySurvey;
+export default displaySurvey;
