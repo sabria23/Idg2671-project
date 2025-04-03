@@ -23,7 +23,10 @@ connectToDB();
 app.use(express.json());
 // in order to see request from the body we need this line (if using postman for example)
 app.use(express.urlencoded({extended: true}));
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3030',
+    credentials: true //allows for setting up cookies
+}));
 
 // put your routes downbelow:
 app.use('/api/auth', userRouter);
