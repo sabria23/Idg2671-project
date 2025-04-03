@@ -8,6 +8,7 @@ import studyRouter from './Routes/studyRoutes.js';
 import surveyRouter from "./Routes/surveyRoute.js";
 import connectToDB from "./Config/db.js";
 import errorHandler from "./Middleware/errorHandler.js";
+import cors from 'cors';
 
 
 // Get the current directory of the ES module (server.js)
@@ -22,6 +23,7 @@ connectToDB();
 app.use(express.json());
 // in order to see request from the body we need this line (if using postman for example)
 app.use(express.urlencoded({extended: true}));
+app.use(cors());
 
 // put your routes downbelow:
 app.use('/api/auth', userRouter);
