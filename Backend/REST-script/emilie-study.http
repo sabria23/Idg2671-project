@@ -1,6 +1,6 @@
 ### Environment Variables
 @baseUrl = http://localhost:8000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTY4N2E5NWIyMGZlMDI1NjRjYzk4YiIsImlhdCI6MTc0MzE2MTI1NywiZXhwIjoxNzQ1NzUzMjU3fQ.sxC7hVZ8ttSVJny1vXCEbeJ6lnCO9fXtjDbKPTk4aH4
+//@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTY4N2E5NWIyMGZlMDI1NjRjYzk4YiIsImlhdCI6MTc0MzE2MTI1NywiZXhwIjoxNzQ1NzUzMjU3fQ.sxC7hVZ8ttSVJny1vXCEbeJ6lnCO9fXtjDbKPTk4aH4
 
 ### 1. Register a user (only needed first time)
 POST {{baseUrl}}/api/auth/register
@@ -37,30 +37,42 @@ Content-Type: application/json
 ### Create a question
 POST {{baseUrl}}/api/studies/:studyId/questions
 Content-Type: application/json
+Authorization: Bearer{{token}}
 
 
 #---------------------GET-----------------------------------
 ### Get study by id
 GET {{baseUrl}}/api/studies/:studyId
+Authorization: Bearer {{token}}
 
 ### Get artifacts for sorting
-GET {{baseUrl}}/api/studies/artifacts
+GET {{baseUrl}}/api/artifacts
+Authorization: Bearer {{token}}
 
 #---------------------PATCH(UPDATE)-------------------------
 ### Update study by id
-PATCH {{baseUrl}}/api/studies/:stuyId
+PATCH {{baseUrl}}/api/studies/:studyId
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### Update question in study
-PATCH {{baseUrl}}/api/studies/:studyId/questions/:questionId
+PATCH {{baseUrl}}/api/studies/{{studyId}}/questions/:questionId
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 #---------------------DELETE--------------------------------
 ### Delete/remove artifact from question
-DELETE {{baseUrl}}/api/studies/:studyId/questions/:questionId/artifacts/:artifactId
+@studyId = 67ea4ab9839619ffc625ddd4
+@questionId = 67ea4ab9839619ffc625dddb
+@artifactId = 67ea579cc5cec63778c68a1e
+DELETE {{baseUrl}}/api/studies/{{studyId}}/questions/{{questionId}}/artifacts/{{artifactId}}
+Authorization: Bearer {{token}}
 
 ### Delete a artifact from the collection
-DELETE {{baseUrl}}/api/studies/artifacts/:artifactId
+@artifactId = 67ea579cc5cec63778c68a1e
+DELETE {{baseUrl}}/api/studies/artifacts/{{artifactId}}
+Authorization: Bearer {{token}}
 
 ### Delete a question from study
 DELETE {{baseUrl}}/api/studies/:studyId/questions/:questionId
+Authorization: Bearer {{token}}

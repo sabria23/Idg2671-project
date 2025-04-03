@@ -1,35 +1,17 @@
 ### Environment Variables
 @baseUrl = http://localhost:8000
-
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTk4NDE5MTliYjM5NmI0Yzk1MDJjMCIsImlhdCI6MTc0MzQwNDg1NSwiZXhwIjoxNzQ1OTk2ODU1fQ.cd6GJ3kUTYCWXX18msAA3qQsH2k95CI3Rz9gsWE3Mvs
 
 ### Upload artifacts to question
-POST {{baseUrl}}/api/studies/67e5409dba51089a97c387ae/questions/67e5409dba51089a97c387af
+POST {{baseUrl}}/api/studies/67ea4ab9839619ffc625ddd4/questions/67ea4ab9839619ffc625dddb/artifacts
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
-Content-Type: multipart/form-data; boundary=---BOUNDARY
-
----BOUNDARY
-Content-Disposition: form-data; name="file"; filename="file.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="profile_picture_woman.png"
 Content-Type: image/png
 
-<./profile_picture_woman.png>
-
-### Upload artifacts to collection
-POST {{baseUrl}}/api/artifacts
-
-Content-Type: multipart/form-data; boundary=---BOUNDARY
-
----BOUNDARY
-Content-Disposition: form-data; name="file"; filename="file.png
-Content-Type: image/png
-
-<./profile_picture_woman.png>
-
----BOUNDARY
-Content-Disposition: form-data; name="question"
-
-What is this file?
----BOUNDARY
-
-
+<./profile_picture_woman.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 

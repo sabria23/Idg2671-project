@@ -1,131 +1,130 @@
 import React, { useState } from 'react';
-import NavBar from '../../Components/NavBar';
+import NavBar from '../../Components/NavBar.jsx';
 import axios from 'axios';
 
-const CreateStudyPage = () => {
-    const [studyTitle, setStudyTitle] = useState("");
-    const [studyDescription, setStudyDescription] = useState("");
-    const [artifacts, setArtifacts] = useState([]);
-    const [questionText, setQuestionText] = useState([]);
 
-    const handleArtifactChange = (e) => {
-        setArtifacts(e.target.files[0]);
+const CreateStudyPage = () => {
+    const [studyTitle, setStudyTitle] = useState('');
+    const [studyDescription, setStudyDescription] = useState('');
+    const [questions, setQuestions] = useState('');
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [questionType, setQuestionType] = useState('multiple-choice');
+
+    // Handle input for study title and description
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        if(name === 'title'){
+            setStudyTitle(value);
+        } else if(name === 'description'){
+            setStudyDescription(value);
+        }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleFileChange = (e) =>{
+        setSelectedFiles(e.target.files);
+    };
+
+    // Handle file upload
+    const addQuestion = () => {
+        setQuestions([
+            ...questions,
+            {
+                questionText: '',
+                questionType: 'questionType',
+                fileContent: null,
+                options: [],
+            },
+        ]);
+    };
+
+
+    // Handle question text change
+    const handleQuestionTextChange = (index, value) =>{
+        const updatedQuestions = [...questions];
+        updatedQuestions[index].text = value;
+        setQuestions(updatedQuestions);
+    };
+
+    // Handle saving the form data(study, questions, files)
+    const handleSave = async() =>{
         const formData = new FormData();
-        formData.append("studyTitle", studyTitle);
-        formData.append("studyDescription", studyDescription);
-        if(artifact){
-            formData.append("artifactFile", artifact);
+        formData.append('title', studyTitle);
+        formData.append('description', studyDescription);
+
+        for(let i = 0; i < selectedFiles.length; i++){
+            formData.append('files', selectedFiles[i]);
         }
 
-        try {
-            const res = await axios.post('http://localhost:5000/studies', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-        });
-        console.log('Study created', res.data);
-    } catch (error) {
-        console.error('Error creating study', error);
-    }
+        formData.append('questions', JSON.stringify(questions));
+
+        try{
+            await axios.post('/api/studies', formData);
+            alert('Study successfully created!');
+        } catch (err){
+            console.error(err);
+            alert('Error creating study');
+        }
+    };
+
+return (
+    <>
+    <NavBar />
+            <div>
+                <h1>Create a new study</h1>
+                <p>Fill out the details below and save to see the created study on dashboard</p>
+                <form onSubmit={(e) => e.preventDefault()}>
+                    <label>Study Title:</label>
+                    <input 
+                        type='text'
+                        name='title'
+                        value={studyTitle}
+                        onChange={handleInputChange}
+                    />
+                    <br />
+                    <label>Study Description:</label>
+                    <textarea 
+                        name='description' 
+                        value={studyDescription}
+                        onChange={handleInputChange}
+                    />
+                    <br />
+                    <label>Upload Artifact:</label>
+                    <input 
+                        type='file'
+                        multiple
+                        onChange={handleFileChange}
+                        accept='.pdf, .doc, .jpg, .jpeg, .png, .gif, .txt' 
+                    />
+                    <br />
+                    <button onClick={addQuestion}>Add Question</button>
+                    <div>
+                        {questions.map((question, index) => (
+                            <div key={index}>
+                                <input 
+                                    type='text'
+                                    placeholder='Enter question text'
+                                    value={question.text}
+                                    onChange={(e) =>
+                                        handleQuestionTextChange(index, e.target.value)
+                                    } 
+                                />
+                                <select
+                                    onChange={(e) =>
+                                        setQuestionType(e.target.value)
+                                    }
+                                    value={questionType}
+                                >
+                                    <option value="multiple-choice">Multiple Choice</option>
+                                    <option value="open-ended">Open Ended</option>
+                                </select>
+                                <br />
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={handleSave}>Save Study</button>
+                </form>
+            </div>
+        </>
+    );    
 };
-
-return(
-    <div>
-        <NavBar />
-        <main>
-            <h1>Create a new study</h1>
-                <p></p>
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label htmlFor="studyTitle">Study Title</label>
-                <input 
-                    type="text" 
-                    value={studyTitle}
-                    placeholder="Shot descriptive title"
-                    onChange={(e) => setStudyTitle(e.target.value)}
-                />
-            </div>
-            <div>
-                <label htmlFor="studyDescription">Study Description</label>
-                <input 
-                    type="text" 
-                    value={studyDescription} 
-                    placeholder="Give a description of what the study will contain"
-                    onChange={(e) => setStudyDescription(e.target.value)}
-                />
-            </div>
-
-        <div>
-            <h2>Add Artifacts (Images, Video, Text, Audio)</h2> 
-            <select name="artifacts" id="artifactOption">
-                <option value="">Select a artifact</option>
-                <option value="image">Image</option>
-                <option value="video">Video</option>
-                <option value="text">Text</option>
-                <option value="audio">Audio</option>
-            </select>
-            <input type="file" name="artifactFile" onChange={handleArtifactChange}/>
-            <button type="submit" onclick="addArtifact()">Add Artifact</button>
-            <p></p>
-        </div>
-
-        <div>
-            <h2>Questions</h2>
-            <div>
-                {/* Add a button and logic to add a question */}
-                <button type="submit">+ Add Question</button>
-            </div>
-            <div>
-                <h2>{/* Render selected question title here*/}</h2>
-                <p>{/* Render selected question detailes here*/}</p>
-            </div>
-            <div>
-                <h2>Question Setting</h2>
-                <label htmlFor="questionText">Question Text</label>
-                <input 
-                    type="text" 
-                    value={questionText} 
-                    placeholder="e.g. Which color do you like the best?"
-                    onChange={(e) => setQuestionText(e.target.value)} 
-                />
-                <label htmlFor="selectedArtifacts">Artifact(s)</label>
-                <select name="selectedArtifacts" id="">
-                    {/* Populate based on elected atrifacts */}
-                    <option value="">Select an artifact</option>
-                </select>
-
-                <label htmlFor="questionType">Question Type</label>
-                <select name="questionType" id="">
-                    {/* Add options for question types */}
-                    <option value='multipleChoise'>Multiple Choise</option>
-                    <option value='openEnded'>Open Ended</option>
-                </select>
-
-                <label htmlFor="multipleChoiseOptions">Multiple Choise Options</label>
-                {/* Dynamically ass radio button inputs for options here*/}
-                
-                <label htmlFor="layoutTemplate">Layout Template</label>
-                <select name="layoutTemplate" id="">
-                    <option value="rows">Rows</option>
-                    <option value="grid">Grid</option>
-                </select>
-                <p>Choose how artifacts are arranged: rows or grid</p>
-                {/* Add additional UI controls as needed*/}
-            </div>
-        </div>
-
-        <div>
-            <button type='submit'>Save Study</button>
-            <button type='button'>Preview</button>
-        </div>
-    </form>
-    </main>
-    </div>
-);
-};
-
-export default CreateStudyPage
+export default CreateStudyPage;

@@ -1,5 +1,4 @@
 import express from 'express';
-import multer from 'multer';
 import upload from '../Middleware/fileUploads.js';
 import { studyController } from '../Controllers/studyController.js';
 import {dashController} from "../Controllers/dashController.js";
@@ -14,7 +13,7 @@ const studyRouter = express.Router();
 studyRouter.post('/', protect, studyController.createStudy);
 
 // Upload artifacts
-studyRouter.post('/:studyId/questions/:questionId/artifacts', protect, studyController.uploadArtifact);
+studyRouter.post('/:studyId/questions/:questionId/artifacts', protect, upload.single('file'), studyController.uploadArtifact);
 
 // Create a question
 studyRouter.post('/:studyId/questions', studyController.createQuestion);
