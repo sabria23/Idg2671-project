@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import NavBar from '../../Components/NavBar.jsx';
 import axios from 'axios';
 
 
@@ -68,62 +67,61 @@ const CreateStudyPage = () => {
 
 return (
     <>
-    <NavBar />
-            <div>
-                <h1>Create a new study</h1>
-                <p>Fill out the details below and save to see the created study on dashboard</p>
-                <form onSubmit={(e) => e.preventDefault()}>
-                    <label>Study Title:</label>
-                    <input 
-                        type='text'
-                        name='title'
-                        value={studyTitle}
-                        onChange={handleInputChange}
-                    />
-                    <br />
-                    <label>Study Description:</label>
-                    <textarea 
-                        name='description' 
-                        value={studyDescription}
-                        onChange={handleInputChange}
-                    />
-                    <br />
-                    <label>Upload Artifact:</label>
-                    <input 
-                        type='file'
-                        multiple
-                        onChange={handleFileChange}
-                        accept='.pdf, .doc, .jpg, .jpeg, .png, .gif, .txt' 
-                    />
-                    <br />
-                    <button onClick={addQuestion}>Add Question</button>
-                    <div>
-                        {questions.map((question, index) => (
-                            <div key={index}>
-                                <input 
-                                    type='text'
-                                    placeholder='Enter question text'
-                                    value={question.text}
-                                    onChange={(e) =>
-                                        handleQuestionTextChange(index, e.target.value)
-                                    } 
-                                />
-                                <select
-                                    onChange={(e) =>
-                                        setQuestionType(e.target.value)
-                                    }
-                                    value={questionType}
-                                >
-                                    <option value="multiple-choice">Multiple Choice</option>
-                                    <option value="open-ended">Open Ended</option>
-                                </select>
-                                <br />
-                            </div>
-                        ))}
-                    </div>
-                    <button onClick={handleSave}>Save Study</button>
-                </form>
-            </div>
+
+
+        <h1>Create a new study</h1>
+            <p>Fill out the details below and save to see the created study on dashboard</p>
+            <form onSubmit={(e) => e.preventDefault()}>
+                <label>Study Title:</label>
+                <input 
+                    type='text'
+                    name='title'
+                    value={studyTitle}
+                    onChange={handleInputChange}
+                />
+                <br />
+                <label>Study Description:</label>
+                <textarea 
+                    name='description' 
+                    value={studyDescription}
+                    onChange={handleInputChange}
+                />
+                <br />
+                <label>Upload Artifact:</label>
+                <input 
+                    type='file'
+                    multiple
+                    onChange={handleFileChange}
+                    accept='.pdf, .doc, .jpg, .jpeg, .png, .gif, .txt' 
+                />
+                <br />
+                <button onClick={addQuestion}>Add Question</button>
+                <div>
+                    {questions.map((question, index) => (
+                        <div key={index}>
+                            <input 
+                                type='text'
+                                placeholder='Enter question text'
+                                value={question.text}
+                                onChange={(e) =>
+                                    handleQuestionTextChange(index, e.target.value)
+                                } 
+                            />
+                            <select
+                                onChange={(e) =>
+                                    setQuestionType(e.target.value)
+                                }
+                                value={questionType}
+                            >
+                                <option value="multiple-choice">Multiple Choice</option>
+                                <option value="open-ended">Open Ended</option>
+                            </select>
+                            <br />
+                        </div>
+                    ))}
+                </div>
+                <button onClick={handleSave}>Save Study</button>
+            </form>
         </>
     );    
 };
