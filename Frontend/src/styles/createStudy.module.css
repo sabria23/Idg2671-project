@@ -38,30 +38,57 @@
     transition: background-color 0.2s;
 }
 
-.studyPage-content{
 
+.studyPage-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1.5rem 0 1.5rem 0;
 }
 
-.studyPage-header{
-
+.studyPage-content h1{
+    font-size: 28px;
+    color: #333;
 }
 
 .studyDetails-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.studyDetails label{
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 0.5rem;
 
 }
 
-.studyTitle-input{
-
+.studyDetails input{
+    width: 100%;
+    border-radius: 10%;
 }
 
-.studyDescription-input{
+.studyDescription-textInput{
 
 }
 
 .uploadArtifact-container{
 
 }
+.artifactBtn{
+
+}
+
+.upload-status{
+
+}
 
 .questionBuilder-container{
-    
+
+}
+
+.saveStudyBtn{
+
 }
