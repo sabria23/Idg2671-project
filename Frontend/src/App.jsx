@@ -8,6 +8,8 @@ import CreateStudyPage from './pages/studies/CreateStudyPage';
 //import StudyParticipationPage from './pages/StudyParticipationPage';
 //import NotFoundPage from './pages/NotFoundPage';
 
+
+
 const App = () => {
     //const { user } = useAuth();
 
