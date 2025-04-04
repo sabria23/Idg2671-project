@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 //import NavBar from '../../Components/NavBar.jsx';
 import axios from 'axios';
-import styles from './CreateStudyPage.module.css';
+import styles from '../../styles/createStudy.module.css';
 
 
 
@@ -110,7 +110,11 @@ return (
                 </div>
 
                 <form onSubmit={(e) => e.preventDefault()}>
+<<<<<<< HEAD
                     <div className={styles['studyDetails-container']}>
+=======
+                    <div className>
+>>>>>>> a65c4c8341d1305b49c4a4fb344b25595163f966
                         <label>Study Title:</label>
                             <input 
                                 className={styles['studyTitle-input']}
@@ -133,7 +137,11 @@ return (
                         <h2>Artifacts (Video, Image, Text, Audio)</h2>
                         <label>Upload Artifact:</label>
                             <select
+<<<<<<< HEAD
                                 
+=======
+                                className={styles}
+>>>>>>> a65c4c8341d1305b49c4a4fb344b25595163f966
                                 value={fileType}
                                 onChange={handleArtifactTypeChange}
                                 disabled={uploading}
@@ -144,7 +152,11 @@ return (
                                 <option value="text">Text</option>
                             </select>
                             <input 
+<<<<<<< HEAD
                                 
+=======
+                                className={styles}
+>>>>>>> a65c4c8341d1305b49c4a4fb344b25595163f966
                                 type='file'
                                 multiple
                                 onChange={handleArtifactChange}
@@ -152,8 +164,16 @@ return (
                                 disabled={uploading}
                             />
 
+<<<<<<< HEAD
                         <button>
                             
+=======
+                            {uploadStatus && (
+                                <p className={styles}>{uploadStatus}</p>
+                            )}
+                        <button>
+                            className={styles}
+>>>>>>> a65c4c8341d1305b49c4a4fb344b25595163f966
                             onClick={uploadArtifacts}
                             disabled={uploading || files.length === 0}
                         </button>
@@ -162,6 +182,7 @@ return (
                                 <p className={styles[]}>{uploadStatus}</p>
                             )}
                     </div>
+<<<<<<< HEAD
                     <div className={styles['questionBuilder-container']}>
                         <h2>Questions</h2>
                         <p>Enter question text and optionally select which artifact(s) it references</p>
@@ -194,6 +215,31 @@ return (
                                 </div>
                             ))}
                         </div>
+=======
+                    <div className={styles}>
+                        <button onClick={addQuestion}>Add Question</button>
+                        {questions.map((question, index) => (
+                            <div key={index}>
+                                <input 
+                                    type='text'
+                                    placeholder='Enter question text'
+                                    value={question.text}
+                                    onChange={(e) =>
+                                        handleQuestionTextChange(index, e.target.value)
+                                    } 
+                                />
+                                <select
+                                    onChange={(e) =>
+                                        setQuestionType(e.target.value)
+                                    }
+                                    value={questionType}
+                                >
+                                    <option value="multiple-choice">Multiple Choice</option>
+                                    <option value="open-ended">Open Ended</option>
+                                </select>
+                            </div>
+                        ))}
+>>>>>>> a65c4c8341d1305b49c4a4fb344b25595163f966
                     </div>
                     <button onClick={handleSave}>Save Study</button>
                     <Link to='/survey/${studyId}/preview'></Link>
