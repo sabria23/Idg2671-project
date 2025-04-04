@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 //import NavBar from '../../Components/NavBar.jsx';
 import axios from 'axios';
+import styles from './CreateStudyPage.module.css';
+
 
 
 const CreateStudyPage = () => {
@@ -92,17 +94,17 @@ const CreateStudyPage = () => {
     };
 
 return (
-        <div className={}>
-            <nav className={styles.navbar}>
-                <div className={styles.logo}></div>
-                <div className={}>
+        <div className={styles['studyPage-container']}>
+            <nav className={styles['navbar']}>
+                <div className={styles['logo']}></div>
+                <div className={styles['navLinks']}>
                     <button>Back to dashboard</button>
                     <button>Logout</button>
                 </div>
             </nav>
 
-            <main className={}>
-                <div className={}>
+            <main className={styles['studyPage-content']}>
+                <div className={styles['studyPage-header']}>
                     <h1>Create a new study</h1>
                     <p>Fill out the details below and save to see the created study on dashboard</p>
                 </div>
@@ -111,7 +113,7 @@ return (
                     <div className={}>
                         <label>Study Title:</label>
                             <input 
-                                className={}
+                                className={styles['studyTitle-input']}
                                 type='text'
                                 name='title'
                                 value={studyTitle}
@@ -120,17 +122,17 @@ return (
                     
                         <label>Study Description:</label>
                             <textarea
-                                className={}
+                                className={styles['studyDescription-input']}
                                 name='description' 
                                 value={studyDescription}
                                 onChange={handleInputChange}
                             />
                     </div>
                     
-                    <div className={}>
+                    <div className={styles['uploadArtifact-container']}>
                         <label>Upload Artifact:</label>
                             <select
-                                className={}
+                                className={styles[]}
                                 value={fileType}
                                 onChange={handleArtifactTypeChange}
                                 disabled={uploading}
@@ -141,7 +143,7 @@ return (
                                 <option value="text">Text</option>
                             </select>
                             <input 
-                                className={}
+                                className={styles[]}
                                 type='file'
                                 multiple
                                 onChange={handleArtifactChange}
@@ -150,16 +152,15 @@ return (
                             />
 
                             {uploadStatus && (
-                                <p className={}>{uploadStatus}</p>
+                                <p className={styles[]}>{uploadStatus}</p>
                             )}
+                        <button>
+                            className={styles[]}
+                            onClick={uploadArtifacts}
+                            disabled={uploading || files.length === 0}
+                        </button>
                     </div>
-                    <button>
-                        className={}
-                        onClick={uploadArtifacts}
-                        disabled={uploading || files.length === 0}
-                    </button>
-                
-                    <div className={}>
+                    <div className={styles[]}>
                         <button onClick={addQuestion}>Add Question</button>
                         {questions.map((question, index) => (
                             <div key={index}>
