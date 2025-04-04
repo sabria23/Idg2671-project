@@ -10,6 +10,35 @@ const CreateStudyPage = () => {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [questionType, setQuestionType] = useState('multiple-choice');
 
+    // Handling the uploading of artifacts
+    const acceptedArtifactTypes = {
+        image: '.jpg, .jpeg, .png, .gif',
+        video: '.mp4, .avi, .mov, .wmv',
+        audio: '.mp3, .mav, .wav',
+        text: '.txt, .pdf, .doc, .docx'
+    };
+
+    const handleArtifactTypeChange = (e) => {
+        setFileType(e.target.value);
+        setFiles([]);
+        setUploadStatus('');
+    }
+
+    const handleArtifactChange = (e) =>{
+        const selectedFiles = Array.from(e.target.files);
+        setFiles(selectedFiles);
+        setUploadStatus('');
+    };
+
+    const uploadArtifacts = async () =>{
+        if(files.length === 0){
+            setUploadStatus('Please select a file to upload');
+            return;
+        }
+    }
+
+    setUploadStatus('Uploading...');
+
     // Handle input for study title and description
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -20,11 +49,7 @@ const CreateStudyPage = () => {
         }
     };
 
-    const handleFileChange = (e) =>{
-        setSelectedFiles(e.target.files);
-    };
-
-    // Handle file upload
+    // Handle study uploading
     const addQuestion = () => {
         setQuestions([
             ...questions,
@@ -67,37 +92,75 @@ const CreateStudyPage = () => {
     };
 
 return (
-    <>
-    <NavBar />
-            <div>
-                <h1>Create a new study</h1>
-                <p>Fill out the details below and save to see the created study on dashboard</p>
+        <div className={}>
+            <nav className={styles.navbar}>
+                <div className={styles.logo}></div>
+                <div className={}>
+                    <button>Back to dashboard</button>
+                    <button>Logout</button>
+                </div>
+            </nav>
+
+            <main className={}>
+                <div className={}>
+                    <h1>Create a new study</h1>
+                    <p>Fill out the details below and save to see the created study on dashboard</p>
+                </div>
+
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <label>Study Title:</label>
-                    <input 
-                        type='text'
-                        name='title'
-                        value={studyTitle}
-                        onChange={handleInputChange}
-                    />
-                    <br />
-                    <label>Study Description:</label>
-                    <textarea 
-                        name='description' 
-                        value={studyDescription}
-                        onChange={handleInputChange}
-                    />
-                    <br />
-                    <label>Upload Artifact:</label>
-                    <input 
-                        type='file'
-                        multiple
-                        onChange={handleFileChange}
-                        accept='.pdf, .doc, .jpg, .jpeg, .png, .gif, .txt' 
-                    />
-                    <br />
-                    <button onClick={addQuestion}>Add Question</button>
-                    <div>
+                    <div className={}>
+                        <label>Study Title:</label>
+                            <input 
+                                className={}
+                                type='text'
+                                name='title'
+                                value={studyTitle}
+                                onChange={handleInputChange}
+                            />
+                    
+                        <label>Study Description:</label>
+                            <textarea
+                                className={}
+                                name='description' 
+                                value={studyDescription}
+                                onChange={handleInputChange}
+                            />
+                    </div>
+                    
+                    <div className={}>
+                        <label>Upload Artifact:</label>
+                            <select
+                                className={}
+                                value={fileType}
+                                onChange={handleArtifactTypeChange}
+                                disabled={uploading}
+                            >
+                                <option value="image">Image</option>
+                                <option value="video">Video</option>
+                                <option value="audio">Audio</option>
+                                <option value="text">Text</option>
+                            </select>
+                            <input 
+                                className={}
+                                type='file'
+                                multiple
+                                onChange={handleArtifactChange}
+                                accept={acceptedArtifactTypes[fileType]}
+                                disabled={uploading}
+                            />
+
+                            {uploadStatus && (
+                                <p className={}>{uploadStatus}</p>
+                            )}
+                    </div>
+                    <button>
+                        className={}
+                        onClick={uploadArtifacts}
+                        disabled={uploading || files.length === 0}
+                    </button>
+                
+                    <div className={}>
+                        <button onClick={addQuestion}>Add Question</button>
                         {questions.map((question, index) => (
                             <div key={index}>
                                 <input 
@@ -117,14 +180,14 @@ return (
                                     <option value="multiple-choice">Multiple Choice</option>
                                     <option value="open-ended">Open Ended</option>
                                 </select>
-                                <br />
                             </div>
                         ))}
                     </div>
                     <button onClick={handleSave}>Save Study</button>
+                    <Link to='/survey/${studyId}/preview'></Link>
                 </form>
-            </div>
-        </>
-    );    
-};
+            </main>
+        </div>
+    )  
+}
 export default CreateStudyPage;
