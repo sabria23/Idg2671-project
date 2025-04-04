@@ -49,7 +49,6 @@ const SignupPage = () => {
                 type="checkbox"
                 name="agreeTerms"
               />
-              I agree to the Terms and Privacy Policy
             </label>
           </div>
           
