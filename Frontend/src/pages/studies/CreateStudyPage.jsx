@@ -51,7 +51,8 @@ const CreateStudyPage = () => {
         }
     };
 
-    // Handle study uploading
+
+    // Adds a new question into the questions array
     const addQuestion = () => {
         setQuestions([
             ...questions,
@@ -63,8 +64,7 @@ const CreateStudyPage = () => {
             },
         ]);
     };
-
-
+    
     // Handle question text change
     const handleQuestionTextChange = (index, value) =>{
         const updatedQuestions = [...questions];
@@ -110,7 +110,7 @@ return (
                 </div>
 
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <div className={}>
+                    <div className={styles['studyDetails-container']}>
                         <label>Study Title:</label>
                             <input 
                                 className={styles['studyTitle-input']}
@@ -130,9 +130,10 @@ return (
                     </div>
                     
                     <div className={styles['uploadArtifact-container']}>
+                        <h2>Artifacts (Video, Image, Text, Audio)</h2>
                         <label>Upload Artifact:</label>
                             <select
-                                className={styles[]}
+                                
                                 value={fileType}
                                 onChange={handleArtifactTypeChange}
                                 disabled={uploading}
@@ -143,7 +144,7 @@ return (
                                 <option value="text">Text</option>
                             </select>
                             <input 
-                                className={styles[]}
+                                
                                 type='file'
                                 multiple
                                 onChange={handleArtifactChange}
@@ -151,38 +152,48 @@ return (
                                 disabled={uploading}
                             />
 
-                            {uploadStatus && (
-                                <p className={styles[]}>{uploadStatus}</p>
-                            )}
                         <button>
-                            className={styles[]}
+                            
                             onClick={uploadArtifacts}
                             disabled={uploading || files.length === 0}
                         </button>
+
+                        {uploadStatus && (
+                                <p className={styles[]}>{uploadStatus}</p>
+                            )}
                     </div>
-                    <div className={styles[]}>
-                        <button onClick={addQuestion}>Add Question</button>
-                        {questions.map((question, index) => (
-                            <div key={index}>
-                                <input 
-                                    type='text'
-                                    placeholder='Enter question text'
-                                    value={question.text}
-                                    onChange={(e) =>
-                                        handleQuestionTextChange(index, e.target.value)
-                                    } 
-                                />
-                                <select
-                                    onChange={(e) =>
-                                        setQuestionType(e.target.value)
-                                    }
-                                    value={questionType}
-                                >
-                                    <option value="multiple-choice">Multiple Choice</option>
-                                    <option value="open-ended">Open Ended</option>
-                                </select>
-                            </div>
-                        ))}
+                    <div className={styles['questionBuilder-container']}>
+                        <h2>Questions</h2>
+                        <p>Enter question text and optionally select which artifact(s) it references</p>
+                        <div>
+                            <ul>
+                                <li></li>
+                            </ul>
+                            <button onClick={addQuestion}>+ Add Question</button>
+                            {questions.map((question, index) => (
+                                <div key={index}>
+                                    <h3>Question settings</h3>
+                                    <label>Question Text</label>
+                                    <input 
+                                        type='text'
+                                        placeholder='Enter question text'
+                                        value={question.text}
+                                        onChange={(e) =>
+                                            handleQuestionTextChange(index, e.target.value)
+                                        } 
+                                    />
+                                    <select
+                                        onChange={(e) =>
+                                            setQuestionType(e.target.value)
+                                        }
+                                        value={questionType}
+                                    >
+                                        <option value="multiple-choice">Multiple Choice</option>
+                                        <option value="open-ended">Open Ended</option>
+                                    </select>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                     <button onClick={handleSave}>Save Study</button>
                     <Link to='/survey/${studyId}/preview'></Link>
