@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 //import NavBar from '../../Components/NavBar.jsx';
 import axios from 'axios';
-import styles from './CreateStudyPage.module.css';
+import styles from '../../styles/createStudy.module.css';
 
 
 
@@ -110,7 +110,7 @@ return (
                 </div>
 
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <div className={}>
+                    <div className>
                         <label>Study Title:</label>
                             <input 
                                 className={styles['studyTitle-input']}
@@ -132,7 +132,7 @@ return (
                     <div className={styles['uploadArtifact-container']}>
                         <label>Upload Artifact:</label>
                             <select
-                                className={styles[]}
+                                className={styles}
                                 value={fileType}
                                 onChange={handleArtifactTypeChange}
                                 disabled={uploading}
@@ -143,7 +143,7 @@ return (
                                 <option value="text">Text</option>
                             </select>
                             <input 
-                                className={styles[]}
+                                className={styles}
                                 type='file'
                                 multiple
                                 onChange={handleArtifactChange}
@@ -152,15 +152,15 @@ return (
                             />
 
                             {uploadStatus && (
-                                <p className={styles[]}>{uploadStatus}</p>
+                                <p className={styles}>{uploadStatus}</p>
                             )}
                         <button>
-                            className={styles[]}
+                            className={styles}
                             onClick={uploadArtifacts}
                             disabled={uploading || files.length === 0}
                         </button>
                     </div>
-                    <div className={styles[]}>
+                    <div className={styles}>
                         <button onClick={addQuestion}>Add Question</button>
                         {questions.map((question, index) => (
                             <div key={index}>
