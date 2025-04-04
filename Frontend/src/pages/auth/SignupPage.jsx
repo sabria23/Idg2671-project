@@ -1,14 +1,38 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/Auth.css";
 
 const SignupPage = () => {
   return (
     <div className="auth-container">
-      <div className="auth-card">
+<div className="left-container">
+        <div className="bubble">
+                <span style={{"--i": "41s" }}></span>
+                <span style={{"--i": "22s" }}></span>
+                <span style={{"--i": "53s" }}></span>
+                <span style={{"--i": "44s" }}></span>
+                <span style={{"--i": "55s" }}></span>
+                <span style={{"--i": "76s" }}></span>
+                <span style={{"--i": "57s" }}></span>
+                <span style={{"--i": "30s" }}></span>
+                <span style={{"--i": "85s" }}></span>
+                <span style={{"--i": "90s" }}></span>
+                <span style={{"--i": "31s" }}></span>
+                <span style={{"--i": "95s" }}></span>
+            </div>
+            <h1>Welcome</h1>
+        <h2>to the study creator</h2>
+        <p>Create, analyze your studies with ease.</p>
+        <p>Whether it's for research, surveys or learning materials</p>
+        <p>Study Creator helps you design på en enkel måte.</p>
+        <p>Start building your study today!</p>
+      </div>
+      <div className="right-container">
+        <div className="auth-card">
         <h1>Create Account</h1>
         <form >
           <div className="input-group">
+          <label for="fullname">Full Name</label>
             <input
               type="text"
               name="name"
@@ -17,6 +41,7 @@ const SignupPage = () => {
           </div>
           
           <div className="input-group">
+          <label for="email">Email</label>
             <input
               type="email"
               name="email"
@@ -25,6 +50,7 @@ const SignupPage = () => {
           </div>
           
           <div className="input-group">
+          <label for="password">Password</label>
             <input
               type="password"
               name="password"
@@ -33,6 +59,7 @@ const SignupPage = () => {
           </div>
           
           <div className="input-group">
+          <label for="password">Password</label>
             <input
               type="password"
               name="confirmPassword"
@@ -49,6 +76,7 @@ const SignupPage = () => {
                 type="checkbox"
                 name="agreeTerms"
               />
+              I agree to the Terms and Privacy Policy
             </label>
           </div>
           
@@ -63,6 +91,8 @@ const SignupPage = () => {
           </div>
         </form>
       </div>
+      </div>
+      
     </div>
   );
 };
