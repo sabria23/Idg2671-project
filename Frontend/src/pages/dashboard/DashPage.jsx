@@ -1,6 +1,7 @@
 import styles from "../../styles/Dash.module.css";
 import React from 'react';
 import Navbar from "../../components/common/Navbar";
+import DropdownMenu from "./components/DropDownMenu";
 
 const DashboardPage = () => {
     const handleLogout = () => {
@@ -52,20 +53,15 @@ const DashboardPage = () => {
                     <button className={styles.recruitButton}>Recruit</button>
                     <div className={styles.studyDate}>6 Mar 2025</div>
                     <div className={styles.userIndicator}>M</div>
-                    <button className={styles.menuButton}>⋮</button>
+                    <DropdownMenu 
+                        options={[
+                            { label: 'Rename', action: () => handleRename(study.id) },
+                            { label: 'Edit', action: () => handleEdit(study.id) },
+                            { label: 'Delete', action: () => handleDelete(study.id), isDanger: true }
+                        ]}
+                    />
                 </div>
             </div>
-
-                            {/* Dropdown menu (shown for demonstration) */}
-                <div className={styles.dropdownContainer}>
-                    <div className={styles.dropdownMenu}>
-                        <button className={styles.dropdownItem}>Rename</button>
-                        <button className={styles.dropdownItem}>Edit</button>
-                        <button className={styles.dropdownItem}>Duplicate</button>
-                        <button className={styles.dropdownItem}>Archive</button>
-                        <button className={`${styles.dropdownItem} ${styles.dangerItem}`}>Delete</button>
-                    </div>
-             </div>
         </main>
 
    </div>

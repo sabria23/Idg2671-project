@@ -1,0 +1,53 @@
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.menuButton {
+    background-color: none;
+    border:none;
+    font-size: 20px;
+    color: #ad1111;
+    padding: 4px 8px;
+    border-radius: 4px;
+
+}
+
+.menuButton:hover {
+    background-color: #c9a4a4;
+  }
+
+  .dropdownMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1;
+    background-color: rgb(242, 230, 230);
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    min-width: 160px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  
+  .dropdownItem {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  .dropdownItem:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .deleteBtn {
+    color: #d32f2f;
+  }
+  
+  .deleteBtn:hover {
+    background-color: #ffebee;
+  }
