@@ -85,30 +85,36 @@
    resize: vertical;
 }
 
-.question-item{
-
-}
-
+/* Artifact upload */
 .uploadArtifact-container{
-    display: flex;
-    flex-direction: column;
     border: solid 1px grey;
-    margin: 1.5rem 0 1.5rem 0;
-    padding: 1.5rem 1rem;
+    margin: 1em 0 1rem 0;
+    padding: 1rem 1.5rem;
     background-color: #edf2f7;
     border-radius: 4px;
     
 }
-.artifactBtn{
 
+.uploadArtifact-container h2{
+    font-size: 20px;
+    margin-bottom: 1rem;
 }
+
+.uploadArtifact-container select,
+.uploadArtifact-container input{
+    margin: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: solid 1px grey;
+    border-radius: 4px;
+}
+
+.artifactBtn{
+    padding: 0.5rem 1rem;
+}
+
 
 .upload-status{
-
-}
-
-.uploadedFiles{
-    background-color: #edf2f7;
+    color: #666;
 
 }
 
@@ -123,7 +129,34 @@
 .removeArtifactBtn{
 
 }
+
 .questionBuilder-container{
+    background-color: #edf2f7;
+    border: solid 1px grey;
+    padding: 1rem;
+    
+}
+
+.addQuestion,
+.uploadedFiles{
+    border: solid 1px grey;
+    padding: 0.5rem;
+}
+.addQuestion li{
+    list-style: none;
+    background-color: #6ef582;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+.addQuestion button{
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: #6cb5f6;
+    border: solid 1px grey;
+}
+
+.question-item{
 
 }
 
@@ -132,5 +165,13 @@
 }
 
 .previewBtn{
+
+}
+
+.questionBuilder-container{
+    display: flex;
+}
+
+.rightSide-panel{
 
 }
