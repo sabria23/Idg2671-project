@@ -1,42 +1,27 @@
 import styles from "../../styles/Dash.module.css";
 import React from 'react';
-import {Link } from 'react-router-dom';
+import Navbar from "../../components/common/Navbar";
 
 const DashboardPage = () => {
+    const handleLogout = () => {
+        console.log("Logging out...");
+        // Add your logout logic here
+      };
+       // Your specific navigation items for the Dashboard
+    const dashboardNavItems = [
+        { label: "Create a study", path: "/create-study" },
+        { label: "Profile", path: "/profile" },
+        { label: "Logout", action: handleLogout }
+    ];
+
   return (
    <div className={styles.container}>
-        {/*this is the header/navbar*/}
-        <header className={styles.header}>
-            <div className={styles.logo}>
-                <span className={styles.logoText}>StudyPlatform</span>
-            </div>
-
-            <div className={styles.navActions}>
-                <Link to="/create-study" style={{ textDecoration: 'none' }}>
-                    <button className={styles.navButton}>
-                        <span className={styles.iconWrapper}>
-                            <i className={styles.icon}>i</i>
-                        </span>
-                        Create a new Study
-                    </button>
-                </Link>
-            </div>
-
-            <button className={styles.navButton}>
-                <span className={styles.iconWrapper}>
-                     <i className={styles.icon}>i</i>
-                </span>
-                Profile
-            </button>
-
-            <button className={styles.navButton}>
-                <span className={styles.iconWrapper}>
-                     <i className={styles.icon}>i</i>
-                </span>
-                Logout
-            </button>
-        </header>
-
+        {/*this is the header/navbar with props*/}
+        <Navbar 
+            title="StudyPlatform" 
+            navItems={dashboardNavItems}
+            onLogout={handleLogout} 
+        />
         {/*main content*/}
         <main className={styles.mainContent}>
             <h1 className={styles.welcomeHeader}>hello, you</h1> {/*this will take varibale to username and time */}
