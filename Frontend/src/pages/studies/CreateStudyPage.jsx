@@ -124,7 +124,9 @@ const CreateStudyPage = () => {
             <nav className={styles['navbar']}>
                 <div className={styles['logo']}>StudyPlatform</div>
                 <div className={styles['navLinks']}>
-                    <button>Back to dashboard</button>
+                    <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                        <button>Back to dashboard</button>
+                    </Link>
                     <button>Logout</button>
                 </div>
             </nav>

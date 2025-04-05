@@ -1,5 +1,6 @@
 import styles from "../../styles/Dash.module.css";
 import React from 'react';
+import {Link } from 'react-router-dom';
 
 const DashboardPage = () => {
   return (
@@ -11,12 +12,14 @@ const DashboardPage = () => {
             </div>
 
             <div className={styles.navActions}>
-                <button className={styles.navButton}>
-                    <span className={styles.iconWrapper}>
-                        <i className={styles.icon}>i</i>
-                    </span>
-                    Create a new Study
-                </button>
+                <Link to="/create-study" style={{ textDecoration: 'none' }}>
+                    <button className={styles.navButton}>
+                        <span className={styles.iconWrapper}>
+                            <i className={styles.icon}>i</i>
+                        </span>
+                        Create a new Study
+                    </button>
+                </Link>
             </div>
 
             <button className={styles.navButton}>
