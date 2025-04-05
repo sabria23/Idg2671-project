@@ -12,9 +12,9 @@ const CreateStudyPage = () => {
     const [files, setFiles] = useState([]);
     const [uploadStatus, setUploadStatus] = useState('');
     const [uploading, setUploading] = useState(false);
-    const [questionType, setQuestionType] = useState('multiple-choice');
     const [studyId, setStudyId] = useState(null);
 
+    // ARTIFACT "CONTROLLERS"
     const acceptedArtifactTypes = {
         image: '.jpg, .jpeg, .png, .gif',
         video: '.mp4, .avi, .mov, .wmv',
@@ -61,6 +61,11 @@ const CreateStudyPage = () => {
         }
     };
 
+    const handleRemoveArtifact = (indexToRemove) =>{
+        setSelectedFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToRemove));
+    }
+
+    // STUDY DETAILS "CONTROLLERS"
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         if (name === 'title') {
@@ -70,9 +75,10 @@ const CreateStudyPage = () => {
         }
     };
 
+    // QUESTION CREATOR "CONTROLLERS"
     const addQuestion = () => {
-        setQuestions([
-            ...questions,
+        setQuestions(prev => [
+            ...prev,
             {
                 questionText: '',
                 questionType: questionType,
@@ -82,12 +88,19 @@ const CreateStudyPage = () => {
         ]);
     };
 
+    const handleQuestionTypeChange = (index, value) =>{
+        const updatedQuestions = [...questions];
+        updatedQuestions[index].questionType = value;
+        setQuestions(updatedQuestions);
+    }
+
     const handleQuestionTextChange = (index, value) => {
         const updatedQuestions = [...questions];
         updatedQuestions[index].questionText = value;
         setQuestions(updatedQuestions);
     };
 
+    // SAVE STUDY "CONTROLLERS"
     const handleSave = async () => {
         const formData = new FormData();
         formData.append('title', studyTitle);
@@ -105,10 +118,11 @@ const CreateStudyPage = () => {
         }
     };
 
+    // RENDERING THE HTML CONTENT OF THE CREATE STUDY PAGE
     return (
         <div className={styles['studyPage-container']}>
             <nav className={styles['navbar']}>
-                <div className={styles['logo']}></div>
+                <div className={styles['logo']}>StudyPlatform</div>
                 <div className={styles['navLinks']}>
                     <button>Back to dashboard</button>
                     <button>Logout</button>
@@ -119,12 +133,14 @@ const CreateStudyPage = () => {
                 <h1>Create a new study</h1>
                 <p>Fill out the details below and save to see the created study on dashboard</p>
 
+                {/* STUDY DETAILS*/}
                 <form onSubmit={(e) => e.preventDefault()}>
                     <div className={styles['studyDetails-container']}>
                         <label>Study Title:</label>
                         <input
                             type='text'
                             name='title'
+                            placeholder='Short descriptive title'
                             value={studyTitle}
                             onChange={handleInputChange}
                         />
@@ -133,11 +149,13 @@ const CreateStudyPage = () => {
                         <textarea
                             className={styles['studyDescription-textInput']}
                             name='description'
+                            placeholder='Brief summary of the study'
                             value={studyDescription}
                             onChange={handleInputChange}
                         />
                     </div>
 
+                {/* ARTIFACTS*/}
                     <div className={styles['uploadArtifact-container']}>
                         <h2>Artifacts (Video, Image, Text, Audio)</h2>
                         <label>Upload Artifact:</label>
@@ -166,7 +184,7 @@ const CreateStudyPage = () => {
                             onClick={uploadArtifacts}
                             disabled={uploading || files.length === 0}
                         >
-                            Upload
+                            + Add
                         </button>
 
                         {uploadStatus && (
@@ -174,10 +192,60 @@ const CreateStudyPage = () => {
                         )}
                     </div>
 
+                    {/* DISPLAY UPLOADED FILES*/}
+                    <div className={styles['uploadedFiles']}>
+                        <h3>Uploaded artifacts</h3>
+                        {selectedFiles.length > 0 ? (
+                            <p>No artifacts uploaded yet</p>
+                        ) : (
+                            <ul className={styles['uploadedFiles-list']}>
+                                {selectedFiles.map((file, index) => {
+                                    const fileURL = URL.createObjectURL(file);
+                                    const fileType = file.type.split('/')[0];
+
+                                    return (
+                                        <li key={index} className={styles['artifact-item']}>
+                                            {fileType === 'image' && (
+                                                <img src={fileURL} alt={file.name} width='150'/>
+                                            )}
+                                            {fileType === 'video' && (
+                                                <video width='250' controls>
+                                                    <source src={fileURL} type={file.type} />
+                                                    Your browser does not support audio playback
+                                                </video>
+                                            )}
+                                            {fileType === 'audio' && (
+                                                <audio controls>
+                                                    <source src={fileURL} type={file.type} />
+                                                    Your browser does not support audio playback
+                                                </audio>
+                                            )}
+                                            {fileType === 'text' || fileType === 'application' ? (
+                                                <p>
+                                                    <strong>{file.name}</strong>
+                                                </p>
+                                            ) : null}
+
+                                            <button
+                                                type='button'
+                                                className={styles['removeArtifactBtn']}
+                                                onClick={() => handleRemoveArtifact(index)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        )}
+                    </div>
+
+                    {/* STUDY QUESTION BUILDER */}
                     <div className={styles['questionBuilder-container']}>
                         <button type="button" onClick={addQuestion}>Add Question</button>
+
                         {questions.map((question, index) => (
-                            <div key={index}>
+                            <div key={index} className={styles['question-item']}>
                                 <input
                                     type='text'
                                     placeholder='Enter question text'
@@ -186,20 +254,40 @@ const CreateStudyPage = () => {
                                         handleQuestionTextChange(index, e.target.value)
                                     }
                                 />
-                                <select
-                                    onChange={(e) =>
-                                        setQuestionType(e.target.value)
-                                    }
-                                    value={questionType}
-                                >
-                                    <option value="multiple-choice">Multiple Choice</option>
-                                    <option value="open-ended">Open Ended</option>
-                                </select>
+                                
+                                <div className={styles['question-type-group']}>
+                                    <label>
+                                        <input 
+                                            type='radio'
+                                            name={`questionType-${index}`}
+                                            value='multiple-choice'
+                                            checked={question.questionType === 'multiple-choice'}
+                                            onChange={(e) =>
+                                                handleQuestionTypeChange(index, e.target.value)
+                                            } 
+                                        />
+                                        Multiple Choice
+                                    </label>
+                                    <label>
+                                        <input 
+                                            type='radio'
+                                            name={`questionType-${index}`}
+                                            value='open-ended' 
+                                            checked={question.questionType === 'open-ended'}
+                                            onChange={(e) =>
+                                                handleQuestionTypeChange(index, e.target.value)
+                                            }
+                                        />
+                                        Open Ended
+                                    </label>
+                                </div>
                             </div>
                         ))}
                     </div>
+                </form>
 
-                    <button
+                {/* SAVE STUDY BUTTON */}
+                <button
                         className={styles['saveStudyBtn']}
                         type="button"
                         onClick={handleSave}
@@ -207,10 +295,15 @@ const CreateStudyPage = () => {
                         Save Study
                     </button>
 
-                    {studyId && (
+                {/* LINK/ BUTTON THE PREVIEW */}
+                <button 
+                        className={styles['previewBtn']}
+                        type='button'
+                    >
+                {studyId && (
                         <Link to={`/survey/${studyId}/preview`}>Preview Survey</Link>
-                    )}
-                </form>
+                )}
+                </button>
             </main>
         </div>
     );
