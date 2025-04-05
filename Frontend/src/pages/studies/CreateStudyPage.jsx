@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import styles from '../../styles/createStudy.module.css';
+import Navbar from "../../components/common/Navbar";
 
 const CreateStudyPage = () => {
     const [studyTitle, setStudyTitle] = useState('');
@@ -118,18 +119,22 @@ const CreateStudyPage = () => {
         }
     };
 
+    // NAVIGATION ITEMS FOR THE CREATY STUDY PAGE - NAVBAR COMPONENT
+    const createStudyNavItems = [
+        { label: "Dashboard", path: "/dashboard" },
+        { label: "Profile", path: "/profile" },
+        { /*label: "Logout", action: handleLogout */} //implement this later    
+      ];
+
     // RENDERING THE HTML CONTENT OF THE CREATE STUDY PAGE
     return (
         <div className={styles['studyPage-container']}>
-            <nav className={styles['navbar']}>
-                <div className={styles['logo']}>StudyPlatform</div>
-                <div className={styles['navLinks']}>
-                    <Link to="/dashboard" style={{ textDecoration: 'none' }}>
-                        <button>Back to dashboard</button>
-                    </Link>
-                    <button>Logout</button>
-                </div>
-            </nav>
+            <Navbar 
+                className={styles.fullWidthNav}
+                title="StudyPlatform" 
+                navItems={createStudyNavItems}
+                //onLogout={handleLogout} // this needs to commented out because it is not working
+            />
 
             <main className={styles['studyPage-content']}>
                 <h1>Create a new study</h1>

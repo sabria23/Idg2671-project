@@ -9,37 +9,9 @@
 }
 
 /* NavBar */
-.navbar{
+.fullWidthNav {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    padding: 15px 30px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-}
-.logo{
-    font-size: 24px;
-    font-weight: bold;
-    color: #085da8;
-}
-.navLinks{
-    display: flex;
-    gap: 20px;
-}
-.navLinks button{
-    background: none;
-    border: 2 px solid black;
-    cursor: pointer;
-    font-size: 16px;
-    color: #666;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-.navLinks button:hover{
-    background-color: #f5f5f5;
+    align-self: stretch;
 }
 
 
