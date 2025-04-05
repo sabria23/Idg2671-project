@@ -17,9 +17,9 @@
 }
 
 .logo{
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
-    color: #4a90e2;
+    color: #085da8;
 }
 
 .navLinks{
@@ -85,6 +85,21 @@
 
 }
 
+.uploadedFiles{
+
+}
+
+.uploadedFiles-list{
+
+}
+
+.artifact-item{
+
+}
+
+.removeArtifactBtn{
+    
+}
 .questionBuilder-container{
 
 }
