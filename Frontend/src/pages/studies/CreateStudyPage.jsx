@@ -238,6 +238,24 @@ const CreateStudyPage = () => {
                             </button>
                         </div>
 
+                        {/* Middle panel: Edit Question Text */}
+                        <div className={styles['middle-panel']}>
+                            {selectedQuestionIndex !== null && questions[selectedQuestionIndex] && (
+                                <>
+                                    <h3>Edit Question</h3>
+                                    <textarea 
+                                        placeholder='Enter your question text here'
+                                        value={questions[selectedQuestionIndex].questionText}
+                                        onChange={(e) =>
+                                            handleQuestionTextChange(selectedQuestionIndex, e.target.value)
+                                        }
+                                        rows={6}
+                                        cols={40}  
+                                    />
+                                </>
+                            )}
+                        </div>
+
                         {/* Right side panel: Question Settings */}
                         <div className={styles['rightSide-panel']}>
                             {selectedQuestionIndex !== null &&
