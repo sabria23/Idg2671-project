@@ -438,20 +438,20 @@ const CreateStudyPage = () => {
                 </form>
 
                 {/* SAVE STUDY BUTTON */}
-                <button
-                    className={styles['saveStudyBtn']}
-                    type="button"
-                    onClick={handleSave}
-                >
-                    Save Study
-                </button>
+                <div className={styles['saveBtns']}>
+                    <button
+                        className={styles['saveStudyBtn']}
+                        type="button"
+                        onClick={handleSave}
+                    >
+                        Save Study
+                    </button>
 
-                {/* LINK/ BUTTON THE PREVIEW */}
-                <button className={styles['previewBtn']} type="button">
-                    {studyId && (
-                        <Link to={`/survey/${studyId}/preview`}>Preview Survey</Link>
-                    )}
-                </button>
+                    {/* LINK/ BUTTON THE PREVIEW */}
+                    <button className={styles['previewBtn']} type="button">
+                            <Link to={`/survey/${studyId}/preview`}>Preview Survey</Link>
+                    </button>
+                </div>
             </main>
         </div>
     );
