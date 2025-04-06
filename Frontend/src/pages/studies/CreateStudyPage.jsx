@@ -190,6 +190,7 @@ const CreateStudyPage = () => {
                         </select>
 
                         <input
+                            className={styles['artifact-input']}
                             type="file"
                             multiple
                             onChange={handleArtifactChange}

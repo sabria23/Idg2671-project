@@ -78,9 +78,13 @@
     border: solid 1px grey;
     border-radius: 4px;
 }
+.artifact-input{
+    cursor: pointer;
+}
 
 .artifactBtn{
     padding: 0.5rem 1rem;
+    cursor: pointer;
 }
 
 
@@ -119,12 +123,14 @@
     padding: 0.5rem 1rem;
     border-radius: 4px;
     margin-bottom: 0.5rem;
+    cursor: pointer;
 }
 .addQuestion button{
     padding: 0.5rem 1rem;
     border-radius: 4px;
     background-color: #6cb5f6;
     border: solid 1px grey;
+    cursor: pointer;
 }
 
 .question-item{
