@@ -19,7 +19,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 1.5rem 0 1.5rem 0;;
 }
 
 .studyPage-content h1{
@@ -100,11 +99,11 @@
 .artifact-item{
 
 }
-
 .removeArtifactBtn{
 
 }
 
+/* Question Builder  */
 .questionBuilder-container{
     background-color: #edf2f7;
     border: solid 1px grey;
@@ -143,9 +142,22 @@
    display: flex;
 }
 
+.middle-panel textarea{
+    margin: 1rem;
+}
+
 .rightSide-panel{
  border: solid 1px grey;
  padding: 0.5rem;
+}
+
+.delete-questionBtn{
+    background-color: white;
+
+    color: red;
+    border: solid 2px red;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
 }
 
 .saveBtns button{
