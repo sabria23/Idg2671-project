@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import styles from '../../styles/createStudy.module.css';
+import Navbar from "../../components/common/Navbar";
 
 const CreateStudyPage = () => {
     const [studyTitle, setStudyTitle] = useState('');
@@ -131,16 +132,22 @@ const CreateStudyPage = () => {
         }
     };
 
+    // NAVIGATION ITEMS FOR THE CREATY STUDY PAGE - NAVBAR COMPONENT
+    const createStudyNavItems = [
+        { label: "Dashboard", path: "/dashboard" },
+        { label: "Profile", path: "/profile" },
+        { /*label: "Logout", action: handleLogout */} //implement this later    
+      ];
+
     // RENDERING THE HTML CONTENT OF THE CREATE STUDY PAGE
     return (
         <div className={styles['studyPage-container']}>
-            <nav className={styles['navbar']}>
-                <div className={styles['logo']}>StudyPlatform</div>
-                <div className={styles['navLinks']}>
-                    <button>Back to dashboard</button>
-                    <button>Logout</button>
-                </div>
-            </nav>
+            <Navbar 
+                className={styles.fullWidthNav}
+                title="StudyPlatform" 
+                navItems={createStudyNavItems}
+                //onLogout={handleLogout} // this needs to commented out because it is not working
+            />
 
             <main className={styles['studyPage-content']}>
                 <h1>Create a new study</h1>
@@ -183,6 +190,7 @@ const CreateStudyPage = () => {
                         </select>
 
                         <input
+                            className={styles['artifact-input']}
                             type="file"
                             multiple
                             onChange={handleArtifactChange}
@@ -228,6 +236,24 @@ const CreateStudyPage = () => {
                             <button type="button" onClick={addQuestion}>
                                 + Add Question
                             </button>
+                        </div>
+
+                        {/* Middle panel: Edit Question Text */}
+                        <div className={styles['middle-panel']}>
+                            {selectedQuestionIndex !== null && questions[selectedQuestionIndex] && (
+                                <>
+                                    <h3>Edit Question</h3>
+                                    <textarea 
+                                        placeholder='Enter your question text here'
+                                        value={questions[selectedQuestionIndex].questionText}
+                                        onChange={(e) =>
+                                            handleQuestionTextChange(selectedQuestionIndex, e.target.value)
+                                        }
+                                        rows={6}
+                                        cols={40}  
+                                    />
+                                </>
+                            )}
                         </div>
 
                         {/* Right side panel: Question Settings */}
@@ -430,20 +456,20 @@ const CreateStudyPage = () => {
                 </form>
 
                 {/* SAVE STUDY BUTTON */}
-                <button
-                    className={styles['saveStudyBtn']}
-                    type="button"
-                    onClick={handleSave}
-                >
-                    Save Study
-                </button>
+                <div className={styles['saveBtns']}>
+                    <button
+                        className={styles['saveStudyBtn']}
+                        type="button"
+                        onClick={handleSave}
+                    >
+                        Save Study
+                    </button>
 
-                {/* LINK/ BUTTON THE PREVIEW */}
-                <button className={styles['previewBtn']} type="button">
-                    {studyId && (
-                        <Link to={`/survey/${studyId}/preview`}>Preview Survey</Link>
-                    )}
-                </button>
+                    {/* LINK/ BUTTON THE PREVIEW */}
+                    <button className={styles['previewBtn']} type="button">
+                            <Link to={`/survey/${studyId}/preview`}>Preview Survey</Link>
+                    </button>
+                </div>
             </main>
         </div>
     );

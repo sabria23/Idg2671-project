@@ -1,6 +1,5 @@
 /* Main container */
 .container {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: #333;
   background-color: #f8f9fa;
   min-height: 100vh;
@@ -15,41 +14,6 @@
   padding: 8px 16px;
   background-color: white;
   border-bottom: 1px solid #eaeaea;
-}
-
-.logo { /* the StudyPlatform*/
-  flex: 0 0 auto;
-  margin-right: 24px;
-}
-.logoText {
-  font-size: 24px;
-  font-weight: bold;
-  color: #085da8;
-}
-
-.navActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.navButton {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: none;
-  /*border: none;*/ 
-  color: #333;
-  font-size: 14px;
-  border-radius: 4px;
-}
-.navButton:hover {
-  background-color: #f5f5f5;
-}
-
-.icon {
-  font-style: normal;
 }
 
 /* Main content */
@@ -177,46 +141,4 @@
   cursor: pointer;
   font-size: 18px;
   color: #718096;
-}
-
-/* Dropdown */
-.dropdownContainer {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-  margin-top: -40px;
-  margin-right: 8px;
-}
-
-.dropdownMenu {
-  position: absolute;
-  right: 0;
-  top: 0;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  border-radius: 8px;
-  width: 180px;
-  z-index: 10;
-}
-
-.dropdownItem {
-  width: 100%;
-  padding: 10px 16px;
-  text-align: left;
-  background: none;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.dropdownItem:hover {
-  background-color: #f5f5f5;
-}
-
-.dangerItem {
-  color: #e53e3e;
-}
-
-.dangerItem:hover {
-  background-color: #fff5f5;
 }

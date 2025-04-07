@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import React from 'react'
+import "../src/App.css";
 // Pages
 import LoginPage from "./pages/auth/LoginPage";
 import SignupPage from './pages/auth/SignupPage';
@@ -21,6 +22,7 @@ const App = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<SignupPage />} />
             <Route path="/study/:studyId" element={<CreateStudyPage />} />
+            <Route path="/create-study" element={<CreateStudyPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
   
           {/* Protected routes 

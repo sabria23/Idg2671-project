@@ -1,39 +1,28 @@
 import styles from "../../styles/Dash.module.css";
 import React from 'react';
+import Navbar from "../../components/common/Navbar";
+import DropdownMenu from "./components/DropDownMenu";
 
 const DashboardPage = () => {
+    const handleLogout = () => {
+        console.log("Logging out...");
+        // Add your logout logic here
+      };
+       // Your specific navigation items for the Dashboard
+    const dashboardNavItems = [
+        { label: "Create a study", path: "/create-study" },
+        { label: "Profile", path: "/profile" },
+        { label: "Logout", action: handleLogout }
+    ];
+
   return (
    <div className={styles.container}>
-        {/*this is the header/navbar*/}
-        <header className={styles.header}>
-            <div className={styles.logo}>
-                <span className={styles.logoText}>StudyPlatform</span>
-            </div>
-
-            <div className={styles.navActions}>
-                <button className={styles.navButton}>
-                    <span className={styles.iconWrapper}>
-                        <i className={styles.icon}>i</i>
-                    </span>
-                    Create a new Study
-                </button>
-            </div>
-
-            <button className={styles.navButton}>
-                <span className={styles.iconWrapper}>
-                     <i className={styles.icon}>i</i>
-                </span>
-                Profile
-            </button>
-
-            <button className={styles.navButton}>
-                <span className={styles.iconWrapper}>
-                     <i className={styles.icon}>i</i>
-                </span>
-                Logout
-            </button>
-        </header>
-
+        {/*this is the header/navbar with props*/}
+        <Navbar 
+            title="StudyPlatform" 
+            navItems={dashboardNavItems}
+            onLogout={handleLogout} 
+        />
         {/*main content*/}
         <main className={styles.mainContent}>
             <h1 className={styles.welcomeHeader}>hello, you</h1> {/*this will take varibale to username and time */}
@@ -64,20 +53,15 @@ const DashboardPage = () => {
                     <button className={styles.recruitButton}>Recruit</button>
                     <div className={styles.studyDate}>6 Mar 2025</div>
                     <div className={styles.userIndicator}>M</div>
-                    <button className={styles.menuButton}>⋮</button>
+                    <DropdownMenu 
+                        options={[
+                            { label: 'Rename', action: () => handleRename(study.id) },
+                            { label: 'Edit', action: () => handleEdit(study.id) },
+                            { label: 'Delete', action: () => handleDelete(study.id), isDanger: true }
+                        ]}
+                    />
                 </div>
             </div>
-
-                            {/* Dropdown menu (shown for demonstration) */}
-                <div className={styles.dropdownContainer}>
-                    <div className={styles.dropdownMenu}>
-                        <button className={styles.dropdownItem}>Rename</button>
-                        <button className={styles.dropdownItem}>Edit</button>
-                        <button className={styles.dropdownItem}>Duplicate</button>
-                        <button className={styles.dropdownItem}>Archive</button>
-                        <button className={`${styles.dropdownItem} ${styles.dangerItem}`}>Delete</button>
-                    </div>
-             </div>
         </main>
 
    </div>
