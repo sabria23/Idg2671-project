@@ -21,9 +21,11 @@ const App = () => {
            {/* Auth routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<SignupPage />} />
-            <Route path="/study/:studyId" element={<CreateStudyPage />} />
             <Route path="/create-study" element={<CreateStudyPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+
+            <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview"/>} />
+            <Route path="/study/:studyId/" element={<SurveyPage />} />
   
           {/* Protected routes 
           <Route path="/dashboard" element={user ? <DashboardPage /> : <Navigate to="/login" />} />

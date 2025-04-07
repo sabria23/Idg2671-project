@@ -1,12 +1,17 @@
-import {useState} from 'react'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom';
+import UAParser from 'ua-parser-js';
 import axios from 'axios';
 import 'surveyPage.css'
+
 // make props for the page if it should be the real thing or a preview
 // a mode='preview' and a mode='live', preview will be accessible from the createStudy page and live from the link
 
 // UseState to manage the demographics info and the session status to separate preview and live
 const [demographics, setDemographics] = useState({age:'', gender:''});
 const [hasSessionStarted, setHasSessionStarted] = useState(false);
+const [sessionId, setSessionId] = useState(null);
+
 
 // Function that starts the session when the user delivers the demographics info at the start of the survey
 const startSession = async () => {
