@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import styles from '../../styles/createStudy.module.css';
 import Navbar from "../../components/common/Navbar";
 
@@ -23,6 +23,16 @@ const CreateStudyPage = () => {
             layout: 'row'
         }
     ]);
+
+    // STUDY DETAILS "CONTROLLERS"
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'title') {
+            setStudyTitle(value);
+        } else if (name === 'description') {
+            setStudyDescription(value);
+        }
+    };
 
     // ARTIFACT "CONTROLLERS"
     const acceptedArtifactTypes = {
@@ -77,16 +87,6 @@ const CreateStudyPage = () => {
         );
     };
 
-    // STUDY DETAILS "CONTROLLERS"
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        if (name === 'title') {
-            setStudyTitle(value);
-        } else if (name === 'description') {
-            setStudyDescription(value);
-        }
-    };
-
     // QUESTION CREATOR "CONTROLLERS"
     const addQuestion = () => {
         setQuestions(prev => [
@@ -101,10 +101,23 @@ const CreateStudyPage = () => {
             },
         ]);
     };
-
-    const handleQuestionTypeChange = (index, value) => {
+    
+    const handleQuestionTitleChange = (index, newTitle) => {
         const updatedQuestions = [...questions];
-        updatedQuestions[index].questionType = value;
+        updatedQuestions[index] = {
+            ...updatedQuestions[index],
+            questionTitle: newTitle, 
+        };
+        setQuestions(updatedQuestions);
+    };
+
+    const handleQuestionTypeChange = (index, type) => {
+        const updatedQuestions = [...questions];
+        updatedQuestions[index] ={
+            ...updatedQuestions[index],
+            questionType: type,
+            questionText: updatedQuestions[index].questionText || '',
+        };
         setQuestions(updatedQuestions);
     };
 
@@ -227,6 +240,10 @@ const CreateStudyPage = () => {
                                                 ? styles.selectedQuestion
                                                 : ''
                                         }
+                                        value={questions[selectedQuestionIndex].questionTitle || ''}
+                                        onChange={(e) =>
+                                            handleQuestionTitleChange(selectedQuestionIndex, e.target.value)
+                                        }
                                     >
                                         {question.questionTitle || `Question ${index + 1}`}
                                     </li>
@@ -241,18 +258,18 @@ const CreateStudyPage = () => {
                         {/* Middle panel: Edit Question Text */}
                         <div className={styles['middle-panel']}>
                             {selectedQuestionIndex !== null && questions[selectedQuestionIndex] && (
-                                <>
-                                    <h3>Edit Question</h3>
-                                    <textarea 
-                                        placeholder='Enter your question text here'
-                                        value={questions[selectedQuestionIndex].questionText}
-                                        onChange={(e) =>
-                                            handleQuestionTextChange(selectedQuestionIndex, e.target.value)
-                                        }
-                                        rows={6}
-                                        cols={40}  
-                                    />
-                                </>
+                            <>
+                                <h3>Edit Question</h3>
+                                <textarea 
+                                    placeholder='Enter your question text here'
+                                    value={questions[selectedQuestionIndex].questionText}
+                                    onChange={(e) =>
+                                        handleQuestionTextChange(selectedQuestionIndex, e.target.value)
+                                    }
+                                    rows={6}
+                                    cols={40}  
+                                />
+                            </>
                             )}
                         </div>
 
@@ -280,162 +297,162 @@ const CreateStudyPage = () => {
                                             />
                                         </label>
 
-                                        {/* DISPLAY UPLOADED FILES */}
-                                        <div className={styles['uploadedFiles']}>
-                                            <h3>Uploaded artifacts</h3>
-                                            {selectedFiles.length === 0 ? (
-                                                <p>No artifacts uploaded yet</p>
-                                            ) : (
-                                                <ul className={styles['uploadedFiles-list']}>
-                                                    {selectedFiles.map((file, index) => {
-                                                        const fileURL = URL.createObjectURL(file);
-                                                        const fType = file.type.split('/')[0];
+                        {/* Question Type */}
+                        <label>
+                            Question Type
+                            <div>
+                                <input
+                                    type="radio"
+                                    name={`questionType-${selectedQuestionIndex}`}
+                                    value="multiple-choice"
+                                    checked={
+                                        questions[selectedQuestionIndex]
+                                            .questionType === 'multiple-choice'
+                                    }
+                                    onChange={(e) =>
+                                        handleQuestionTypeChange(
+                                            selectedQuestionIndex,
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                                Multiple Choice
+                            </div>
+                            <div>
+                                <input
+                                    type="radio"
+                                    name={`questionType-${selectedQuestionIndex}`}
+                                    value="open-ended"
+                                    checked={
+                                        questions[selectedQuestionIndex]
+                                            .questionType === 'open-ended'
+                                    }
+                                    onChange={(e) =>
+                                        handleQuestionTypeChange(
+                                            selectedQuestionIndex,
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                                Open Ended
+                            </div>
+                        </label>
 
-                                                        return (
-                                                            <li
-                                                                key={index}
-                                                                className={styles['artifact-item']}
-                                                            >
-                                                                {fType === 'image' && (
-                                                                    <img
-                                                                        src={fileURL}
-                                                                        alt={file.name}
-                                                                        width="150"
-                                                                    />
-                                                                )}
-                                                                {fType === 'video' && (
-                                                                    <video width="250" controls>
-                                                                        <source
-                                                                            src={fileURL}
-                                                                            type={file.type}
-                                                                        />
-                                                                        Your browser does not support
-                                                                        video playback
-                                                                    </video>
-                                                                )}
-                                                                {fType === 'audio' && (
-                                                                    <audio controls>
-                                                                        <source
-                                                                            src={fileURL}
-                                                                            type={file.type}
-                                                                        />
-                                                                        Your browser does not support audio
-                                                                        playback
-                                                                    </audio>
-                                                                )}
-                                                                {(fType === 'text' ||
-                                                                    fType === 'application') && (
-                                                                    <p>
-                                                                        <strong>{file.name}</strong>
-                                                                    </p>
-                                                                )}
+                        {/* DISPLAY UPLOADED FILES */}
+                        <div className={styles['uploadedFiles']}>
+                            <h3>Uploaded artifacts</h3>
+                            {selectedFiles.length === 0 ? (
+                                <p>No artifacts uploaded yet</p>
+                            ) : (
+                                <ul className={styles['uploadedFiles-list']}>
+                                    {selectedFiles.map((file, index) => {
+                                        const fileURL = URL.createObjectURL(file);
+                                        const fType = file.type.split('/')[0];
 
-                                                                <button
-                                                                    type="button"
-                                                                    className={
-                                                                        styles['removeArtifactBtn']
-                                                                    }
-                                                                    onClick={() =>
-                                                                        handleRemoveArtifact(index)
-                                                                    }
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                            </li>
-                                                        );
-                                                    })}
-                                                </ul>
-                                            )}
-                                        </div>
-
-                                        {/* Question Type */}
-                                        <label>
-                                            Question Type
-                                            <div>
-                                                <input
-                                                    type="radio"
-                                                    name={`questionType-${selectedQuestionIndex}`}
-                                                    value="multiple-choice"
-                                                    checked={
-                                                        questions[selectedQuestionIndex]
-                                                            .questionType === 'multiple-choice'
-                                                    }
-                                                    onChange={(e) =>
-                                                        handleQuestionTypeChange(
-                                                            selectedQuestionIndex,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                                Multiple Choice
-                                            </div>
-                                            <div>
-                                                <input
-                                                    type="radio"
-                                                    name={`questionType-${selectedQuestionIndex}`}
-                                                    value="open-ended"
-                                                    checked={
-                                                        questions[selectedQuestionIndex]
-                                                            .questionType === 'open-ended'
-                                                    }
-                                                    onChange={(e) =>
-                                                        handleQuestionTypeChange(
-                                                            selectedQuestionIndex,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                                Open Ended
-                                            </div>
-                                        </label>
-
-                                        {/* Multiple choice options */}
-                                        {questions[selectedQuestionIndex].questionType ===
-                                            'multiple-choice' && (
-                                            <>
-                                                <h4>Multiple Choice Options</h4>
-                                                {questions[selectedQuestionIndex].options.map(
-                                                    (option, optIndex) => (
-                                                        <div key={optIndex}>
-                                                            <input
-                                                                type="text"
-                                                                value={option}
-                                                                onChange={(e) => {
-                                                                    const updatedQuestions = [
-                                                                        ...questions,
-                                                                    ];
-                                                                    updatedQuestions[
-                                                                        selectedQuestionIndex
-                                                                    ].options[optIndex] =
-                                                                        e.target.value;
-                                                                    setQuestions(updatedQuestions);
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )
+                                        return (
+                                            <li
+                                                key={index}
+                                                className={styles['artifact-item']}
+                                            >
+                                                {fType === 'image' && (
+                                                    <img
+                                                        src={fileURL}
+                                                        alt={file.name}
+                                                        width="150"
+                                                    />
                                                 )}
-                                            </>
-                                        )}
+                                                {fType === 'video' && (
+                                                    <video width="250" controls>
+                                                        <source
+                                                            src={fileURL}
+                                                            type={file.type}
+                                                        />
+                                                        Your browser does not support
+                                                        video playback
+                                                    </video>
+                                                )}
+                                                {fType === 'audio' && (
+                                                    <audio controls>
+                                                        <source
+                                                            src={fileURL}
+                                                            type={file.type}
+                                                        />
+                                                        Your browser does not support audio
+                                                        playback
+                                                    </audio>
+                                                )}
+                                                {(fType === 'text' ||
+                                                    fType === 'application') && (
+                                                    <p>
+                                                        <strong>{file.name}</strong>
+                                                    </p>
+                                                )}
 
-                                        {/* Layout Template */}
-                                        <label>
-                                            Layout Template
-                                            <select
-                                                value={
-                                                    questions[selectedQuestionIndex].layout ||
-                                                    'row'
-                                                }
+                                                <button
+                                                    type="button"
+                                                    className={
+                                                        styles['removeArtifactBtn']
+                                                    }
+                                                    onClick={() =>
+                                                        handleRemoveArtifact(index)
+                                                    }
+                                                >
+                                                    Delete
+                                                </button>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            )}
+                        </div>
+
+                        {/* Multiple choice options */}
+                        {questions[selectedQuestionIndex].questionType ===
+                            'multiple-choice' && (
+                            <>
+                                <h4>Multiple Choice Options</h4>
+                                {questions[selectedQuestionIndex].options.map(
+                                    (option, optIndex) => (
+                                        <div key={optIndex}>
+                                            <input
+                                                type="text"
+                                                value={option}
                                                 onChange={(e) => {
-                                                    const updatedQuestions = [...questions];
-                                                    updatedQuestions[selectedQuestionIndex].layout =
+                                                    const updatedQuestions = [
+                                                        ...questions,
+                                                    ];
+                                                    updatedQuestions[
+                                                        selectedQuestionIndex
+                                                    ].options[optIndex] =
                                                         e.target.value;
                                                     setQuestions(updatedQuestions);
                                                 }}
-                                            >
-                                                <option value="row">Row Layout</option>
-                                                <option value="grid">Grid Layout</option>
-                                            </select>
-                                        </label>
+                                            />
+                                        </div>
+                                    )
+                                )}
+                            </>
+                        )}
+
+                        {/* Layout Template */}
+                        <label>
+                            Layout Template
+                            <select
+                                value={
+                                    questions[selectedQuestionIndex].layout ||
+                                    'row'
+                                }
+                                onChange={(e) => {
+                                    const updatedQuestions = [...questions];
+                                    updatedQuestions[selectedQuestionIndex].layout =
+                                        e.target.value;
+                                    setQuestions(updatedQuestions);
+                                }}
+                            >
+                                <option value="row">Row Layout</option>
+                                <option value="grid">Grid Layout</option>
+                            </select>
+                        </label>
 
                                         {/* Delete question */}
                                         <button
