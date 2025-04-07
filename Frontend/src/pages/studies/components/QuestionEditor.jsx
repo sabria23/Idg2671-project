@@ -22,7 +22,7 @@ const QuestionEditor = ({ questions, selectedQuestionIndex, setQuestions }) =>{
                                 onChange={(e) =>
                                     handleQuestionTextChange(selectedQuestionIndex, e.target.value)
                                 }
-                                rows={6}
+                                rows={4}
                                 cols={40}  
                             />
                         </>
