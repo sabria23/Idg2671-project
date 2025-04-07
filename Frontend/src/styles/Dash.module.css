@@ -1,0 +1,144 @@
+/* Main container */
+.container {
+  color: #333;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header styling */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: white;
+  border-bottom: 1px solid #eaeaea;
+}
+
+/* Main content */
+.mainContent {
+  flex: 1;
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.welcomeHeader {
+  font-size: 28px;
+  margin-bottom: 32px;
+  font-weight: 600;
+}
+
+/* Empty state */
+.emptyStateContainer {
+  background-color: #edf2f7;
+  border-radius: 8px;
+  margin-bottom: 32px;
+  padding: 64px 32px;
+  text-align: center;
+}
+
+.emptyState h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  color: #4a5568;
+}
+
+.createFirstButton {
+  background-color: #224684;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.createFirstButton:hover {
+  background-color: #079178;
+}
+
+/* Study item */
+.studyItem {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  margin-bottom: 8px;
+}
+
+.studyType {
+  margin-right: 16px;
+}
+
+.testIcon {
+  color: #805ad5;
+  font-size: 14px;
+}
+
+.studyInfo {
+  flex: 2;
+}
+
+.studyName {
+  font-weight: 500;
+}
+
+.responseInfo {
+  flex: 1;
+  text-align: center;
+}
+
+.responseCount {
+  font-weight: 500;
+}
+
+.responseStatus {
+  font-size: 12px;
+  color: #718096;
+}
+
+.studyActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.recruitButton {
+  color: #08a88a;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.studyDate {
+  color: #718096;
+  font-size: 12px;
+}
+
+.userIndicator {
+  width: 28px;
+  height: 28px;
+  background-color: #8a56ac;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #718096;
+}

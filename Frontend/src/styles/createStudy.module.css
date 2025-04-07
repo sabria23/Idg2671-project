@@ -1,0 +1,176 @@
+/* src/styles/createStudy.module.css */
+
+/* CreateStudyPage */
+.studyPage-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* NavBar */
+.fullWidthNav {
+    width: 100%;
+    align-self: stretch;
+}
+
+
+/* CreateStudyPage content container */
+.studyPage-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1.5rem 0 1.5rem 0;;
+}
+
+.studyPage-content h1{
+    font-size: 28px;
+    color: #333;
+}
+
+/* Study Details "form */
+.studyDetails-container{
+    display: flex;
+    flex-direction: column;
+    margin: 1.5rem 0 1.5rem 0;
+    padding: 1.5rem 1rem;
+    border: solid 1px grey;
+    border-radius: 4px;
+    background-color: #edf2f7;
+}
+
+.studyDetails-container label{
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.studyDetails-container input,
+.studyDetails-container textarea{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.studyDetails-container textarea{
+   resize: vertical;
+}
+
+/* Artifact upload */
+.uploadArtifact-container{
+    border: solid 1px grey;
+    margin: 1em 0 1rem 0;
+    padding: 1rem 1.5rem;
+    background-color: #edf2f7;
+    border-radius: 4px;
+    
+}
+
+.uploadArtifact-container h2{
+    font-size: 20px;
+    margin-bottom: 1rem;
+}
+
+.uploadArtifact-container select,
+.uploadArtifact-container input{
+    margin: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: solid 1px grey;
+    border-radius: 4px;
+}
+.artifact-input{
+    cursor: pointer;
+}
+
+.artifactBtn{
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+
+.upload-status{
+    color: #666;
+
+}
+
+.uploadedFiles-list{
+
+}
+
+.artifact-item{
+
+}
+
+.removeArtifactBtn{
+
+}
+
+.questionBuilder-container{
+    background-color: #edf2f7;
+    border: solid 1px grey;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1rem;    
+}
+
+.addQuestion,
+.uploadedFiles{
+    border: solid 1px grey;
+    padding: 0.5rem;
+}
+.addQuestion li{
+    list-style: none;
+    background-color: #6ef582;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+.addQuestion button{
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: #0d6efd;
+    color: white;
+    border: solid 1px grey;
+    cursor: pointer;
+}
+
+.question-item{
+
+}
+
+.questionBuilder-container{
+   display: flex;
+}
+
+.rightSide-panel{
+ border: solid 1px grey;
+ padding: 0.5rem;
+}
+
+.saveBtns button{
+    display: flex;
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+}
+.saveStudyBtn{
+    background-color: #0d6efd;
+    color: white;
+    
+}
+.saveStudyBtn:hover{
+    background-color: #51b861;
+}
+
+.previewBtn a:link{
+    text-decoration: none;
+    color: black;
+    
+}
+.previewBtn{
+    background-color: rgba(176, 192, 246, 0.692);
+}
