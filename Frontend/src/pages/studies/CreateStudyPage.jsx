@@ -101,22 +101,19 @@ const CreateStudyPage = () => {
             },
         ]);
     };
-    
-    const handleQuestionTitleChange = (index, newTitle) => {
+
+    const handleQuestionTitleChange = (index, value) =>{
         const updatedQuestions = [...questions];
-        updatedQuestions[index] = {
-            ...updatedQuestions[index],
-            questionTitle: newTitle, 
-        };
+        updatedQuestions[index].questionTitle = value;
         setQuestions(updatedQuestions);
     };
+
 
     const handleQuestionTypeChange = (index, type) => {
         const updatedQuestions = [...questions];
         updatedQuestions[index] ={
             ...updatedQuestions[index],
             questionType: type,
-            questionText: updatedQuestions[index].questionText || '',
         };
         setQuestions(updatedQuestions);
     };
@@ -240,10 +237,6 @@ const CreateStudyPage = () => {
                                                 ? styles.selectedQuestion
                                                 : ''
                                         }
-                                        value={questions[selectedQuestionIndex].questionTitle || ''}
-                                        onChange={(e) =>
-                                            handleQuestionTitleChange(selectedQuestionIndex, e.target.value)
-                                        }
                                     >
                                         {question.questionTitle || `Question ${index + 1}`}
                                     </li>
@@ -259,16 +252,22 @@ const CreateStudyPage = () => {
                         <div className={styles['middle-panel']}>
                             {selectedQuestionIndex !== null && questions[selectedQuestionIndex] && (
                             <>
-                                <h3>Edit Question</h3>
-                                <textarea 
-                                    placeholder='Enter your question text here'
-                                    value={questions[selectedQuestionIndex].questionText}
-                                    onChange={(e) =>
-                                        handleQuestionTextChange(selectedQuestionIndex, e.target.value)
-                                    }
-                                    rows={6}
-                                    cols={40}  
-                                />
+                                {questions[selectedQuestionIndex].questionType === 'open-ended' ? (
+                                    <>
+                                    <h3>Edit Question</h3>
+                                    <textarea 
+                                        placeholder='Enter your question text here'
+                                        value={questions[selectedQuestionIndex].questionText}
+                                        onChange={(e) =>
+                                            handleQuestionTextChange(selectedQuestionIndex, e.target.value)
+                                        }
+                                        rows={6}
+                                        cols={40}  
+                                    />
+                            </>
+                            ) : (
+                                    <p>Select a question type on the right</p>
+                            )}
                             </>
                             )}
                         </div>
@@ -282,61 +281,20 @@ const CreateStudyPage = () => {
 
                                         {/* Question Text */}
                                         <label>
-                                            Question Text
+                                            Question Title
                                             <input
                                                 type="text"
                                                 value={
-                                                    questions[selectedQuestionIndex].questionText
+                                                    questions[selectedQuestionIndex].questionTitle
                                                 }
                                                 onChange={(e) =>
-                                                    handleQuestionTextChange(
+                                                    handleQuestionTitleChange(
                                                         selectedQuestionIndex,
                                                         e.target.value
                                                     )
                                                 }
                                             />
                                         </label>
-
-                        {/* Question Type */}
-                        <label>
-                            Question Type
-                            <div>
-                                <input
-                                    type="radio"
-                                    name={`questionType-${selectedQuestionIndex}`}
-                                    value="multiple-choice"
-                                    checked={
-                                        questions[selectedQuestionIndex]
-                                            .questionType === 'multiple-choice'
-                                    }
-                                    onChange={(e) =>
-                                        handleQuestionTypeChange(
-                                            selectedQuestionIndex,
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                                Multiple Choice
-                            </div>
-                            <div>
-                                <input
-                                    type="radio"
-                                    name={`questionType-${selectedQuestionIndex}`}
-                                    value="open-ended"
-                                    checked={
-                                        questions[selectedQuestionIndex]
-                                            .questionType === 'open-ended'
-                                    }
-                                    onChange={(e) =>
-                                        handleQuestionTypeChange(
-                                            selectedQuestionIndex,
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                                Open Ended
-                            </div>
-                        </label>
 
                         {/* DISPLAY UPLOADED FILES */}
                         <div className={styles['uploadedFiles']}>
@@ -405,6 +363,47 @@ const CreateStudyPage = () => {
                                 </ul>
                             )}
                         </div>
+
+                        {/* Question Type */}
+                        <label>
+                            Question Type
+                            <div>
+                                <input
+                                    type="radio"
+                                    name={`questionType-${selectedQuestionIndex}`}
+                                    value="multiple-choice"
+                                    checked={
+                                        questions[selectedQuestionIndex]
+                                            .questionType === 'multiple-choice'
+                                    }
+                                    onChange={(e) =>
+                                        handleQuestionTypeChange(
+                                            selectedQuestionIndex,
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                                Multiple Choice
+                            </div>
+                            <div>
+                                <input
+                                    type="radio"
+                                    name={`questionType-${selectedQuestionIndex}`}
+                                    value="open-ended"
+                                    checked={
+                                        questions[selectedQuestionIndex]
+                                            .questionType === 'open-ended'
+                                    }
+                                    onChange={(e) =>
+                                        handleQuestionTypeChange(
+                                            selectedQuestionIndex,
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                                Open Ended
+                            </div>
+                        </label>
 
                         {/* Multiple choice options */}
                         {questions[selectedQuestionIndex].questionType ===
