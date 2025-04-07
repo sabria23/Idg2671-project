@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../../styles/createStudy.module.css';
+import styles from '../styles/QuestionBuilder.module.css';
 
 const QuestionSettings = ({ questions, selectedQuestionIndex, setQuestions, setSelectedQuestionIndex, selectedFiles }) => {
     

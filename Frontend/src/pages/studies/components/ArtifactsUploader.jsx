@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import styles from '../../../styles/createStudy.module.css';
+import styles from '../styles/ArtifactUpload.module.css';
 
 
 const ArtifactsUploader = ({ selectedFiles, setSelectedFiles }) => {

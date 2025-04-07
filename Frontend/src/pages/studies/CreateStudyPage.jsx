@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../styles/createStudy.module.css';
 import Navbar from "../../components/common/Navbar";
-import StudyDetails from './components/StudyDetails.jsx';
+import StudyDetails from './components/StudyDetails';
 import ArtifactsUploader from './components/ArtifactsUploader';
 import QuestionBuilder from './components/QuestionBuilder';
 

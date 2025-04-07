@@ -1,7 +1,8 @@
 import React from 'react';
-import styles from '../../../styles/createStudy.module.css';
+import styles from '../styles/StudyDetails.module.css';
 
 const StudyDetails = ({ studyTitle, studyDescription, setStudyTitle, setStudyDescription }) =>{
+    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

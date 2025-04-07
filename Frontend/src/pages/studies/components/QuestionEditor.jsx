@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from '../../../styles/createStudy.module.css';
+import styles from '../styles/QuestionBuilder.module.css';
 
 const QuestionEditor = ({ questions, selectedQuestionIndex, setQuestions }) =>{
-    
+
     const handleQuestionTextChange = (index, value) => {
         const updatedQuestions = [...questions];
         updatedQuestions[index].questionText = value;

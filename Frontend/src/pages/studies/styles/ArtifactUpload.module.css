@@ -1,0 +1,47 @@
+/* Artifact upload */
+.uploadArtifact-container{
+    border: solid 1px grey;
+    margin: 1em 0 1rem 0;
+    padding: 1rem 1.5rem;
+    background-color: #edf2f7;
+    border-radius: 4px;
+    
+}
+
+.uploadArtifact-container h2{
+    font-size: 20px;
+    margin-bottom: 1rem;
+}
+
+.uploadArtifact-container select,
+.uploadArtifact-container input{
+    margin: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: solid 1px grey;
+    border-radius: 4px;
+}
+.artifact-input{
+    cursor: pointer;
+}
+
+.artifactBtn{
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+
+.upload-status{
+    color: #666;
+
+}
+
+.uploadedFiles-list{
+
+}
+
+.artifact-item{
+
+}
+.removeArtifactBtn{
+
+}

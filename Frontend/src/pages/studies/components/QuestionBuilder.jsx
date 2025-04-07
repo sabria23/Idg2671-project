@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import styles from '../../../styles/createStudy.module.css';
+import styles from '../styles/QuestionBuilder.module.css';
 import QuestionList from './QuestionList';
 import QuestionEditor from './QuestionEditor';
-import QuestionSettings from './QuestionBuilder';
+import QuestionSettings from './SettingsForQuestions';
 
 const QuestionBuilder = ({ questions, setQuestions, selectedFiles }) =>{
 
