@@ -1,13 +1,32 @@
-// import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../../styles/Auth.css";
+import axios from "axios";
+
 
 const LoginPage = () => {
-    // const [formData, setFormData] = useState({
-    //     userName: "",
-    //     password: "",
-    //     rememberMe: false
-    // });
+    const [userName, setuserName] = useState("");
+    const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) =>{
+        e.preventDefault();
+
+        axios.post("http://localhost:8000/api/auth/login", {username: userName, password})
+        .then(result => {
+            console.log(result);
+
+            if(result.data && result.data.token) {
+                localStorage.setItem("token", result.data.token);
+                navigate("/dashboard")
+            } else {
+                console.log("Token not found in response");
+            }
+        })
+        .catch(err => console.log(err));
+      };
+
   return (
     <div className="auth-container">
         <div className="bubble-container">
@@ -33,21 +52,34 @@ const LoginPage = () => {
         <h2>to the study creator</h2>
         <p>Create, analyze your studies with ease.</p>
         <p>Whether it's for research, surveys or learning materials</p>
-        <p>Study Creator helps you design på en enkel måte.</p>
-        <p>Start building your study today!</p>
+        <p>Study Creator helps you design in easy way.</p>
+        <p>Start building your study today!</p> 
       </div>
+     
       <div className="right-container">
         <div className="auth-card">
           <h1>Login</h1>
-          <form>
-            <label for="userName">Username</label>
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="userName">Username</label>
             <div className="input-group">
-              <input type="text" name="userName" placeholder="Username" required />
+              <input 
+                type="text" 
+                name="userName" 
+                placeholder="Username"
+                required 
+                onChange={(e) => setuserName(e.target.value)}
+                />
             </div>
 
             <div className="input-group">
-            <label for="password">Password</label>
-              <input type="password" name="password" placeholder="Password" required />
+            <label htmlFor="password">Password</label>
+              <input 
+                type="password" 
+                name="password" 
+                placeholder="Password" 
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                />
             </div>
 
             <div className="form-options">
