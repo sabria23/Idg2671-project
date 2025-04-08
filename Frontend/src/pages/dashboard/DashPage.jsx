@@ -18,7 +18,7 @@ const DashboardPage = () => {
       };
     // Add these new methods
     // NNED TO MOVE THIS SOMEWHERE ELSE SINCE IT IS MORE RELATED TO SUDYITEM
-    /*const handleRename = (studyId, newName) => {
+    const handleRename = (studyId, newName) => {
         // Implement rename logic
         console.log(`Renaming study ${studyId} to ${newName}`);
         // You might want to call an update service method here
@@ -34,7 +34,7 @@ const DashboardPage = () => {
         // Implement delete logic
         console.log(`Deleting study ${studyId}`);
         // You might want to call a delete service method
-    };*/
+    };
     
 
        // Your specific navigation items for the Dashboard
