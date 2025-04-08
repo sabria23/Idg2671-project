@@ -5,7 +5,7 @@ import checkStudyAuthorization from '../Utils/authHelperFunction.js';
 
 //----------------POST(CREATE)----------------------------
 // Create a new study
-const createStudy = async (req, res) => {
+/*const createStudy = async (req, res) => {
     try {
         
         const { creator, title, description, published, questions } = req.body;
@@ -27,7 +27,45 @@ const createStudy = async (req, res) => {
     } catch (err){
         res.status(400).json({ err: err.message});
     }
-};
+};*/
+const createStudy = async (req, res) => {
+    try {
+        const { creator, title, description, published, questions } = req.body;
+        
+        // Use req.userId from the authentication middleware
+        // If creator is not provided, use req.userId
+        const creatorId = creator || req.userId;
+    
+        // Validate the creator ID
+        if (!creatorId) {
+            return res.status(400).json({ error: 'Creator ID is required' });
+        }
+    
+        // No need to check authorization when creating a new study
+        // The checkStudyAuthorization is typically used when accessing an existing study
+        if(!title || !description){
+            return res.status(400).json({ error: 'Title and description are required'});
+        }
+    
+        const study = new Study({
+            creator: new mongoose.Types.ObjectId(creatorId),
+            title,
+            description,
+            published: published || false,
+            questions: questions || []
+        });
+    
+        await study.save();
+        
+        res.status(201).json({ 
+            message: 'A new study successfully created!',
+            studyId: study._id
+        });
+    } catch (err){
+        console.error('Study Creation Error:', err);
+        res.status(400).json({ err: err.message });
+    }
+    };
 
 // Upload artifacts
 // The code is reused from @modestat's oblig2 in full-stack
