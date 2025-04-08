@@ -18,8 +18,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "emi123",
-  "password": "noobs"
+  "username": "bob",
+  "password": "bob123"
 }
 
 ### Store token from login response
@@ -27,12 +27,21 @@ Content-Type: application/json
 
 ### 3. Get current user details (to verify token works)
 GET {{baseUrl}}/api/auth/user
-Authorization: Bearer {{token}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjI5OTM1N2IzNmIzNGJhNmEwYzkzMCIsImlhdCI6MTc0NDEzOTI0MCwiZXhwIjoxNzQ2NzMxMjQwfQ.h0ZLQI2a9KovRcpdHyjZ_NH7S0VO2CzZp6-NjTrYbCY
 
 #----------------------POST(CREATE)-------------------------
 ### Create new study
 POST {{baseUrl}}/api/studies
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjI5OTM1N2IzNmIzNGJhNmEwYzkzMCIsImlhdCI6MTc0NDEzOTYxOSwiZXhwIjoxNzQ2NzMxNjE5fQ.Re7gwhu65gFh4fDUnm5Kf3KiTQIZ_NLifcDGJabGgRQ
+
+{
+   "creator": "67f299357b36b34ba6a0c930",
+   "title": "using bob as my dash test",
+   "description": "want to display this study",
+   "published": false,
+   "questions": []
+}
 
 ### Create a question
 POST {{baseUrl}}/api/studies/:studyId/questions
