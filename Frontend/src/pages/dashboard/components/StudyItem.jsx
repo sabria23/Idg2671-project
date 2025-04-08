@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from "../../../styles/Dash.module.css";
 import DropdownMenu from "./DropDownMenu";
+import {Link} from 'react-router-dom';
+
 
 const StudyItem = ({ study, onRename, onEdit, onDelete }) => {
     
@@ -22,7 +24,10 @@ const StudyItem = ({ study, onRename, onEdit, onDelete }) => {
       </div>
       
       <div className={styles.studyActions}>
-        <button className={styles.recruitButton}>Recruit</button>
+        <Link to="/recruit" className={styles.recruitButton}>
+            Recruit
+        </Link>
+        
         <div className={styles.studyDate}>
           {new Date(study.createdAt).toLocaleDateString('en-US', {
             day: 'numeric',
