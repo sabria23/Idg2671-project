@@ -6,6 +6,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import SignupPage from './pages/auth/SignupPage';
 import DashboardPage from './pages/dashboard/DashPage';
 import CreateStudyPage from './pages/studies/CreateStudyPage';
+import RecruitmentPage from './pages/recruitment/RecruitmentPage.jsx';
 //import StudyParticipationPage from './pages/StudyParticipationPage';
 
 
@@ -39,9 +40,16 @@ const App = () => {
                 <CreateStudyPage />
               </PortectedRoute>
             } />
+
+             <Route path="/recruit" element={
+                <PortectedRoute>
+                  <RecruitmentPage />
+                </PortectedRoute>
+              } />
            
            {/* this route is for redirected root to dash */}
            <Route path="/" element={<Navigate to="/dashboard" />} />
+
   
         </Routes>
       </Router>
