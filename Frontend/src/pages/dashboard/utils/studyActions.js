@@ -11,7 +11,7 @@ const handleEdit = (studyId) => {
     navigate(`/study/${studyId}`)
 };
 
-export const handleDelete = async (studyId, setStudies, setLoading, setError) => {
+export const handleDelete = async (studyId, setStudies, setLoading, setError, studies) => {
     try {
         setLoading(true);
         await deleteStudy(studyId);
