@@ -7,10 +7,12 @@ const handleRename = (studyId, newName) => {
     // You might want to call an update service method here
 };
 
-const handleEdit = (studyId) => {
-    navigate(`/study/${studyId}`)
-};
-
+/*
+studyId: The ID of the study you want to delete
+setStudies: A state setter function from React's useState hook that updates the list of studies
+setLoading: A state setter to control loading indicators
+setError: A state setter to handle error messages
+studies: The current array of studies (needed to filter out the deleted one) -> defined in reacts useState hook in my dahsborasPage compoennt, later on the my code i use UseEffect where i popluate thsi array with data by using setStudies function with param data -> getAllstudies() function return data from my API which i then store in studies state. */
 export const handleDelete = async (studyId, setStudies, setLoading, setError, studies) => {
     try {
         setLoading(true);
@@ -32,8 +34,3 @@ export const handleDelete = async (studyId, setStudies, setLoading, setError, st
     }
 };
 
-// this funciton handles exporitng a tsudy to the export result page
-//this allows the export page to load the correct study data by its specific ID
-const handleExport = (studyId) => {
-  navigate(`/export-results/${studyId}`);
-};

@@ -17,6 +17,15 @@ const DashboardPage = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [studyToDelete, setStudyToDelete] = useState(null);
 
+    // this funciton handles exporitng a tsudy to the export result page
+  //this allows the export page to load the correct study data by its specific ID
+    const handleExport = (studyId) => {
+      navigate(`/export-results/${studyId}`);
+    };
+    const handleEdit = (studyId) => {  
+        navigate(`/study/${studyId}`)
+    };
+
     const initiateDelete = (studyId) => {
       setStudyToDelete(studyId);
       setIsDeleteModalOpen(true);
@@ -109,19 +118,19 @@ const DashboardPage = () => {
                         key={study._id}
                         study={study}
                         //onRename={handleRename}
-                        //onEdit={handleEdit}
+                        onEdit={handleEdit}
                         onDelete={initiateDelete}
-                       // onExport={handleExport}
+                        onExport={handleExport}
                       />
                     ))}
                   </div>
                 )}
                 <ConfirmationMsg
-  isOpen={isDeleteModalOpen}
-  message="Are you sure you want to delete this study? This action cannot be undone."
-  onConfirm={confirmDelete}
-  onCancel={() => setIsDeleteModalOpen(false)}
-/>
+                  isOpen={isDeleteModalOpen}
+                  message="Are you sure you want to delete this study? This action cannot be undone."
+                  onConfirm={confirmDelete}
+                  onCancel={() => setIsDeleteModalOpen(false)}
+                />
               </>
             )}
           </main>
