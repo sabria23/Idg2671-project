@@ -1,3 +1,4 @@
+// https://scrapingant.com/blog/axios-vs-fetch
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/api';
@@ -19,6 +20,17 @@ export const getAllStudies = async () => {
     }
 };
 
+export const deleteStudy = async (studyId) => { // take in that specific studyId parameter
+    try {
+        const response = await axios.delete(`${API_URL}/studies/${studyId}`, {
+            headers: { Authorization: `Bearer ${getToken()}`}
+        });
+        return response.data
+    } catch (error) {
+        throw error;
+    }
+}
 export default {
-    getAllStudies
+    getAllStudies,
+    deleteStudy
 };
