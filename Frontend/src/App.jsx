@@ -46,9 +46,9 @@ const App = () => {
                 </PortectedRoute>
               } />
 
-               <Route path="/export-results" element={
+               <Route path="/export-result" element={
                 <PortectedRoute>
-                  <RecruitmentPage />
+                  <ExportPage />
                 </PortectedRoute>
               } />
            
