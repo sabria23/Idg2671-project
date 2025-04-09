@@ -198,10 +198,23 @@ export const updateAnswer = async (req, res, next) => {
 };
 
 
-//export const completeSession = async (req, res, next) => {
-//    try {
-//        
-//    } catch (err) {
-//        next(err);
-//    }
-//};
+export const completeSession = async (req, res, next) => {
+    try {
+      const { sessionId } = req.params;
+
+      const session = await Session.findById(sessionId);
+        if (!session) {
+            const error = new Error('Session not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        session.isCompleted = true;
+        await session.save();
+        res.status(200).json({
+            message: 'Session completed successfully',
+            sessionId: session._id
+        });
+    } catch (err) {
+        next(err);
+    }
+};
