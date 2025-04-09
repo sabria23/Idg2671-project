@@ -17,7 +17,7 @@ const DashboardPage = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [studyToDelete, setStudyToDelete] = useState(null);
 
-    const handleDelete = (studyId) => {
+    const initiateDelete = (studyId) => {
       setStudyToDelete(studyId);
       setIsDeleteModalOpen(true);
     };
@@ -26,10 +26,7 @@ const DashboardPage = () => {
       if (studyToDelete) {
         try {
           setLoading(true);
-          await handleDelete(studyToDelete);
-          setStudies(prevStudies => 
-            prevStudies.filter(study => study._id !== studyToDelete)
-          );
+          await handleDelete(studyToDelete, setStudies, setLoading, setError, studies );
         } catch (error) {
           handleApiError(error, setError);
         } finally {
@@ -113,7 +110,7 @@ const DashboardPage = () => {
                         study={study}
                         //onRename={handleRename}
                         //onEdit={handleEdit}
-                        onDelete={handleDelete}
+                        onDelete={initiateDelete}
                        // onExport={handleExport}
                       />
                     ))}
