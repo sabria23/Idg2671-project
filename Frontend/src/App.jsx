@@ -7,9 +7,8 @@ import SignupPage from './pages/auth/SignupPage';
 import DashboardPage from './pages/dashboard/DashPage';
 import CreateStudyPage from './pages/studies/CreateStudyPage';
 import RecruitmentPage from './pages/recruitment/RecruitmentPage.jsx';
+import ExportPage from './pages/exportResults/ExportPage.jsx';
 //import StudyParticipationPage from './pages/StudyParticipationPage';
-
-
 import PortectedRoute from './components/auth/PortectedRoute.jsx';
 
 const App = () => {
@@ -42,6 +41,12 @@ const App = () => {
             } />
 
              <Route path="/recruit" element={
+                <PortectedRoute>
+                  <RecruitmentPage />
+                </PortectedRoute>
+              } />
+
+               <Route path="/export-results" element={
                 <PortectedRoute>
                   <RecruitmentPage />
                 </PortectedRoute>
