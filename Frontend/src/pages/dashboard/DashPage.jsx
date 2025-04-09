@@ -1,8 +1,10 @@
 import {useState, useEffect} from 'react';
+import {Link} from "react-router-dom";
 import styles from "../../styles/Dash.module.css";
 import React from 'react';
 import Navbar from "../../components/common/Navbar";
 import StudyItem from "./components/StudyItem.jsx";
+import ExportPage from "../exportResults/ExportPage.jsx";
 import { getAllStudies } from "../../services/studyService.js";
 import { handleApiError } from "../../utils/errorHandler.js";
 
@@ -108,6 +110,11 @@ const DashboardPage = () => {
                     ))}
                   </div>
                 )}
+                <div className={styles.exportLinkContainer}>
+                  <Link to="/export-result" >
+                      Export your results
+                  </Link>
+                </div>
               </>
             )}
           </main>
