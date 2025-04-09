@@ -1,8 +1,37 @@
-// import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../../styles/Auth.css";
+import axios from "axios";
 
+// Sources: (https://www.youtube.com/watch?v=ZVyIIyZJutM&ab_channel=CodeWithYousaf)
+// Used for "useState" and "link"
 const SignupPage = () => {
+  const [userName, setuserName] = useState(" ")
+  const [email, setEmail] = useState(" ")
+  const [password, setPassword] = useState(" ")
+
+
+  // if (password !== confirmPass) {
+  //   alert("Password do not match");
+  //   return;
+  // }
+const navigate = useNavigate();
+
+  const handleSubmit = (e) =>{
+    e.preventDefault()
+    axios.post("http://localhost:8000/api/auth/register", {username: userName, email, password})
+    .then(result => {
+      console.log(result);
+
+      if(result.data && result.data.token) {
+        localStorage.setItem("token", result.data.token);
+        navigate("/login")
+      } else {
+        console.log("Token not found in response"); 
+      }
+    })
+    .catch(err => console.log(err))
+  }
   return (
     <div className="auth-container">
 <div className="left-container">
@@ -30,36 +59,39 @@ const SignupPage = () => {
       <div className="right-container">
         <div className="auth-card">
         <h1>Create Account</h1>
-        <form >
+        <form onSubmit={handleSubmit}>
           <div className="input-group">
-          <label for="fullname">Full Name</label>
+          <label htmlFor="fullname">Username</label>
             <input
               type="text"
               name="name"
-              placeholder="Full Name"
+              placeholder="Username"
+              onChange={(e) => setuserName(e.target.value)}
             />
           </div>
           
           <div className="input-group">
-          <label for="email">Email</label>
+          <label htmlFor="email">Email</label>
             <input
               type="email"
               name="email"
               placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           
           <div className="input-group">
-          <label for="password">Password</label>
+          <label htmlFor="password">Password</label>
             <input
               type="password"
               name="password"
               placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           
           <div className="input-group">
-          <label for="password">Password</label>
+          <label htmlFor="confirmPassword">Confirm Password</label>
             <input
               type="password"
               name="confirmPassword"
