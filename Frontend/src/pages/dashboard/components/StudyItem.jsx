@@ -4,7 +4,7 @@ import DropdownMenu from "./DropDownMenu";
 import {Link} from 'react-router-dom';
 
 
-const StudyItem = ({ study, onRename, onEdit, onDelete }) => {
+const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
     
   return (
     <div className={styles.studyItem}>
@@ -45,6 +45,7 @@ const StudyItem = ({ study, onRename, onEdit, onDelete }) => {
           options={[
             { label: 'Rename', action: () => onRename(study._id) },
             { label: 'Edit', action: () => onEdit(study._id) },
+            { label: 'Export', action: () => onExport(study._id)  },
             { label: 'Delete', action: () => onDelete(study._id), isDanger: true }
           ]}
         />
