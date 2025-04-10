@@ -8,9 +8,14 @@ import '../styles/displaySurvey.css';
 
 // make props for the page if it should be the real thing or a preview
 // a mode='preview' and a mode='live', preview will be accessible from the createStudy page and live from the link
+export default function surveyPage({ mode = 'live' }) {
+    const {studyId} = useParams(); 
+    const isPreview = mode === 'preview'; // Check if the page is in preview mode
+}
 
 
-const {studyId} = useParams();
+
+
 const [step, setStep] = useState(0) // For managing the steps of the study 0 = intro, 1 = Demographics, 3 questions, 4 = submission and thank you
 const [studyInfo, setStudyInfo] = useState(null); // For title and description of the study
 
@@ -23,7 +28,7 @@ const [totalQuestions, setTotalQuestions] = useState(0);
 
 // STEP 0 - INTRODUCTION
 
-// Fetching the study title and description from backend
+// Fetching the study info
 useEffect(() => {
     const fetchStudy = async () => {
         const res = await axios.get(`/api/survey/${studyId}`);
@@ -33,7 +38,9 @@ useEffect(() => {
 }, [studyId]);
 
 useEffect(() => {
-    if (!sessionId || step < 2) return; // Only get questions when past the demographics
+    if (!sessionId || !isPreview) return; // Only get questions when past the demographics
+    
+    
     const fetchQuestion = async () => {
         const page = step - 2;
         const res = await axios.get(`/api/survey/${studyId}/questions/${page}&sessionId=${sessionId}`);
@@ -49,6 +56,11 @@ const handleStart = () => setStep(1); // Go from the intro to demographics
 
 // Handles the demographics and sends it to the backend and then receives the sessionId and proceeds to questions
 const handleDemographics = async () => {
+    // if the page is in preview mode skip to questions
+    if (isPreview) {
+        setStep(2);
+        return;
+    }
     // UAParser to get the device information
     const parser = new UAParser();
     const result = parser.getResult();
@@ -91,6 +103,10 @@ const handleAnswer = async (submitAnswer, skipped = false) => {
 
 
 // STEP 3 - SUBMISSION AND THANK YOU
+// WIP
+
+
+
 
 if (step === 0) {
     return (
@@ -163,9 +179,10 @@ if (step >= 2 && currentQuestion) {
                 <button onClick={() => handleAnswer(null, true)}>Skip</button>
             </div>
             <button onClick={() => setStep(prev => prev - 1)}>Back</button>
+            <button onClick={() => handleAnswer(null)}>Next</button>
         </div>
     )
 }
 
 
-export default surveyPage;
+
