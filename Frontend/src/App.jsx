@@ -12,6 +12,7 @@ import ExportPage from './pages/exportResults/ExportPage.jsx';
 import ProfilePage from './pages/profile/ProfilePage.jsx';
 import PortectedRoute from './components/auth/PortectedRoute.jsx';
 
+
 const App = () => {
     //const { user } = useAuth();
 
