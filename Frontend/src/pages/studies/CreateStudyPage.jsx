@@ -83,6 +83,7 @@ const CreateStudyPage = () => {
                         setQuestions={setQuestions}
                         selectedFiles={selectedFiles}
                     />
+
                 </form>
                 
                 {/* SAVE STUDY BUTTON */}

@@ -44,53 +44,22 @@ const QuestionSettings = ({ questions, selectedQuestionIndex, setQuestions, setS
                 />
             </label>
 
-            {/* Uploaded files display */}
-            <div className={styles['uploadedFiles']}>
-                <h3>Uploaded artifacts</h3>
-                {selectedFiles.length === 0 ? (
-                    <p>No artifacts uploaded yet</p>
-                ) :(
-                    <p>{selectedFiles.length} artifacts available</p>
-                )}
-            </div>
-
             <label>
                 Question Type
                 <div>
-                    <input
-                        type="radio"
+                    <select
                         name={`questionType-${selectedQuestionIndex}`}
-                        value="multiple-choice"
-                        checked={
-                            questions[selectedQuestionIndex]
-                                .questionType === 'multiple-choice'
-                        }
+                        value={questions[selectedQuestionIndex].questionType}
                         onChange={(e) =>
                             handleQuestionTypeChange(
                                 selectedQuestionIndex,
                                 e.target.value
                             )
                         }
-                    />
-                    Multiple Choice
-                </div>
-                <div>
-                    <input
-                        type="radio"
-                        name={`questionType-${selectedQuestionIndex}`}
-                        value="open-ended"
-                        checked={
-                            questions[selectedQuestionIndex]
-                                .questionType === 'open-ended'
-                        }
-                        onChange={(e) =>
-                            handleQuestionTypeChange(
-                                selectedQuestionIndex,
-                                e.target.value
-                            )
-                        }
-                    />
-                    Open Ended
+                    >
+                        <option value='multiple-choice'>Multiple Choice</option>
+                        <option value='open-ended'>Open Ended</option>
+                    </select>
                 </div>
             </label>
 
@@ -141,6 +110,28 @@ const QuestionSettings = ({ questions, selectedQuestionIndex, setQuestions, setS
                     <option value="grid">Grid Layout</option>
                 </select>
             </label>
+
+            {/* Ratings */}
+            <div>
+                <label>
+                    Ratings
+                    <select 
+                        
+                    >
+                        <option value='numeric-rating'>Numeric Rating</option>
+                    </select>
+                </label>
+            </div>
+
+            {/* Uploaded files display */}
+            <div className={styles['uploadedFiles']}>
+                <h3>Uploaded artifacts</h3>
+                {selectedFiles.length === 0 ? (
+                    <p>No artifacts uploaded yet</p>
+                ) :(
+                    <p>{selectedFiles.length} artifacts available</p>
+                )}
+            </div>
 
             {/* Delete question */}
             <button
