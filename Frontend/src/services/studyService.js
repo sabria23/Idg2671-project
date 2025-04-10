@@ -31,14 +31,27 @@ export const deleteStudy = async (studyId) => { // take in that specific studyId
         throw error;
     }
 }
+
+
+//studyRouter.get('/:studyId/sessions/responses', protect, dashController.getResponses);
+export const getResponses = async (studyId) => {
+    try {
+        const response = await axios.get(`${API_URL}/studies/${studyId}/sessions/responses`, {
+            headers: {Authorization: `Bearer ${getToken()}`}
+        });
+        return response.data
+    } catch (error) {
+        throw error;
+    }
+}
 export default {
     getAllStudies,
-    deleteStudy
+    deleteStudy,
+    getResponses
 };
 
 
 
-//studyRouter.get('/:studyId/sessions/responses', protect, dashController.getResponses);
 //studyRouter.patch('/:studyId/public', protect, validatePublishStatus, dashController.updateStudyStatus);
 //studyRouter.post('/:studyId/public-url', protect, dashController.generateLink);
 //studyRouter.post('/:studyId/invitations', protect, dashController.emailInvitaitons);

@@ -9,6 +9,7 @@ import { handleApiError } from "../../utils/errorHandler.js";
 import ConfirmationMsg from '../../components/common/ConfirmationMsg.jsx';
 import { handleDelete } from './utils/studyActions.js';
 
+
 const DashboardPage = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -45,14 +46,11 @@ const DashboardPage = () => {
         }
       }
     };
-
+     
     const handleLogout = () => {
-        console.log("Logging out...");
-        // Add your logout logic here
-      };
+      console.log("loggin out..");
+    };
     
-  
-
        // Your specific navigation items for the Dashboard
     const dashboardNavItems = [
         { label: "Create a study", path: "/create-study" },
