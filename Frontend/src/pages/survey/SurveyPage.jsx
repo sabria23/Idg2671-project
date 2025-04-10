@@ -136,4 +136,36 @@ if (step === 1) {
     )
 }
 
+// Check if all of the questions have been answered and complete the session
+// add completed logic!
+if (step >= 2 && step - 2 >= totalQuestions) {
+    return (
+        <div>
+            <h1>Thank you for your participation!</h1>
+            <p>Your responses have been submitted.</p>
+        </div>
+    )
+}
+
+// Question display logic INCOMPLETE
+if (step >= 2 && currentQuestion) {
+    return (
+        <div>
+            <h1>{currentQuestion.questionText}</h1>
+            {currentQuestion.questionType}
+            <div className="question-options">
+                {currentQuestion.options.map((option, index) => (
+                    <div key={index}>
+                        <input type="radio" name="option" value={option.value} onChange={(e) => handleAnswer(e.target.value)} />
+                        <label>{option.label}</label>
+                    </div>
+                ))}
+                <button onClick={() => handleAnswer(null, true)}>Skip</button>
+            </div>
+            <button onClick={() => setStep(prev => prev - 1)}>Back</button>
+        </div>
+    )
+}
+
+
 export default surveyPage;
