@@ -1,47 +1,170 @@
-
-.infoContainer {
+.headerSection {
     width: 90%;
-    height: 100%;
-    background-color: white;
-    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); /* source code for box shadow*/
-    display: flex; /* so that i can display my children in center*/
-    align-items: center;
     margin: 20px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .infoContainer {
+    width: 90%;
+    margin: 20px auto;
+    background-color: white;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); /* source code for box shadow was from css*/
+    padding: 20px;
+    display: flex;
     border-radius: 8px;
-}
-
-.profileImg {
+  }
+  
+  .profileImg {
     width: 80px;
     height: 80px;
-    background-color: rgb(73, 73, 198);
+    background-color: rgb(100, 30, 192);
     border-radius: 50%;
     margin-right: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.infoWrapper{
+    color: white;
+  }
+  
+  .infoWrapper {
     flex: 1;
-}
-
-.headerSection{
+  }
+  
+  .sectionHeader {
     width: 90%;
-    margin: 20px auto;
+    margin: 30px auto 10px;
+  }
+  
+  .dangerHeader {
+    width: 90%;
+    margin: 30px auto 10px;
+    color: #e53e3e;
+  }
+  
+  .settingContainer {
+    width: 90%;
+    margin: 10px auto;
+    background-color: white;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    padding: 20px;
     display: flex;
-}
-
-.headerSection button {
-    padding: 8px 16px;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+  }
+  
+  .dangerContainer {
+    width: 90%;
+    margin: 10px auto;
+    background-color: #fff5f5;
+    border: 1px solid #feb2b2;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+  }
+  
+  .settingInfo {
+    flex: 1;
+  }
+  
+  .settingInfo h3 {
+    margin: 0 0 5px 0;
+  }
+  
+  .settingInfo p {
+    margin: 0;
+    color: #718096;
+  }
+  
+  .formGroup {
+    margin-bottom: 15px;
+  }
+  
+  .formGroup label {
+    display: block;
+    margin-bottom: 5px;
+    color: #718096;
+  }
+  
+  .formGroup input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #e2e8f0;
     border-radius: 4px;
+  }
+  
+  /* Button styles */
+  .editBtn, .actionBtn {
+    padding: 8px 16px;
     background-color: #3b82f6;
     color: white;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
   }
   
-  .headerSection button:last-child {
-    background-color: #e5e7eb;
-    color: #374151;
-    margin-left: 10px;
+  .cancelBtn {
+    padding: 8px 16px;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .saveBtn {
+    padding: 8px 16px;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .deleteBtn {
+    padding: 8px 16px;
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Hover effects */
+  .editBtn:hover, .actionBtn:hover {
+    background-color: #2563eb;
+  }
+  
+  .cancelBtn:hover {
+    background-color: #cbd5e0;
+  }
+  
+  .saveBtn:hover {
+    background-color: #059669;
+  }
+  
+  .deleteBtn:hover {
+    background-color: #c53030;
+  }
+  
+  /* For mobile screens */
+  @media (max-width: 768px) {
+    .infoContainer, .settingContainer, .dangerContainer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .profileImg {
+      margin-bottom: 15px;
+    }
+    
+    .actionBtn, .deleteBtn {
+      margin-top: 15px;
+      align-self: flex-start;
+    }
   }
