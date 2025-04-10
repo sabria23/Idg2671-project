@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../styles/ProgressIndicator.module.css';
 // https://www.youtube.com/watch?v=1h34uJq7YpA
+//https://medium.com/@senalisa/creating-a-customizable-multi-step-progress-component-in-react-native-1678f4a0ae45
 const ProgressIndicator = ({ currentStep, steps }) => {
   return (
     <div className={styles.progressContainer}>

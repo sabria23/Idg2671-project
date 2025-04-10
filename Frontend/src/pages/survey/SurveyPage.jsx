@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
+/*import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import UAParser from 'ua-parser-js';
+//import UAParser from 'ua-parser-js';
 import axios from 'axios';
-import '../styles/displaySurvey.css';
+import '../../styles/displaySurvey.css';
 
 // IMPORTANT! Code should be splitted to components and have buttons for next and back!
 
 // make props for the page if it should be the real thing or a preview
 // a mode='preview' and a mode='live', preview will be accessible from the createStudy page and live from the link
-export default function surveyPage({ mode = 'live' }) {
+export default function SurveyPage({ mode = 'live' }) {
     const {studyId} = useParams(); 
     const isPreview = mode === 'preview'; // Check if the page is in preview mode
 }
@@ -62,7 +62,7 @@ const handleDemographics = async () => {
         return;
     }
     // UAParser to get the device information
-    const parser = new UAParser();
+    /*const parser = new UAParser();
     const result = parser.getResult();
     const browser = result.browser.name || 'Unknown browser';
     const os = result.os.name || 'Unknown os';
@@ -108,7 +108,7 @@ const handleAnswer = async (submitAnswer, skipped = false) => {
 
 
 
-if (step === 0) {
+/*if (step === 0) {
     return (
         <div>
             <h1>{studyInfo.title}</h1>
@@ -182,7 +182,4 @@ if (step >= 2 && currentQuestion) {
             <button onClick={() => handleAnswer(null)}>Next</button>
         </div>
     )
-}
-
-
-
+}*/
