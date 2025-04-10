@@ -8,12 +8,12 @@ const EmojiRating = () =>{
 
     return(
         <>
-            <div className={}>
-                <h2 className={}>Emoji Rating</h2>
-                <div className={}>
+            <div>
+                <h2>Emoji Rating</h2>
+                <div>
                     {emojis.map((emoji, index) =>(
                         <button
-                            className={}
+                        
                             key={index}
                             onClick={() => setEmojiRating(index +1)}
                         >
@@ -21,7 +21,7 @@ const EmojiRating = () =>{
                         </button>
                     ))}
                 </div>
-                <p className={}>
+                <p>
                     {emojiRating === 1 && 'Very Dissatisfied'}
                     {emojiRating === 2 && 'Dissatisfied'}
                     {emojiRating === 3 && 'Neutral'}

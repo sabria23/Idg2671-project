@@ -13,23 +13,22 @@ const LabelSlider = () =>{
     };
 
     return(
-        <div className={}>
-            <h2 className={}>Slider With Labels</h2>
-            <div className={}>
+        <div>
+            <h2>Slider With Labels</h2>
+            <div>
                 <input 
-                    className={}
                     type='range'
                     min='0'
                     max='100'
                     value={labelRating}
                     onChange={(e) => setLabelRating(parseInt(e.target.value))}
                 />
-                <div className={}>
+                <div>
                     <span>Very Dissatisfied</span>
                     <span>Neutral</span>
                     <span>Very Satisfied</span>
                 </div>
-                <p className={}>{getLabelSlider(labelRating)}</p>
+                <p>{getLabelSlider(labelRating)}</p>
             </div>
 
         </div>

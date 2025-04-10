@@ -6,11 +6,11 @@ const NumericRating = () =>{
 
     return(
         <>
-            <div className={}>
+            <div>
                 <h2>Numeric Rating (1-10)</h2>
                 <div>
                     <input 
-                        className={}
+                    
                         type= 'range'
                         min='1'
                         max='10'
@@ -18,12 +18,12 @@ const NumericRating = () =>{
                         value={numericRating}
                         onChange={(e) => setNumericRating(parseInt(e.target.value))}
                     />
-                    <div className={}>
+                    <div>
                         {[1,2,3,4,5,6,7,8,9,10].map((num) =>(
                             <span key={num}>{num}</span>
                         ))}
                     </div>
-                    <p className={}>{numericRating}</p>
+                    <p>{numericRating}</p>
                 </div>
             </div>
         </>

@@ -10,22 +10,22 @@ const StarRating = () =>{
 
     return(
         <>
-            <div className={}>
+            <div>
                 <h2>Star Rating</h2>
-                <div className={}>
+                <div>
                     {[1,2,3,4,5].map((star) =>(
                         <button
-                            className={}
+                        
                             key={star}
                             onClick={() => setStarRating(star)}
                             onMouseEnter={() => setHoverStar(star)}
                             onMouseLeave={() => setHoverStar(null)}
                         >
-                            {star <= (hoverStar || starRating) ? <VscStarEmpty /> : <VscStarFull />}
+                            {star <= (hoverStar || starRating) ? <VscStarFull /> : <VscStarEmpty />}
                         </button>
                     ))}
                 </div>
-                <p className={}>{starRating} of 5 stars</p>
+                <p>{starRating} of 5 stars</p>
             </div>
         </>
     );   

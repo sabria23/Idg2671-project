@@ -6,23 +6,23 @@ const ThumbsUpDown = () =>{
 
     return(
         <>
-            <div className={}>
-                <h2 className={}>Thumbs Up/ Down</h2>
-                <div className={}>
+            <div>
+                <h2>Thumbs Up/ Down</h2>
+                <div>
                     <button
-                        className={}
+                    
                         onClick={() => setThumbRating(false)}
                     >
                         🖕
                     </button>
                     <button
-                        className={}
+                    
                         onClick={() => setThumbRating(true)}
                     >
                         👌
                     </button>
                 </div>
-                <p className={}>
+                <p>
                     {thumbRating === true && 'Liked'}
                     {thumbRating === false && 'Disliked'}
                     {thumbRating === null && 'No Rating Selected'}
