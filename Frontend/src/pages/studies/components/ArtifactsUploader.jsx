@@ -56,14 +56,7 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles }) => {
         }
     };
 
-    const handleRemoveArtifact = (indexToRemove) => {
-        setSelectedFiles(prevFiles =>
-            prevFiles.filter((_, index) => index !== indexToRemove)
-        );
-    };
-
     return(
-        <>
             <div className={styles['uploadArtifact-container']}>
                 <h2>Artifacts (Video, Image, Text, Audio)</h2>
                 <select
@@ -99,74 +92,7 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles }) => {
                     <p className={styles['upload-status']}>{uploadStatus}</p>
                 )}
             </div>
-
-            <div className={styles['uploadedFiles']}>
-            <h3>Uploaded artifacts</h3>
-            {selectedFiles.length === 0 ? (
-                <p>No artifacts uploaded yet</p>
-            ) : (
-                <ul className={styles['uploadedFiles-list']}>
-                    {selectedFiles.map((file, index) => {
-                        const fileURL = URL.createObjectURL(file);
-                        const fType = file.type.split('/')[0];
-
-                        return (
-                            <li
-                                key={index}
-                                className={styles['artifact-item']}
-                            >
-                                {fType === 'image' && (
-                                    <img
-                                        src={fileURL}
-                                        alt={file.name}
-                                        width="150"
-                                    />
-                                )}
-                                {fType === 'video' && (
-                                    <video width="250" controls>
-                                        <source
-                                            src={fileURL}
-                                            type={file.type}
-                                        />
-                                        Your browser does not support
-                                        video playback
-                                    </video>
-                                )}
-                                {fType === 'audio' && (
-                                    <audio controls>
-                                        <source
-                                            src={fileURL}
-                                            type={file.type}
-                                        />
-                                        Your browser does not support audio
-                                        playback
-                                    </audio>
-                                )}
-                                {(fType === 'text' ||
-                                    fType === 'application') && (
-                                    <p>
-                                        <strong>{file.name}</strong>
-                                    </p>
-                                )}
-
-                                <button
-                                    type="button"
-                                    className={
-                                        styles['removeArtifactBtn']
-                                    }
-                                    onClick={() =>
-                                        handleRemoveArtifact(index)
-                                    }
-                                >
-                                    Delete
-                                </button>
-                            </li>
-                        );
-                    })}
-                </ul>
-            )}
-            </div>
-        </>
+            
     );
 };
 

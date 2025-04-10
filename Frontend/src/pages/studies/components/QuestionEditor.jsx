@@ -1,37 +1,68 @@
 import React from 'react';
 import styles from '../styles/QuestionBuilder.module.css';
+import NumericRating from './NumericRating';
+import ThumbsUpDown from './ThumbsUpDown';
+import StarRating from './StarRating';
+import EmojiRating from './EmojiRating';
+import LabelSlider from './LabelSlider';
 
 const QuestionEditor = ({ questions, selectedQuestionIndex, setQuestions }) =>{
+    if(selectedQuestionIndex === null || !questions[selectedQuestionIndex]){
+        return <div>
+            <p>Select a question to edit</p>
+        </div>;
+    }
+    
+    const currentQuestion = questions[selectedQuestionIndex];
 
-    const handleQuestionTextChange = (index, value) => {
+    const handleQuestionTextChange = (e) => {
         const updatedQuestions = [...questions];
-        updatedQuestions[index].questionText = value;
+        updatedQuestions[selectedQuestionIndex].questionText = e.target.value;
         setQuestions(updatedQuestions);
+    };
+
+    const renderRatingComponent = () => {
+        const ratingType = currentQuestion.ratingType || 'numeric-rating';
+
+        switch(ratingType){
+            case 'numeric-rating':
+                return <NumericRating />;
+            case 'thumbs-up-down':
+                return <ThumbsUpDown />;
+            case 'star-rating':
+                return <StarRating />;
+            case 'emoji-rating':
+                return <EmojiRating />;
+            case 'label-slider':
+                return <LabelSlider />;
+            default:
+                return <NumericRating />;
+        }
     };
 
     return(
         <div className={styles['middle-panel']}>
-            {selectedQuestionIndex !== null && questions[selectedQuestionIndex] && (
-                <>
-                    {questions[selectedQuestionIndex].questionType === 'open-ended' ? (
-                        <>
-                            <h3>Edit Question</h3>
-                            <textarea 
-                                placeholder='Enter your question text here'
-                                value={questions[selectedQuestionIndex].questionText}
-                                onChange={(e) =>
-                                    handleQuestionTextChange(selectedQuestionIndex, e.target.value)
-                                }
-                                rows={4}
-                                cols={40}  
-                            />
-                        </>
-                    ) : (
-                        <p>Select a question type on the right</p>
-                    )}
-                </>
+            <h3>Edit Question</h3>
+            {currentQuestion.questionType === 'open-ended' && (
+                <div>
+                    <label>
+                        Question Text
+                        <textarea
+                            value={currentQuestion.questionText || ''}
+                            onChange={handleQuestionTextChange}
+                            placeholder='Enter your question here...'
+                        />
+                    </label>
+                </div>
             )}
+
+
+            <div>
+                <h4>Rating Preview</h4>
+                {renderRatingComponent()}
+            </div>
         </div>
+
     );
 };
 

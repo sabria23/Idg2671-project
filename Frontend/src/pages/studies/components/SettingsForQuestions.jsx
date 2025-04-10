@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styles/QuestionBuilder.module.css';
 
-const QuestionSettings = ({ questions, selectedQuestionIndex, setQuestions, setSelectedQuestionIndex, selectedFiles }) => {
+const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setSelectedQuestionIndex, selectedFiles, setSelectedFiles }) => {
     
     if(selectedQuestionIndex === null || !questions[selectedQuestionIndex]){
         return <div className={styles['rightSide-panel']}></div>
@@ -21,6 +21,21 @@ const QuestionSettings = ({ questions, selectedQuestionIndex, setQuestions, setS
         };
         setQuestions(updatedQuestions);
     };
+
+    const handleRatingTypeChange = (index, ratingType) => {
+        const updatedQuestions = [...questions];
+        updatedQuestions[index] = {
+            ...updatedQuestions[index],
+            ratingType: ratingType,
+        };
+        setQuestions(updatedQuestions);
+    };
+
+     const handleRemoveArtifact = (indexToRemove) => {
+            setSelectedFiles(prevFiles =>
+                prevFiles.filter((_, index) => index !== indexToRemove)
+            );
+        };
 
 
     return(
@@ -44,53 +59,22 @@ const QuestionSettings = ({ questions, selectedQuestionIndex, setQuestions, setS
                 />
             </label>
 
-            {/* Uploaded files display */}
-            <div className={styles['uploadedFiles']}>
-                <h3>Uploaded artifacts</h3>
-                {selectedFiles.length === 0 ? (
-                    <p>No artifacts uploaded yet</p>
-                ) :(
-                    <p>{selectedFiles.length} artifacts available</p>
-                )}
-            </div>
-
             <label>
                 Question Type
                 <div>
-                    <input
-                        type="radio"
+                    <select
                         name={`questionType-${selectedQuestionIndex}`}
-                        value="multiple-choice"
-                        checked={
-                            questions[selectedQuestionIndex]
-                                .questionType === 'multiple-choice'
-                        }
+                        value={questions[selectedQuestionIndex].questionType}
                         onChange={(e) =>
                             handleQuestionTypeChange(
                                 selectedQuestionIndex,
                                 e.target.value
                             )
                         }
-                    />
-                    Multiple Choice
-                </div>
-                <div>
-                    <input
-                        type="radio"
-                        name={`questionType-${selectedQuestionIndex}`}
-                        value="open-ended"
-                        checked={
-                            questions[selectedQuestionIndex]
-                                .questionType === 'open-ended'
-                        }
-                        onChange={(e) =>
-                            handleQuestionTypeChange(
-                                selectedQuestionIndex,
-                                e.target.value
-                            )
-                        }
-                    />
-                    Open Ended
+                    >
+                        <option value='multiple-choice'>Multiple Choice</option>
+                        <option value='open-ended'>Open Ended</option>
+                    </select>
                 </div>
             </label>
 
@@ -141,6 +125,97 @@ const QuestionSettings = ({ questions, selectedQuestionIndex, setQuestions, setS
                     <option value="grid">Grid Layout</option>
                 </select>
             </label>
+
+            {/* Ratings */}
+            <div>
+                <label>
+                    Ratings
+                    <select 
+                        value={questions[selectedQuestionIndex].ratingType || 'numeric-rating'}
+                        onChange={(e) =>
+                            handleRatingTypeChange(
+                                selectedQuestionIndex,
+                                e.target.value
+                            )
+                        }
+                    >
+                        <option value='numeric-rating'>Numeric Rating</option>
+                        <option value='thumbs-up-down'>Thumbs Up/Down Rating</option>
+                        <option value='star-rating'>Star Rating</option>
+                        <option value='emoji-rating'>Emoji Rating</option>
+                        <option value='label-slider'>Label Slider Rating</option>
+                    </select>
+                </label>
+            </div>
+
+            {/* Uploaded files display */}
+            <div className={styles['uploadedFiles']}>
+                <h3>Uploaded artifacts</h3>
+                {selectedFiles.length === 0 ? (
+                    <p>No artifacts uploaded yet</p>
+                ) :(
+                    
+                    <ul className={styles['uploadedFiles-list']}>
+                    {selectedFiles.map((file, index) => {
+                        const fileURL = URL.createObjectURL(file);
+                        const fType = file.type.split('/')[0];
+
+                        return (
+                            <li
+                                key={index}
+                                className={styles['artifact-item']}
+                            >
+                                {fType === 'image' && (
+                                    <img
+                                        src={fileURL}
+                                        alt={file.name}
+                                        width="150"
+                                    />
+                                )}
+                                {fType === 'video' && (
+                                    <video width="250" controls>
+                                        <source
+                                            src={fileURL}
+                                            type={file.type}
+                                        />
+                                        Your browser does not support
+                                        video playback
+                                    </video>
+                                )}
+                                {fType === 'audio' && (
+                                    <audio controls>
+                                        <source
+                                            src={fileURL}
+                                            type={file.type}
+                                        />
+                                        Your browser does not support audio
+                                        playback
+                                    </audio>
+                                )}
+                                {(fType === 'text' ||
+                                    fType === 'application') && (
+                                    <p>
+                                        <strong>{file.name}</strong>
+                                    </p>
+                                )}
+
+                                <button
+                                    type="button"
+                                    className={
+                                        styles['removeArtifactBtn']
+                                    }
+                                    onClick={() =>
+                                        handleRemoveArtifact(index)
+                                    }
+                                >
+                                    Delete
+                                </button>
+                            </li>
+                        );
+                    })}
+                </ul>
+            )}
+            </div>
 
             {/* Delete question */}
             <button
