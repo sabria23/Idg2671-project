@@ -8,7 +8,8 @@ import DashboardPage from './pages/dashboard/DashPage';
 import CreateStudyPage from './pages/studies/CreateStudyPage';
 import RecruitmentPage from './pages/recruitment/RecruitmentPage.jsx';
 import ExportPage from './pages/exportResults/ExportPage.jsx';
-//import StudyParticipationPage from './pages/StudyParticipationPage';
+//import SurveyPage from './pages/survey/SurveyPage.jsx';
+import ProfilePage from './pages/profile/ProfilePage.jsx';
 import PortectedRoute from './components/auth/PortectedRoute.jsx';
 
 const App = () => {
@@ -20,10 +21,8 @@ const App = () => {
           {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<SignupPage />} />
-
-
-            <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview"/>} />
-            <Route path="/study/:studyId/" element={<SurveyPage />} />
+           {/*} <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview"/>} />
+            <Route path="/study/:studyId/" element={<SurveyPage />} />*/}
 
             {/*Portected routes */}
             <Route path="/dashboard" element={
@@ -31,6 +30,12 @@ const App = () => {
                 <DashboardPage />
               </PortectedRoute>
             } />
+
+              <Route path="/profile" element={
+                <PortectedRoute>
+                  <ProfilePage />
+                </PortectedRoute>
+              } />
 
             <Route path="/study/:studyId" element={
               <PortectedRoute>
@@ -58,6 +63,7 @@ const App = () => {
            
            {/* this route is for redirected root to dash */}
            <Route path="/" element={<Navigate to="/dashboard" />} />
+
 
   
         </Routes>
