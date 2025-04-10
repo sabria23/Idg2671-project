@@ -114,3 +114,9 @@ instalations: we have:
 - https://mongoosejs.com/docs/connections.html#multiple_connections (article explaining how to connnect 2 databses on one connection, in particular about parts: 
 .asPromise() and event-based handling .on() )
 - setting up server and the main API backend: https://www.youtube.com/watch?v=-0exw-9YJBo&list=PLillGF-RfqbbQeVSccR9PGKHzPJSWqcsm + what Aleksei has teached us in the class
+
+connecting backend to frontend: teh basics
+when your react frontend needs data from your backend.
+1. make api calls: react compoennts use fetch or axios to make http request to your backend endpoints
+process repsonee: teh data returned from your API is processed and stored in compoennt state
+render data: react renders this data in your components 

@@ -142,3 +142,17 @@
   font-size: 18px;
   color: #718096;
 }
+
+/* styling related to export result component*/
+.exportLinkContainer {
+  margin-top: 24px;
+  text-align: right;
+}
+
+.exportLinkContainer a {
+  color: #4a90e2;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
