@@ -4,14 +4,18 @@
     border: solid 1px grey;
     border-radius: 4px;
     padding: 1rem;
-    margin-bottom: 1rem;    
+    margin-bottom: 1rem;   
+    display: grid;
+    grid-template-columns: auto auto auto;
 }
 
-.addQuestion,
-.uploadedFiles{
-    border: solid 1px grey;
-    padding: 0.5rem;
+.addQuestion h3,
+.rightSide-panel h3,
+.middle-panel h3{
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
 }
+
 .addQuestion li{
     list-style: none;
     background-color: #6ef582;
@@ -29,12 +33,13 @@
     cursor: pointer;
 }
 
-.question-item{
-
-}
-
-.questionBuilder-container{
-   display: flex;
+.middle-panel,
+.rightSide-panel,
+.addQuestion,
+.uploadedFiles{
+    border: solid 1px grey;
+    padding: 0.5rem;
+    margin: 0 0.5rem;
 }
 
 .middle-panel textarea{
@@ -42,8 +47,15 @@
 }
 
 .rightSide-panel{
- border: solid 1px grey;
  padding: 0.5rem;
+}
+.rightSide-panel label{
+    font-weight: bold;
+    padding:0.5rem;
+}
+
+.question-title{
+    font-weight: bold;
 }
 
 .delete-questionBtn{
