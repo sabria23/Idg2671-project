@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import UAParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 import axios from 'axios';
 import '../../styles/displaySurvey.css';
 
@@ -50,10 +50,21 @@ export default function surveyPage({ mode = 'live' }) {
             <div>
               <h2>Demographics (Preview)</h2>
               <label>Age:</label>
-              <select disabled><option>18–25</option></select>
+              <select>                        
+                        <option value="">Select</option>
+                        <option value="under 18">under 18</option>
+                        <option value="18-25">18-25</option>
+                        <option value="25-35">25-35</option>
+                        <option value="35-45">35-45</option>
+                        <option value="45-55">45-55</option>
+                        <option value="55-65">55-65</option>
+                        <option value="65+">65+</option>
+                    </select>
               <label>Gender:</label>
               <select disabled><option>Prefer not to say</option></select>
-              <button onClick={() => setStep(2)}>Next</button>
+              <div className='button-container'>
+                  <button onClick={() => setStep(2)}>Next</button>
+              </div>
             </div>
           );
         }
@@ -64,14 +75,15 @@ export default function surveyPage({ mode = 'live' }) {
             <div>
               <h3>Question 1: Which cat looks more realistic?</h3>
               <div style={{ display: 'flex', gap: '1rem' }}>
-                <img src="/preview/cat1.jpg" alt="Cat 1" width="200" />
-                <img src="/preview/cat2.jpg" alt="Cat 2" width="200" />
+                <img src="/images/cat1.png" alt="Cat 1"/>
+                <img src="/images/cat2.png" alt="Cat 2"/>
+
               </div>
               <ul style={{ listStyle: 'none', padding: 0 }}>
                 <li>🔘 Cat 1</li>
                 <li>🔘 Cat 2</li>
               </ul>
-              <div>
+              <div className='button-container'>
                 <button onClick={() => setStep(1)}>Back</button>
                 <button onClick={() => setStep(3)}>Next</button>
               </div>
@@ -86,7 +98,7 @@ export default function surveyPage({ mode = 'live' }) {
               <h3>Question 2: Describe the cat's expression</h3>
               <img src="/preview/cat3.jpg" alt="Cat 3" width="200" />
               <textarea disabled value="(Open-ended input is disabled in preview)" rows="3" cols="50" />
-              <div>
+              <div className='button-container'>
                 <button onClick={() => setStep(2)}>Back</button>
                 <button onClick={() => setStep(4)}>Finish</button>
               </div>
@@ -98,7 +110,7 @@ export default function surveyPage({ mode = 'live' }) {
         if (step === 4) {
           return (
             <div>
-              <h1>🎉 Thank You!</h1>
+              <h1>Thank You!</h1>
               <p>This concludes the preview. No data has been recorded.</p>
               <button onClick={() => setStep(0)}>Restart Preview</button>
             </div>
