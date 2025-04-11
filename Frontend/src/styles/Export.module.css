@@ -1,0 +1,116 @@
+.exportContainer {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .breadcrumb {
+    padding: 12px 24px;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+  }
+  
+  .breadcrumb a {
+    color: #4a5568;
+    text-decoration: none;
+  }
+  
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  
+  .mainContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  .summaryCards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card h3 {
+    font-size: 14px;
+    color: #718096;
+    margin-bottom: 8px;
+  }
+  
+  .cardValue {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .cardDescription {
+    font-size: 14px;
+    color: #718096;
+  }
+  
+  .exportControls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    align-items: center;
+  }
+  
+  .studySelector {
+    padding: 10px 16px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    width: 250px;
+  }
+  
+  .exportButton {
+    background-color: #edf2f7;
+    color: #4a5568;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+  }
+  
+  .exportButton:hover {
+    background-color: #e2e8f0;
+  }
+  
+  .dataPreview {
+    background-color: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dataPreview h2 {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  
+  .responseTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .responseTable th, 
+  .responseTable td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .responseTable th {
+    font-weight: 500;
+    color: #718096;
+  }

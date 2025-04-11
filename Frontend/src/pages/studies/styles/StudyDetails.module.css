@@ -4,9 +4,9 @@
     flex-direction: column;
     margin: 1.5rem 0 1.5rem 0;
     padding: 1.5rem 1rem;
-    border: solid 1px grey;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     border-radius: 4px;
-    background-color: #edf2f7;
+    background-color: white;
 }
 
 .studyDetails-container label{

@@ -24,10 +24,15 @@
 .studyPage-content h1{
     font-size: 28px;
     color: #333;
+    margin-top: 1.5rem;
+}
+
+.saveBtns{
+    display: flex;
+    justify-content: end;    
 }
 
 .saveBtns button{
-    display: flex;
     padding: 1rem 1.5rem;
     margin-bottom: 0.5rem;
     border: none;
@@ -38,6 +43,7 @@
 .saveStudyBtn{
     background-color: #0d6efd;
     color: white;
+    margin-right: 1rem;
     
 }
 .saveStudyBtn:hover{
@@ -52,3 +58,4 @@
 .previewBtn{
     background-color: rgba(176, 192, 246, 0.692);
 }
+

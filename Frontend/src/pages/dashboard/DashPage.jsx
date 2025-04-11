@@ -1,44 +1,56 @@
 import {useState, useEffect} from 'react';
-import {Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import styles from "../../styles/Dash.module.css";
 import React from 'react';
 import Navbar from "../../components/common/Navbar";
 import StudyItem from "./components/StudyItem.jsx";
-import ExportPage from "../exportResults/ExportPage.jsx";
-import { getAllStudies } from "../../services/studyService.js";
+import { getAllStudies, deleteStudy } from "../../services/studyService.js";
 import { handleApiError } from "../../utils/errorHandler.js";
+import ConfirmationMsg from '../../components/common/ConfirmationMsg.jsx';
+import { handleDelete } from './utils/studyActions.js';
+
 
 const DashboardPage = () => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [studies, setStudies] = useState([]);
+    const [studies, setStudies] = useState([]); // this is where list of studies fetched from backend will be stored, updated with SetStudies funciton
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [studyToDelete, setStudyToDelete] = useState(null);
 
+    // this funciton handles exporitng a tsudy to the export result page
+  //this allows the export page to load the correct study data by its specific ID
+    const handleExport = (studyId) => {
+      navigate(`/export-results/${studyId}`);
+    };
+    const handleEdit = (studyId) => {  
+        navigate(`/study/${studyId}`)
+    };
 
+    const initiateDelete = (studyId) => {
+      setStudyToDelete(studyId);
+      setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+      if (studyToDelete) {
+        try {
+          setLoading(true);
+          await handleDelete(studyToDelete, setStudies, setLoading, setError, studies );
+        } catch (error) {
+          handleApiError(error, setError);
+        } finally {
+          setLoading(false);
+          setIsDeleteModalOpen(false);
+          setStudyToDelete(null);
+        }
+      }
+    };
+     
     const handleLogout = () => {
-        console.log("Logging out...");
-        // Add your logout logic here
-      };
-    // Add these new methods
-    // NNED TO MOVE THIS SOMEWHERE ELSE SINCE IT IS MORE RELATED TO SUDYITEM
-    const handleRename = (studyId, newName) => {
-        // Implement rename logic
-        console.log(`Renaming study ${studyId} to ${newName}`);
-        // You might want to call an update service method here
-    };
-
-    const handleEdit = (studyId) => {
-        // Implement edit logic
-        console.log(`Editing study ${studyId}`);
-        // You might want to navigate to an edit page
-    };
-
-    const handleDelete = (studyId) => {
-        // Implement delete logic
-        console.log(`Deleting study ${studyId}`);
-        // You might want to call a delete service method
+      console.log("loggin out..");
     };
     
-
        // Your specific navigation items for the Dashboard
     const dashboardNavItems = [
         { label: "Create a study", path: "/create-study" },
@@ -103,18 +115,20 @@ const DashboardPage = () => {
                       <StudyItem
                         key={study._id}
                         study={study}
-                        onRename={handleRename}
+                        //onRename={handleRename}
                         onEdit={handleEdit}
-                        onDelete={handleDelete}
+                        onDelete={initiateDelete}
+                        onExport={handleExport}
                       />
                     ))}
                   </div>
                 )}
-                <div className={styles.exportLinkContainer}>
-                  <Link to="/export-result" >
-                      Export your results
-                  </Link>
-                </div>
+                <ConfirmationMsg
+                  isOpen={isDeleteModalOpen}
+                  message="Are you sure you want to delete this study? This action cannot be undone."
+                  onConfirm={confirmDelete}
+                  onCancel={() => setIsDeleteModalOpen(false)}
+                />
               </>
             )}
           </main>
