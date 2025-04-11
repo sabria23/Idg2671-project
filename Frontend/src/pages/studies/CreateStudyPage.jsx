@@ -40,11 +40,15 @@ const CreateStudyPage = () => {
         }
     };
 
+    const handleLogout = () =>{
+        console.log('Loggin out...')
+    };
+
     // NAVIGATION ITEMS FOR THE CREATY STUDY PAGE - NAVBAR COMPONENT
     const createStudyNavItems = [
         { label: "Dashboard", path: "/dashboard" },
         { label: "Profile", path: "/profile" },
-        { /*label: "Logout", action: handleLogout */} //implement this later    
+        { label: "Logout", action: handleLogout }   
       ];
 
     // RENDERING THE HTML CONTENT OF THE CREATE STUDY PAGE
@@ -98,7 +102,7 @@ const CreateStudyPage = () => {
 
                     {/* LINK/ BUTTON THE PREVIEW */}
                     <button className={styles['previewBtn']} type="button">
-                            <Link to={`/survey/${studyId}/preview`}>Preview Survey</Link>
+                            <Link to={`/survey/${studyId}/preview`}>Preview Study</Link>
                     </button>
                 </div>
             </main>
