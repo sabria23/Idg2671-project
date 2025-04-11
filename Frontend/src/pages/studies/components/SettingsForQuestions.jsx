@@ -46,6 +46,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
             <label>
                 Question Title
                 <input
+                    className={styles['question-title']}
                     type="text"
                     value={
                         questions[selectedQuestionIndex].questionTitle
@@ -82,7 +83,8 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
             {questions[selectedQuestionIndex].questionType ===
                 'multiple-choice' && (
                 <>
-                    <h4>Multiple Choice Options</h4>
+                    <label>
+                        Multiple Choice Option
                     {questions[selectedQuestionIndex].options.map(
                         (option, optIndex) => (
                             <div key={optIndex}>
@@ -101,8 +103,10 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                                     }}
                                 />
                             </div>
+
                         )
                     )}
+                    </label>
                 </>
             )}
 

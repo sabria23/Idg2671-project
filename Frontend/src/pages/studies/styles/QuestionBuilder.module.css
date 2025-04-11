@@ -1,12 +1,27 @@
 /* Question Builder  */
 .questionBuilder-container{
-    background-color: #edf2f7;
-    border: solid 1px grey;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     border-radius: 4px;
     padding: 1rem;
     margin-bottom: 1rem;   
     display: grid;
     grid-template-columns: auto auto auto;
+}
+.questionBuilder-container label,
+.questionBuilder-container input,
+.questionBuilder-container select{
+    margin:0.5rem 0.5rem 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+input,
+select{
+    padding: 0.2rem 0.5rem;
+}
+
+.questionBuilder-container label{
+    font-weight: bold;
 }
 
 .addQuestion h3,
@@ -37,7 +52,7 @@
 .rightSide-panel,
 .addQuestion,
 .uploadedFiles{
-    border: solid 1px grey;
+    
     padding: 0.5rem;
     margin: 0 0.5rem;
 }
@@ -49,13 +64,9 @@
 .rightSide-panel{
  padding: 0.5rem;
 }
-.rightSide-panel label{
-    font-weight: bold;
-    padding:0.5rem;
-}
 
 .question-title{
-    font-weight: bold;
+    padding: 0.5rem;
 }
 
 .delete-questionBtn{
