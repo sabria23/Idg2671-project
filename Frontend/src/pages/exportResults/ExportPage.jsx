@@ -98,10 +98,6 @@ const ExportPage = () => {
            </button>
             )}
           </div>
-        <div className={styles.dataPreview}>
-          <h2>Response Data</h2>
-          <p>No responses found for this study.</p>
-        </div>
       </main>
     </div>
   );
