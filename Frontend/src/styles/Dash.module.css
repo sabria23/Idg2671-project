@@ -85,9 +85,8 @@
   flex: 2;
 }
 
-.studyName {
-  font-weight: 500;
-}
+/*.studyName {
+}*/
 
 .responseInfo {
   flex: 1;
@@ -122,18 +121,6 @@
   font-size: 12px;
 }
 
-.userIndicator {
-  width: 28px;
-  height: 28px;
-  background-color: #8a56ac;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: bold;
-}
 
 .menuButton {
   background: none;
@@ -143,16 +130,20 @@
   color: #718096;
 }
 
-/* styling related to export result component*/
-.exportLinkContainer {
-  margin-top: 24px;
-  text-align: right;
+/* Status indicator */
+.statusIndicator {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
 }
 
-.exportLinkContainer a {
-  color: #4a90e2;
-  text-decoration: none;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
+.published {
+  background-color: #e3f9e5;
+  color: #0d8521;
+}
+
+.draft {
+  background-color: #f0f1f5;
+  color: #64748b;
 }
