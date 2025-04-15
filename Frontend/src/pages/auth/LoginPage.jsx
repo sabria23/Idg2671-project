@@ -1,20 +1,39 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../styles/Auth.css";
-import axios from "axios";
+import { loginUser } from "../../services/authService.js";
 
 
 
 const LoginPage = () => {
     const [userName, setuserName] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
-    const handleSubmit = (e) =>{
+    const handleSubmit = async (e) =>{
         e.preventDefault();
+        setLoading(true);
+        setError("");
 
-        axios.post("http://localhost:8000/api/auth/login", {username: userName, password})
+        try {
+          const userData = await loginUser(userName, password);
+          
+          if (userData) {
+              navigate("/dashboard");
+          } else {
+              setError("Login failed. Please check your credentials.");
+          }
+      } catch (err) {
+          console.error(err);
+          setError(err.response?.data?.message || "Login failed. Please try again.");
+      } finally {
+          setLoading(false);
+      }
+  };
+       /* axios.post("http://localhost:8000/api/auth/login", {username: userName, password})
         .then(result => {
             console.log(result);
 
@@ -26,7 +45,7 @@ const LoginPage = () => {
             }
         })
         .catch(err => console.log(err));
-      };
+      };*/
 
   return (
     <div className="auth-container">
