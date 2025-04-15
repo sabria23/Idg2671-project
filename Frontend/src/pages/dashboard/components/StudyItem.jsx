@@ -2,9 +2,20 @@ import React from 'react';
 import styles from "../../../styles/Dash.module.css";
 import DropdownMenu from "../../../components/common/DropDownMenu";
 import {Link} from 'react-router-dom';
-
+import { useState, useEffect } from 'react';
+import { getResponseCount } from '../../../utils/responseUtils';
 
 const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
+  const [responseCount, setResponseCount] = useState(0);
+
+  useEffect(() => {
+    const fetchResponseCount = async () => {
+      const count = await getResponseCount(study._id);
+      setResponseCount(count);
+    };
+    
+    fetchResponseCount();
+  }, [study._id]);
 
   // to see whether the study is published o rnot - its status
   const isPublished = study.published;
@@ -22,7 +33,7 @@ const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
       </div>
       
       <div className={styles.responseInfo}>
-        <div className={styles.responseCount}>0 Responses</div>
+        <div className={styles.responseCount}>{responseCount} Responses</div>
         <div className={styles.responseStatus}>
 
         </div>
