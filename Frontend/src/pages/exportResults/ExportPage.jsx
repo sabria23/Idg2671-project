@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import styles from '../../styles/Export.module.css';
 import studyService from "../../services/studyService";
 import ExportDropdown from './components/ExportDropdown';
+import { getResponseCount } from "../../utils/responseUtils.js";
+import { logoutUser } from '../../services/authService';
 
 // every study is different so different flows and data will be stored, researcher wanst to 
 // to know that participant 1 did this, participant 2 did this etc) because then it is more readble, a fileds, think how will the data ne represneted to the researcher
@@ -13,7 +15,11 @@ const ExportPage = () => {
   const [loading, setLoading] = useState(true);
   const [responses, setResponses] = useState([]);
   const [error, setError] = useState(null);
+  const [responseCount, setResponseCount] = useState(0);
+  const [studyDetails, setStudyDetails] = useState(null);
+  const navigate = useNavigate();
 
+    // Fetch response data for export
   useEffect(() => {
     const fetchResponses = async () => {
       try {
@@ -33,8 +39,21 @@ const ExportPage = () => {
     }
   }, [studyId]);
   
+   // Fetch response count separately using your utility
+   useEffect(() => {
+    const fetchResponseCount = async () => {
+      if (studyId) {
+        const count = await getResponseCount(studyId);
+        setResponseCount(count);
+      }
+    };
+    
+    fetchResponseCount();
+  }, [studyId]);
+
   const handleLogout = () => {
-    console.log("Logging out...");
+    logoutUser();
+    navigate("/login");
   };
 
   const exportNavItems = [
@@ -78,7 +97,7 @@ const ExportPage = () => {
           <div className={styles.card}>
             <h3>Responses</h3>
             <div className={styles.cardValue}>
-              {responses.length || 0}
+              {responseCount || 0}
             </div>
             <div className={styles.cardDescription}>
               Responses shown

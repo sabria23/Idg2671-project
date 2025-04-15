@@ -21,6 +21,7 @@ const DashboardPage = () => {
     const [currentUser, setCurrentUser] = useState(null);
 
 
+
   //fetching user data
   useEffect(() => {
     const fetchUserData = async () => {
@@ -93,6 +94,23 @@ const DashboardPage = () => {
         fetchStudies();
     }, []);
 
+    const greeting = () => { // https://dev.to/adrianvalenz/time-based-greeting-with-react-and-bridgetown-4b42
+      var myDate = new Date();
+      var hours = myDate.getHours();
+      var greet;
+
+      if (hours < 12)
+        greet = "Morning";
+      else if (hours >= 12 && hours <=17)
+        greet = "Afternoon";
+      else if (hours >=17 && hours <= 24)
+        greet = "Evening";
+
+        // at first i did not returned teh value greet which got me undefined value
+        // in js when fucntion defines varibales like here grett and set soemhting like in this case time
+        // and does not return anything, like any value, it iwll return undefined
+        return greet;
+    }
     return (
         <div className={styles.container}>
           {/*this is the header/navbar with props*/}
@@ -104,7 +122,7 @@ const DashboardPage = () => {
           {/*main content*/}
           <main className={styles.mainContent}>
             <h1 className={styles.welcomeHeader}>
-              Hello, {currentUser ? currentUser.username : "user"} </h1> 
+               {greeting()}, {currentUser ? currentUser.username : "user"} </h1> 
             
             {loading && <div>Loading studies...</div>}
             
