@@ -117,5 +117,6 @@ const RecruitmentPage = () => {
         </div>
       );
     };
-    
+  
     export default RecruitmentPage;
+   
