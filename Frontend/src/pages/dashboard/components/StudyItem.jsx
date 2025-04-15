@@ -40,11 +40,7 @@ const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
             year: 'numeric'
           })}
         </div>
-        <div className={styles.userIndicator}>
-          {study.creator && study.creator.username 
-            ? study.creator.username[0].toUpperCase() 
-            : 'U'}
-        </div>
+        
         
         <DropdownMenu
           options={[
