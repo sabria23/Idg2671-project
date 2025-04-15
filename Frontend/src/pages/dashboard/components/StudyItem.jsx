@@ -5,11 +5,16 @@ import {Link} from 'react-router-dom';
 
 
 const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
+
+  // to see whether the study is published o rnot - its status
+  const isPublished = study.published;
     
   return (
     <div className={styles.studyItem}>
       <div className={styles.studyType}>
-        <span className={styles.testIcon}>status of study</span>
+        <span className={`${styles.statusIndicator} ${isPublished ? styles.published : styles.draft}`}>
+          {isPublished ? 'Published' : "Draft"}
+        </span>
       </div>
       
       <div className={styles.studyInfo}>
@@ -35,11 +40,7 @@ const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
             year: 'numeric'
           })}
         </div>
-        <div className={styles.userIndicator}>
-          {study.creator && study.creator.username 
-            ? study.creator.username[0].toUpperCase() 
-            : 'U'}
-        </div>
+        
         
         <DropdownMenu
           options={[
