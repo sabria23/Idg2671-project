@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from "../../../styles/Dash.module.css";
-import DropdownMenu from "./DropDownMenu";
+import DropdownMenu from "../../../components/common/DropDownMenu";
 import {Link} from 'react-router-dom';
 
 
