@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styles from '../styles/DropdownMenu.module.css';
-
+import styles from '../../pages/dashboard/styles/DropdownMenu.module.css';
+// https://www.freecodecamp.org/news/build-a-dynamic-dropdown-component/
 const DropdownMenu = ({ options }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef(null); // https://react.dev/reference/react/useRef
   
+  //all code for the useEfefct is important becaseu: Without this code, your dropdown would stay open even when users click elsewhere on the page. They would have to specifically click the dropdown button again to close it, which isn't intuitive.
+  // https://www.youtube.com/watch?app=desktop&v=LPStDAophGI
+  // https://stackoverflow.com/questions/32553158/detect-click-outside-react-component
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -27,9 +31,10 @@ const DropdownMenu = ({ options }) => {
       >
         ⋮
       </button>
-      
+      {/* https://react.dev/learn/conditional-rendering*/}
       {isOpen && (
         <div className={styles.dropdownMenu}>
+          {/* mapping options for buttons*/}
           {options.map((option, index) => (
             <button 
               key={index}

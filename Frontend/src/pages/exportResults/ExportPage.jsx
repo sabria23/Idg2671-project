@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import styles from '../../styles/Export.module.css';
 import studyService from "../../services/studyService";
-import DownloadJSON from './components/DownloadJson';
+import ExportDropdown from './components/ExportDropdown';
 
+// every study is different so different flows and data will be stored, researcher wanst to 
+// to know that participant 1 did this, participant 2 did this etc) because then it is more readble, a fileds, think how will the data ne represneted to the researcher
+// export more options, basic analytics
 const ExportPage = () => {
   const { studyId } = useParams();
   const [loading, setLoading] = useState(true);
@@ -85,17 +88,15 @@ const ExportPage = () => {
         
         <div className={styles.exportControls}>
           {responses.length > 0 ? (
-            <div className={styles.exportButton}>
-              <DownloadJSON
-              data={responses}
-              fileName={`study-${studyId}-responses`}
-              />
-              </div>
+             <ExportDropdown
+             data={responses}
+             fileName={`study-${studyId}-responses`}
+           />
           ) : (
-            <button className={styles.exportButton} disabled>
-              Download as JSON
-            </button>
-          )}
+           <button className={styles.exportButton} disabled>
+             No data to export
+           </button>
+            )}
           </div>
         <div className={styles.dataPreview}>
           <h2>Response Data</h2>
