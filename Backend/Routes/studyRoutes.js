@@ -47,7 +47,7 @@ studyRouter.get('/', protect,  dashController.getAllStudies);
 studyRouter.delete('/:studyId', protect, dashController.deleteStudy);
 studyRouter.get('/:studyId/sessions/responses', protect, dashController.getResponses);
 studyRouter.patch('/:studyId/public', protect, validatePublishStatus, dashController.updateStudyStatus);
-studyRouter.post('/:studyId/public-url', protect, dashController.generateLink);
+studyRouter.post('/:studyId/links', protect, dashController.generateLink);
 studyRouter.post('/:studyId/invitations', protect, dashController.emailInvitaitons);
 
 

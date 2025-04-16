@@ -63,25 +63,48 @@ export const getSurvey = async (req, res, next) => {
 export const createSession = async (req, res, next) => {
     try {
         const {studyId} = req.params;
-        const {deviceInfo, demographics} = req.body;
-
+        const {deviceInfo, demographics, invitationToken} = req.body;
+        // validaitng the study
         const study = await Study.findById(studyId);
-        if (!study) {
-            const error = new Error('Study not found');
+        if (!study || !study.published) {
+            const error = new Error('Study not found or not available');
             error.statusCode = 404;
             throw error;
         }
-    
-        // Only return published studies to participants
-        if (!study.published) {
-            const error = new Error('This study is not available');
-            error.statusCode = 403;
-            return next(error);
+
+        // Check invitation if token provided
+        let invitationId = null;
+        if (invitationToken) {
+            const invitation = await StudyInvitation.findOne({
+                studyId,
+                invitationToken,
+                status: { $in: ['pending', 'sent'] }
+            });
+
+            if (invitation) {
+                invitationId = invitation._id;
+                // Update invitation status
+                invitation.status = 'sent';
+                invitation.sentAt = new Date();
+                await invitation.save();
+            }
         }
 
-        // If not then make new one
+         // Create a secure session token
+         const sessionToken = crypto.randomBytes(20).toString('hex');
+
+         // Validate demographics if provided
+         if (demographics) {
+             // Add validation for demographics here
+             // For example, check if age and gender are valid enum values
+         }
+
+
+        //  make new session
         const session = new Session({
             studyId,
+            invitationId,
+            sessionToken,
             deviceInfo,
             demographics: demographics || {},
             isCompleted: false,
@@ -92,7 +115,8 @@ export const createSession = async (req, res, next) => {
 
         res.status(201).json({
             message: 'Session created successfully',
-            sessionId: session._id
+            sessionId: session._id,
+            sessionToken
         });
     } catch (err) {
         next(err);

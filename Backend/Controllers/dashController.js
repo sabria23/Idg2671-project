@@ -9,6 +9,7 @@ import checkStudyAuthorization from "../Utils/authHelperFunction.js";
 // @desc Get all studies
 // @route GET /api/studies
 // @access Private (after auth is added)
+// add paginaiton, sort, filter
 const getAllStudies = async (req, res, next ) => {
    try {
     const studies = await Study.find({ creator: req.user._id });
@@ -114,8 +115,14 @@ const generateLink = async (req, res, next) => {
             return next(error);
         }
 
+        // Generate a unique access token for this link
+        const accessToken = generateRandomToken(16);
+        // Store the access token (you'll need to add a field to your Study model)
+        study.accessToken = accessToken;
+        await study.save();
+
         const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
-        const studyUrl = `${baseUrl}/participate/${studyId}`;
+        const studyUrl = `${baseUrl}/participate/${studyId}?token=${accessToken}`;
 
         res.status(200).json({
             message: 'Study link generated succesfully',
@@ -127,16 +134,18 @@ const generateLink = async (req, res, next) => {
     }
 };
 
-// helper funciton
+// helper funciton -> which align with what lefti sayd to generate a uniqye token to trakc users
 const generateRandomToken = (bytes = 20) => {
-    return [...Array(bytes)]
-      .map(() => Math.floor(Math.random() * 256).toString(16).padStart(2, '0'))
-      .join('');
+    // improved implementaiton to cryptographically secure
+    return crypto.randomBytes(bytes).toString('hex');
+    //return [...Array(bytes)]
+      /*.map(() => Math.floor(Math.random() * 256).toString(16).padStart(2, '0'))
+      .join('');*/
   };
 // @desc Add participants via email
 // @route POST /api/studies/:studyId/participants
 // @access Private (after auth is added)
-const emailInvitaitons = async (req, res, next) => {
+/*const emailInvitaitons = async (req, res, next) => {
     try {
     const {studyId} = req.params;
     const { emails } = req.body;
@@ -172,7 +181,7 @@ const emailInvitaitons = async (req, res, next) => {
             invitationToken,
             status: 'pending'
         });
-        await invitation.save();
+        await invitation.save(); // This line causes multiple sequential DB operations
         invitations.push(invitation);
      }
      res.status(200).json({
@@ -184,6 +193,60 @@ const emailInvitaitons = async (req, res, next) => {
         next(error);
     }
     
+};*/
+// BETTER APPROACH 
+const emailInvitaitons = async (req, res, next) => {
+    try {
+        const { studyId } = req.params;
+        const { emails } = req.body;
+        
+        // Email validation
+        if (!emails || !Array.isArray(emails) || emails.length === 0) {
+            const error = new Error('Please provide an array of email addresses');
+            error.statusCode = 400;
+            return next(error);
+        }
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const invalidEmails = emails.filter(email => !emailRegex.test(email));
+        
+        if (invalidEmails.length > 0) {
+            const error = new Error(`Invalid email format: ${invalidEmails.join(', ')}`);
+            error.statusCode = 400;
+            return next(error);
+        }
+        
+        // Check authorization
+        const study = await checkStudyAuthorization(studyId, req.user._id, "invite");
+        
+        if (!study.published) {
+            const error = new Error('Cannot invite participants to an unpublished study');
+            error.statusCode = 400;
+            return next(error);
+        }
+        
+        // Prepare invitation documents for bulk insert
+        const invitationDocs = emails.map(email => ({
+            studyId,
+            email,
+            invitationToken: generateRandomToken(),
+            status: 'pending'
+        }));
+        
+        // Bulk insert all invitations in a single DB operation
+        const invitations = await StudyInvitation.insertMany(invitationDocs);
+        
+        // TODO: Trigger email sending here (separate service)
+        
+        res.status(201).json({  // 201 Created is more appropriate than 200 OK
+            message: `${emails.length} participants have been invited to the study`,
+            studyId,
+            invitationCount: invitations.length
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const dashController = {
