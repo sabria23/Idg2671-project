@@ -1,6 +1,6 @@
 ### Environment Variables
 @baseUrl = http://localhost:8000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTY4N2E5NWIyMGZlMDI1NjRjYzk4YiIsImlhdCI6MTc0MzE2MTI1NywiZXhwIjoxNzQ1NzUzMjU3fQ.sxC7hVZ8ttSVJny1vXCEbeJ6lnCO9fXtjDbKPTk4aH4
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTY4N2E5NWIyMGZlMDI1NjRjYzk4YiIsImlhdCI6MTc0NDgxNjUxNCwiZXhwIjoxNzQ3NDA4NTE0fQ.5EH_GTrRRYSJ70kZpZDkmSdWigtGNcvRx9SOlTLjTe4
 
 ### 1. Register a user (only needed first time)
 POST {{baseUrl}}/api/auth/register
@@ -29,7 +29,7 @@ Content-Type: application/json
 GET {{baseUrl}}/api/auth/user
 Authorization: Bearer {{token}}
 
-### 4. Create a new study 
+### 4. Create a new study
 # @name createStudy
 POST {{baseUrl}}/api/studies
 Content-Type: application/json
@@ -37,7 +37,7 @@ Authorization: Bearer {{token}}
 
 {
   "creator": "67e687a95b20fe02564cc98b",
-  "title": "LAST TEST FOR DASH",
+  "title": "i love stratos",
   "description": "This is a test study created to test dashboard functionality",
   "published": false,
   "questions": [
@@ -65,14 +65,14 @@ Authorization: Bearer {{token}}
   ]
 }
 
-### 5. Get all studies 
+### 5. Get all studies (with pagination)
 # @name getAllStudies
-GET {{baseUrl}}/api/studies
+GET {{baseUrl}}/api/studies?page=1&limit=10&sortBy=createdAt&sortOrder=desc
 Authorization: Bearer {{token}}
 
 ### 6. Store a study ID from the response
 # After getting all studies, copy a study ID and paste it below
-@studyId = 67e6927268fd9bbf59989043
+@studyId = 67ffc9ae574859a4f2b4b967
 
 ### 7. Get specific study details
 GET {{baseUrl}}/api/studies/{{studyId}}
@@ -87,15 +87,24 @@ Content-Type: application/json
   "published": true
 }
 
-### 9. Generate public URL for the study
-POST {{baseUrl}}/api/studies/{{studyId}}/public-url
+### 9. Generate link for the study (updated route)
+POST {{baseUrl}}/api/studies/{{studyId}}/links
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Main recruitment channel"
+}
+
+### 10. Get all study links (new endpoint)
+GET {{baseUrl}}/api/studies/{{studyId}}/links
 Authorization: Bearer {{token}}
 
-### 10. Get all responses for the study
+### 11. Get all responses for the study
 GET {{baseUrl}}/api/studies/{{studyId}}/sessions/responses
 Authorization: Bearer {{token}}
 
-### 11. Send email invitations
+### 12. Send email invitations
 POST {{baseUrl}}/api/studies/{{studyId}}/invitations
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -109,7 +118,7 @@ Content-Type: application/json
   ]
 }
 
-### 12. Create a new question for the study
+### 13. Create a new question for the study
 POST {{baseUrl}}/api/studies/{{studyId}}/questions
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -124,10 +133,21 @@ Authorization: Bearer {{token}}
   ]
 }
 
-### 13. Delete the study
+### 14. Update link status (new endpoint)
+# First get the linkId from the get links endpoint
+@linkId = replace_with_actual_link_id
+PATCH {{baseUrl}}/api/studies/{{studyId}}/links/{{linkId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "active": false
+}
+
+### 15. Delete the study
 DELETE {{baseUrl}}/api/studies/{{studyId}}
 Authorization: Bearer {{token}}
 
-### 14. Verify the study was deleted
+### 16. Verify the study was deleted
 GET {{baseUrl}}/api/studies
 Authorization: Bearer {{token}}
