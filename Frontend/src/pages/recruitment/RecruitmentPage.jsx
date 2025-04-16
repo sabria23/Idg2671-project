@@ -5,6 +5,12 @@ import RecruitLink from './components/RecruitLink';
 import EmailInvitation from './components/Email.Invitation';
 import ProgressIndicator from "./components/ProgressIndicator";
 
+/* THINGS I NEED TO DO TODAY
+Toggle a study from draft to published
+Generate a shareable link for a published study
+Invite participants via email*/
+
+
 const RecruitmentPage = () => {
      // Define the recuritmens workflow steps 1 out 3
     const recruitmentSteps = [
