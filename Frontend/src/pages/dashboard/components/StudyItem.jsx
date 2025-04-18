@@ -40,7 +40,7 @@ const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
       </div>
       
       <div className={styles.studyActions}>
-        <Link to="/recruit" className={styles.recruitButton}>
+        <Link to={`/recruit/${study._id}`} className={styles.recruitButton}>
             Recruit
         </Link>
         
