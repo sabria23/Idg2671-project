@@ -105,6 +105,8 @@ const updateStudyStatus = async (req, res, next) => {
 const generateLink = async (req, res, next) => {
     try {
         const {studyId } = req.params;
+        // Add this line to extract description from request body
+        const { description } = req.body || {};
        
          // Check authorization and get the study
         const study = await checkStudyAuthorization(studyId, req.user._id, "get url link");
@@ -117,17 +119,29 @@ const generateLink = async (req, res, next) => {
 
         // Generate a unique access token for this link
         const accessToken = generateRandomToken(16);
-        // Store the access token (you'll need to add a field to your Study model)
-        study.accessToken = accessToken;
+        const shortId = study.accessTokens.length + 1; // Simple sequential numbering
+          // Initialize accessTokens array if it doesn't exist
+          if (!study.accessTokens) {
+            study.accessTokens = [];
+        }
+        
+        // Add the new token to the array
+        study.accessTokens.push({
+            token: accessToken,
+            description: description || `Link ${shortId}`,
+            active: true
+        });
+
         await study.save();
 
         const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
-        const studyUrl = `${baseUrl}/participate/${studyId}?token=${accessToken}`;
+        const studyUrl = `${baseUrl}/participate/${studyId}/${shortId}`;
 
         res.status(200).json({
             message: 'Study link generated succesfully',
             title: study.title,
-            studyUrl: studyUrl
+            studyUrl: studyUrl,
+            description: description || `Link ${shortId}`
         });
     } catch (error) {
         next(error);

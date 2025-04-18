@@ -65,7 +65,7 @@ export const updateStudyPublicStatus = async (studyId, published) => {
 // Generate study participation link
 export const generateStudyLink = async (studyId) => {
     try {
-        const response = await axios.post(`${API_URL}/studies/${studyId}/public-url`, 
+        const response = await axios.post(`${API_URL}/studies/${studyId}/links`, 
             {},
             {
                 headers: { Authorization: `Bearer ${getToken()}` }
@@ -93,6 +93,17 @@ export const sendEmailInvitations = async (studyId, emails) => {
     }
 };
 
+// Get study by ID -> for publishing study purposes
+export const getStudyById = async (studyId) => {
+    try {
+        const response = await axios.get(`${API_URL}/studies/${studyId}`, {
+            headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
 
 export default {
     getAllStudies,
@@ -100,7 +111,8 @@ export default {
     getResponses,
     updateStudyPublicStatus,
     generateStudyLink,
-    sendEmailInvitations
+    sendEmailInvitations,
+    getStudyById
 };
 
 

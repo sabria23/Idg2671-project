@@ -49,6 +49,7 @@ studyRouter.get('/:studyId/sessions/responses', protect, dashController.getRespo
 studyRouter.patch('/:studyId/public', protect, validatePublishStatus, dashController.updateStudyStatus);
 studyRouter.post('/:studyId/links', protect, dashController.generateLink);
 studyRouter.post('/:studyId/invitations', protect, dashController.emailInvitaitons);
+// later on: studyRouter.patch('/:studyId/links/:linkId', protect, dashController.updateLinkStatus);
 
 
 export default studyRouter;

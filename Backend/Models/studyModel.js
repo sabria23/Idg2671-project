@@ -16,6 +16,20 @@ const studySchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  accessTokens: [{
+    token: {
+      type: String,
+      required: true
+    },
+    createdAt: { // usefull for expiration policies
+      type: Date,
+      default: Date.now
+    },
+    active: { // Allows disabling specific links without removing them
+      type: Boolean,
+      default: true
+    }
+  }],
   published: { //status /draft, or published
     type: Boolean,
     default: false

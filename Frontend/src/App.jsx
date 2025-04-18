@@ -50,7 +50,7 @@ const App = () => {
               </PortectedRoute>
             } />
 
-             <Route path="/recruit" element={
+             <Route path="/recruit/:studyId?" element={
                 <PortectedRoute>
                   <RecruitmentPage />
                 </PortectedRoute>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styles from '../../../styles/Recruitment.module.css';
 import {MdEmail} from "react-icons/md";
 
