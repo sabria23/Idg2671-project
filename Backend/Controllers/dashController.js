@@ -5,6 +5,15 @@ import Session from '../Models/participantModel.js';
 import StudyInvitation from '../Models/invitationModel.js';
 import crypto from "crypto";
 import checkStudyAuthorization from "../Utils/authHelperFunction.js";
+import nodemailer from 'nodemailer';
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',  // or any other email service
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
 
 // @desc Get all studies
 // @route GET /api/studies
@@ -252,6 +261,48 @@ const emailInvitaitons = async (req, res, next) => {
         const invitations = await StudyInvitation.insertMany(invitationDocs);
         
         // TODO: Trigger email sending here (separate service)
+          // Email sending implementation
+          let sentCount = 0;
+          let errorCount = 0;
+          
+          // Use Promise.all to send all emails in parallel
+          await Promise.all(invitations.map(async (invitation) => {
+              try {
+                  // Create email content
+                  const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
+                  const participateUrl = `${baseUrl}/participate/${studyId}?token=${invitation.invitationToken}`;
+                  
+                  const mailOptions = {
+                      from: process.env.EMAIL_USER,
+                      to: invitation.email,
+                      subject: `Invitation to participate in study: ${study.title}`,
+                      html: `
+                          <h1>You're invited to participate in a study</h1>
+                          <p>You have been invited to participate in the study "${study.title}".</p>
+                          <p>${study.description || ''}</p>
+                          <p>Click the link below to start:</p>
+                          <a href="${participateUrl}" style="display: inline-block; padding: 10px 20px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 4px;">
+                              Participate in Study
+                          </a>
+                          <p>Or copy and paste this URL into your browser:</p>
+                          <p>${participateUrl}</p>
+                      `
+                  };
+                  
+                  // Send the email
+                  await transporter.sendMail(mailOptions);
+                  
+                  // Update invitation status
+                  invitation.status = 'sent';
+                  invitation.sentAt = new Date();
+                  await invitation.save();
+                  
+                  sentCount++;
+              } catch (emailError) {
+                  console.error(`Failed to send email to ${invitation.email}:`, emailError);
+                  errorCount++;
+              }
+          }));
         
         res.status(201).json({  // 201 Created is more appropriate than 200 OK
             message: `${emails.length} participants have been invited to the study`,
