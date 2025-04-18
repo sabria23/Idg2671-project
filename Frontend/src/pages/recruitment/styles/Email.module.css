@@ -1,0 +1,76 @@
+/* Email Invitation Styles */
+.emailForm {
+    margin: 1rem 0;
+  }
+  
+  .emailInputGroup {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .emailInput {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+  
+  .removeButton {
+    background-color: #f3f4f6;
+    border: none;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    color: #ef4444;
+    cursor: pointer;
+  }
+  
+  .removeButton:hover {
+    background-color: #fee2e2;
+  }
+  
+  .addButton {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background-color: #f3f4f6;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+  }
+  
+  .addButton:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .errorMessage {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .successMessage {
+    background-color: #d1fae5;
+    color: #047857;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .optionButton:disabled,
+  .removeButton:disabled,
+  .addButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
