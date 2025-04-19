@@ -183,24 +183,134 @@ if (step >= 2 && currentQuestion) {
     )
 }*/
 
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
+import UAParser from 'ua-parser-js';
+import axios from 'axios';
 import '../../styles/displaySurvey.css';
+
+import {
+  DirectSelectionUI,
+  StarRatingUI,
+  NumericRatingUI,
+  EmojiRatingUI,
+  RankingUI,
+  renderArtifactContent
+} from '/components/questionTypes';
+
 
 const SurveyPage = ({ mode = 'live' }) => {
   const { studyId } = useParams();
   const isPreview = mode === 'preview';
-  
-  // Sample study data
-  const studyInfo = {
-    title: 'Artifact Comparison Study',
-    description: 'This study aims to collect user preferences between different types of artifacts. Your feedback will help improve our design choices.'
-  };
-  
-  // Simple state to track which step/page we're on
-  const [currentStep, setCurrentStep] = useState(0);
-  const [demographics, setDemographics] = useState({ age: '', gender: '' });
+
+  const [step, setStep] = useState(0) // For managing the steps of the study 0 = intro, 1 = Demographics, 3 questions, 4 = submission and thank you
+  const [studyInfo, setStudyInfo] = useState(null); // For title and description of the study
+  const [demographics, setDemographics] = useState({age:'', gender:''});
+  const [sessionId, setSessionId] = useState(null);
+
+  const [currentQuestion, setCurrentQuestion] = useState(null); 
+  const [totalQuestions, setTotalQuestions] = useState(0);
   const [responses, setResponses] = useState({});
+  
+useEffect(() => {
+    const fetchQuestion = async () => {
+      if (currentStep < 2) return; // Skip if not in question phase
+      const page = currentStep - 2;
+
+      try {
+        const res = await axios.get(`/api/survey/${studyId}/questions/${page}&sessionId=${sessionId}`);
+        const data = res.data;
+
+        setStudyInfo({ title: data.title, description: data.description });
+        setCurrentQuestion(data.question);
+        setTotalQuestions(data.totalQuestions);
+      } catch (err) {
+        console.error('Error fetching question:', err);
+      }
+    };
+    fetchQuestion();
+  }, [currentStep, studyId, sessionId]);
+
+
+  const handleDemographics = async (e) => {
+    e.preventDefault();
+    // if the page is in preview mode skip to questions
+    if (isPreview) {
+        setCurrentStep(2);
+        return;
+    }
+
+    // UAParser to get the device information
+    const parser = new UAParser();
+    const result = parser.getResult();
+    const browser = result.browser.name || 'Unknown browser';
+    const os = result.os.name || 'Unknown os';
+
+    const deviceInfo = `${browser} on ${os}`;
+
+    try {
+      const res = await axios.post(`/api/survey/${studyId}/sessions`, {
+        deviceInfo,
+        demographics
+      });
+      setSessionId(res.data.sessionId);
+      setStep(2); // Go to the first question
+    } catch (err) {
+      console.error('Error creating session:', err);
+    }
+};
+
+const handleAnswer = async (responseValue, skipped = false) => {
+  if (isPreview) {
+    setCurrentStep(prev => prev + 1);
+    return;
+  }
+
+  const questionId = currentQuestion._id;
+
+  try {
+      await axios.post(`/api/survey/${studyId}/sessions/${sessionId}/${questionId}`, {
+          participantAnswer: skipped ? null : responseValue,
+          skipped,
+          answerType: currentQuestion.questionType
+      });
+      
+  } catch (err) {
+      if (err.response?.status === 409) {
+          await axios.put(`/api/survey/${studyId}/sessions/${sessionId}/${questionId}`, {
+              participantAnswer: responseValue,
+              skipped,
+              answerType: currentQuestion.questionType
+          });
+      } else {
+        console.error('Error submitting answer:', err);
+      }
+  }
+  setCurrentStep(prev => prev + 1)
+};
+
+useEffect(() => {
+  const completeSession = async () => {
+    if (!isPreview && sessionId && currentStep === totalQuestions + 2) {
+      try {
+        await axios.patch(`/api/survey/${studyId}/sessions/${sessionId}/complete`);
+      } catch (err) {
+        console.error('Error completing session:', err);
+      }
+    }
+  };
+  completeSession();
+}, [currentStep]);
+
+if (step === 0) {
+  return (
+      <div>
+          <h1>{studyInfo.title}</h1>
+          <p>{studyInfo.description}</p>
+          <button onClick={handleStart}>Start</button>
+      </div>
+  )
+}
 
   // Sample questions with different rating types
   const questions = [
@@ -465,7 +575,7 @@ const SurveyPage = ({ mode = 'live' }) => {
   }
 
   // Render question with appropriate comparison method
-  const currentQuestion = getCurrentQuestion();
+
   if (currentQuestion) {
     const questionIndex = currentStep - 2;
     
