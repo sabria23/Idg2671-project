@@ -1,6 +1,6 @@
 ### Environment Variables
 @baseUrl = http://localhost:8000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTY4N2E5NWIyMGZlMDI1NjRjYzk4YiIsImlhdCI6MTc0NDgxNjUxNCwiZXhwIjoxNzQ3NDA4NTE0fQ.5EH_GTrRRYSJ70kZpZDkmSdWigtGNcvRx9SOlTLjTe4
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjI5OTM1N2IzNmIzNGJhNmEwYzkzMCIsImlhdCI6MTc0NTI2NDQwMCwiZXhwIjoxNzQ3ODU2NDAwfQ.ciX4uOzQtZ13OVPP1EWO-VoESKOgCTYAyWd8QGE888c
 
 ### 1. Register a user (only needed first time)
 POST {{baseUrl}}/api/auth/register
@@ -18,8 +18,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "modesta123",
-  "password": "iloveChicken"
+  "username": "bob",
+  "password": "bob123"
 }
 
 ### Store token from login response
@@ -72,7 +72,7 @@ Authorization: Bearer {{token}}
 
 ### 6. Store a study ID from the response
 # After getting all studies, copy a study ID and paste it below
-@studyId = 67ffc9ae574859a4f2b4b967
+@studyId = 67fe5a81cdfd8b383b497476
 
 ### 7. Get specific study details
 GET {{baseUrl}}/api/studies/{{studyId}}
@@ -111,10 +111,7 @@ Content-Type: application/json
 
 {
   "emails": [
-    "modesta@example.com",
-    "emilie@hotmail.com",
-    "marius@yahoo.com",
-    "sabrina@mail.com"
+    "domantas.daugela1@gmail.com"
   ]
 }
 

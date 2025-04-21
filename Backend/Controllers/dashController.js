@@ -6,14 +6,38 @@ import StudyInvitation from '../Models/invitationModel.js';
 import crypto from "crypto";
 import checkStudyAuthorization from "../Utils/authHelperFunction.js";
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+console.log('Controller .env path:', path.join(__dirname, '../../.env'));
+
+const result = dotenv.config({ path: path.join(__dirname, '../../.env') });
+
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',  // or any other email service
+    host: 'smtp.gmail.com',
+    port: 465, // Use secure port
+    secure: true, // Use SSL/TLS
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    },
+    logger: true,
+    debug: true
   });
+  console.log('Environment Variables in DashController:');
+  console.log('EMAIL_USER:', process.env.EMAIL_USER);
+  console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'Password is set' : 'Password is NOT set');
+  // Add this before your email sending block
+console.log('Email Configuration:', {
+    user: process.env.EMAIL_USER,
+    host: 'smtp.gmail.com',
+    port: 465
+});
 
 // @desc Get all studies
 // @route GET /api/studies
@@ -268,12 +292,14 @@ const emailInvitaitons = async (req, res, next) => {
           // Use Promise.all to send all emails in parallel
           await Promise.all(invitations.map(async (invitation) => {
               try {
+                console.log(`Attempting to send email to: ${invitation.email}`);
                   // Create email content
                   const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
                   const participateUrl = `${baseUrl}/participate/${studyId}?token=${invitation.invitationToken}`;
-                  
+                  // https://www.youtube.com/watch?v=FT-AiOcw-50
                   const mailOptions = {
-                      from: process.env.EMAIL_USER,
+                      from: `"Study Platform" <${process.env.EMAIL_USER}>`, // System email address
+                      //replyTo: researcher.email, // Researcher's email for replies
                       to: invitation.email,
                       subject: `Invitation to participate in study: ${study.title}`,
                       html: `
@@ -291,7 +317,8 @@ const emailInvitaitons = async (req, res, next) => {
                   
                   // Send the email
                   await transporter.sendMail(mailOptions);
-                  
+                  console.log(`Email sent successfully to: ${invitation.email}`);
+
                   // Update invitation status
                   invitation.status = 'sent';
                   invitation.sentAt = new Date();
@@ -299,7 +326,10 @@ const emailInvitaitons = async (req, res, next) => {
                   
                   sentCount++;
               } catch (emailError) {
-                  console.error(`Failed to send email to ${invitation.email}:`, emailError);
+                  console.error(`Failed to send email to ${invitation.email}:`, {
+                    message: emailError.message,
+                    code: emailError.code
+                  });
                   errorCount++;
               }
           }));
