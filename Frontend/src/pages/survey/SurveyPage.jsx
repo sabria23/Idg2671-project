@@ -541,6 +541,7 @@ if (currentQuestion) {
 
 
 
+
   // Render question with appropriate comparison method
 
   
@@ -550,6 +551,9 @@ if (currentQuestion) {
 
 export default SurveyPage;
 
-return null;
+
+
+
+
 
 
