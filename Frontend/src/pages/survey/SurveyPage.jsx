@@ -531,14 +531,4 @@ if (currentQuestion) {
 
 
 
-
-
-
-  // Render question with appropriate comparison method
-
-  
-
-
-
-
 export default SurveyPage;
