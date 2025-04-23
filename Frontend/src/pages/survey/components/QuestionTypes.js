@@ -1,27 +1,14 @@
 // Component for direct selection comparison (choose one from multiple)
-const DirectSelectionUI = ({ question, selectedId, onSelect }) => {
-    return (
-      <div className="artifacts-grid">
-        {question.artifacts.map((artifact) => (
-          <div 
-            key={artifact.id}
-            className={`artifact-item ${selectedId === artifact.id ? 'selected' : ''}`}
-            onClick={() => onSelect(artifact.id)}
-          >
-            <div className="artifact-content">
-              {renderArtifactContent(artifact)}
-            </div>
-            <div className="artifact-label">
-              {artifact.label || `Option ${question.artifacts.indexOf(artifact) + 1}`}
-            </div>
-            {selectedId === artifact.id && (
-              <div className="selected-indicator">✓</div>
-            )}
-          </div>
-        ))}
+export const DirectSelectionUI = ({ question, onSelect }) => (
+  <div className="artifacts-grid">
+    {question.artifacts.map((artifact) => (
+      <div key={artifact.id} onClick={() => onSelect(artifact.id)} className="artifact-item">
+        {renderArtifactContent(artifact)}
+        <p>{artifact.label}</p>
       </div>
-    );
-  };
+    ))}
+  </div>
+);
   
   // Component for star rating comparison
   const StarRatingUI = ({ question, ratings, onRate }) => {
@@ -31,9 +18,6 @@ const DirectSelectionUI = ({ question, selectedId, onSelect }) => {
           <div key={artifact.id} className="rating-item">
             <div className="artifact-content">
               {renderArtifactContent(artifact)}
-            </div>
-            <div className="artifact-label">
-              {artifact.label || `Option ${question.artifacts.indexOf(artifact) + 1}`}
             </div>
             <div className="star-rating">
               {[1, 2, 3, 4, 5].map((star) => (
