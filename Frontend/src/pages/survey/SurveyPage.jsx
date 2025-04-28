@@ -370,6 +370,9 @@ const SurveyPage = ({ mode = 'live' }) => {
                 <span>{questions.length} questions to answer</span>
               </div>
             </div>
+        )
+    }
+
             
             <p className="intro-instructions">
               You will be asked to evaluate different artifacts using various rating methods.
@@ -785,3 +788,4 @@ const renderArtifactContent = (artifact) => {
 };
 
 export default SurveyPage;
+
