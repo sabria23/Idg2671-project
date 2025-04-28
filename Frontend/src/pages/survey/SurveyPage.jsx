@@ -326,10 +326,6 @@ if (step === 0) {
             <h1>{studyInfo.title || 'Loading...'}</h1>
             <div className="intro-content">
               <p>{studyInfo.description}</p>
-<<<<<<< HEAD
-
-=======
->>>>>>> e04505a6f1d71acdea5325f59c4ed179d1c7b2c5
               <div className="intro-details">
                 <div className="intro-detail-item">
                   <span className="detail-icon">⏱️</span>
@@ -345,11 +341,7 @@ if (step === 0) {
               </button>
             </div>
 
-<<<<<<< HEAD
-    
-            
-=======
->>>>>>> e04505a6f1d71acdea5325f59c4ed179d1c7b2c5
+
             <p className="intro-instructions">
               You will be asked to evaluate different artifacts using various rating methods.
               Please follow the instructions for each question carefully.
@@ -360,11 +352,11 @@ if (step === 0) {
             </button>
 
           </div>
-<<<<<<< HEAD
+
         </div>
-=======
-      </div>
->>>>>>> e04505a6f1d71acdea5325f59c4ed179d1c7b2c5
+
+  
+
   )
 }
 
@@ -556,7 +548,6 @@ if (currentQuestion) {
 
 export default SurveyPage;
 
-<<<<<<< HEAD
+
 return  null; 
-=======
->>>>>>> e04505a6f1d71acdea5325f59c4ed179d1c7b2c5
+
