@@ -340,6 +340,20 @@ if (step === 0) {
                 Start Study
               </button>
             </div>
+
+        )
+    }
+
+            
+            <p className="intro-instructions">
+              You will be asked to evaluate different artifacts using various rating methods.
+              Please follow the instructions for each question carefully.
+            </p>
+            
+            <button className="primary-button" onClick={handleStart}>
+              Start Study
+            </button>
+
           </div>
       </div>
   )
@@ -532,3 +546,4 @@ if (currentQuestion) {
 
 
 export default SurveyPage;
+
