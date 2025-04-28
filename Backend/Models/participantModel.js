@@ -12,10 +12,16 @@ const sessionSchema = new mongoose.Schema({
     default: null
    },
   deviceInfo: String,
+  sessionToken: {
+    type: String,
+    required: true,
+    unique: true
+  },
   demographics: { // either have this approach or have type: Map, of: string 
     age: {
-      type: String,
-      enum: [ 'under 18', '18-25', '25-35', '35-45', '45-55', '55-65', '65+' ] 
+      type: Number,
+      min: 0,
+      max: 130,
     },
     gender: {
       type: String,

@@ -44,14 +44,75 @@ export const getResponses = async (studyId) => {
         throw error;
     }
 }
-export default {
-    getAllStudies,
-    deleteStudy,
-    getResponses
-};
-
 
 
 //studyRouter.patch('/:studyId/public', protect, validatePublishStatus, dashController.updateStudyStatus);
+// update study publication status
+export const updateStudyPublicStatus = async (studyId, published) => {
+    try {
+        const response = await axios.patch(`${API_URL}/studies/${studyId}/public`, 
+            { published },
+            {
+                headers: { Authorization: `Bearer ${getToken()}` }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
 //studyRouter.post('/:studyId/public-url', protect, dashController.generateLink);
+// Generate study participation link
+export const generateStudyLink = async (studyId) => {
+    try {
+        const response = await axios.post(`${API_URL}/studies/${studyId}/links`, 
+            {},
+            {
+                headers: { Authorization: `Bearer ${getToken()}` }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 //studyRouter.post('/:studyId/invitations', protect, dashController.emailInvitaitons);
+// Send email invitations
+export const sendEmailInvitations = async (studyId, emails) => {
+    try {
+        const response = await axios.post(`${API_URL}/studies/${studyId}/invitations`, 
+            { emails },
+            {
+                headers: { Authorization: `Bearer ${getToken()}` }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Get study by ID -> for publishing study purposes
+export const getStudyById = async (studyId) => {
+    try {
+        const response = await axios.get(`${API_URL}/studies/${studyId}`, {
+            headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export default {
+    getAllStudies,
+    deleteStudy,
+    getResponses,
+    updateStudyPublicStatus,
+    generateStudyLink,
+    sendEmailInvitations,
+    getStudyById
+};
+
+

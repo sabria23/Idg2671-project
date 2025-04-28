@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:8000/api/survey
-@studyId = 67e4463d9805843f5681f24f
-@sessionId = 67e69c4bbaa108a4460756d6
-@questionId = 67e4463d9805843f5681f256
+@studyId = 67fe5a81cdfd8b383b497476
+@sessionId = 67fe5b6dcdfd8b383b497484
+@questionId = 67fe5ae8cdfd8b383b49747a
 
 
 
@@ -9,7 +9,7 @@ POST {{baseUrl}}/{{studyId}}/sessions
 Content-Type: application/json
 
 {
-  "deviceInfo": "MacBookPro M2",
+  "deviceInfo": "Phone",
   "demographics": {
     "age": "25-35",
     "gender": "female"
@@ -24,7 +24,7 @@ POST {{baseUrl}}/{{studyId}}/sessions/{{sessionId}}/{{questionId}}
 Content-Type: application/json
 
 {
-  "answer": "Yes, definitely",
+  "answer": "positive",
   "answerType": "text",
   "skipped": false
 }

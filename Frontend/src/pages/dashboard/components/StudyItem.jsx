@@ -1,15 +1,31 @@
 import React from 'react';
 import styles from "../../../styles/Dash.module.css";
-import DropdownMenu from "./DropDownMenu";
+import DropdownMenu from "../../../components/common/DropDownMenu";
 import {Link} from 'react-router-dom';
-
+import { useState, useEffect } from 'react';
+import { getResponseCount } from '../../../utils/responseUtils';
 
 const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
+  const [responseCount, setResponseCount] = useState(0);
+
+  useEffect(() => {
+    const fetchResponseCount = async () => {
+      const count = await getResponseCount(study._id);
+      setResponseCount(count);
+    };
+    
+    fetchResponseCount();
+  }, [study._id]);
+
+  // to see whether the study is published o rnot - its status
+  const isPublished = study.published;
     
   return (
     <div className={styles.studyItem}>
       <div className={styles.studyType}>
-        <span className={styles.testIcon}>status of study</span>
+        <span className={`${styles.statusIndicator} ${isPublished ? styles.published : styles.draft}`}>
+          {isPublished ? 'Published' : "Draft"}
+        </span>
       </div>
       
       <div className={styles.studyInfo}>
@@ -17,14 +33,14 @@ const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
       </div>
       
       <div className={styles.responseInfo}>
-        <div className={styles.responseCount}>0 Responses</div>
+        <div className={styles.responseCount}>{responseCount} Responses</div>
         <div className={styles.responseStatus}>
 
         </div>
       </div>
       
       <div className={styles.studyActions}>
-        <Link to="/recruit" className={styles.recruitButton}>
+        <Link to={`/recruit/${study._id}`} className={styles.recruitButton}>
             Recruit
         </Link>
         
@@ -35,11 +51,7 @@ const StudyItem = ({ study, onRename, onEdit, onDelete, onExport }) => {
             year: 'numeric'
           })}
         </div>
-        <div className={styles.userIndicator}>
-          {study.creator && study.creator.username 
-            ? study.creator.username[0].toUpperCase() 
-            : 'U'}
-        </div>
+        
         
         <DropdownMenu
           options={[
