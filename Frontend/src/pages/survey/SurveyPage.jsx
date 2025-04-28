@@ -181,7 +181,7 @@ if (step >= 2 && currentQuestion) {
             <button onClick={() => handleAnswer(null)}>Next</button>
         </div>
     )
-}*/
+}
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
@@ -547,7 +547,7 @@ if (currentQuestion) {
 
 
 export default SurveyPage;
+*/
 
 
-return  null; 
 
