@@ -322,21 +322,27 @@ const handlePreviousQuestion = () => setCurrentStep(prev => Math.max(prev - 1, 2
 if (step === 0) {
   return (
       <div className="survey-container">
-        <div className="intro-container">
-          <h1>{studyInfo.title}</h1>
-          <div className="intro-content">
-            <p>{studyInfo.description}</p>
-            
-            <div className="intro-details">
-              <div className="intro-detail-item">
-                <span className="detail-icon">⏱️</span>
-                <span>Approximately {questions.length * 2} minutes</span>
+          <div className="intro-container">
+            <h1>{studyInfo.title || 'Loading...'}</h1>
+            <div className="intro-content">
+              <p>{studyInfo.description}</p>
+
+              <div className="intro-details">
+                <div className="intro-detail-item">
+                  <span className="detail-icon">⏱️</span>
+                  <span>Approximately {questions.length * 2} minutes</span>
+                </div>
+                <div className="intro-detail-item">
+                  <span className="detail-icon">🔍</span>
+                  <span>{questions.length} questions to answer</span>
+                </div>
               </div>
-              <div className="intro-detail-item">
-                <span className="detail-icon">🔍</span>
-                <span>{questions.length} questions to answer</span>
-              </div>
+              <button className="primary-button" onClick={() => setCurrentStep(1)}>
+                Start Study
+              </button>
             </div>
+
+    
             
             <p className="intro-instructions">
               You will be asked to evaluate different artifacts using various rating methods.
@@ -348,10 +354,195 @@ if (step === 0) {
             </button>
           </div>
         </div>
-      </div>
   )
 }
 
-return null;
+  // Render demographics form
+  if (currentStep === 1) {
+    return (
+      <div className="survey-container">
+        <div className="demographics-container">
+          <h2>Before we begin</h2>
+          <p>Please provide some information about yourself.</p>
+          
+          <form onSubmit={handleDemographics} className="demographics-form">
+            <div className="form-group">
+              <label htmlFor="age">Age</label>
+              <input
+                type="number"
+                id="age"
+                min="0"
+                max="130"
+                value={demographics.age} 
+                onChange={(e) => setDemographics({...demographics, age: e.target.value})}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="gender">Gender</label>
+              <select 
+                id="gender"
+                value={demographics.gender} 
+                onChange={(e) => setDemographics({...demographics, gender: e.target.value})}
+                required
+              >
+                <option value="">Select your gender</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="prefer_not_to_say">Prefer not to say</option>
+              </select>
+            </div>
+            
+            <div className="form-actions">
+              <button 
+                type="button" 
+                className="secondary-button" 
+                onClick={() => setCurrentStep(0)}
+              >
+                Back
+              </button>
+              <button 
+                type="submit" 
+                className="primary-button"
+                disabled={!demographics.age || !demographics.gender}
+              >
+                Continue
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
+  // Render thank you page (last step)
+  if (currentStep >= questions.length + 2) {
+    return (
+      <div className="survey-container">
+        <div className="thankyou-container">
+          <div className="thankyou-icon">✅</div>
+          <h1>Thank You!</h1>
+          <p>Your responses have been successfully submitted.</p>
+          <p>We appreciate your participation in this study.</p>
+        </div>
+      </div>
+    );
+  }
+
+if (!currentQuestion) {
+   return <div className='survey-container'>Loading...</div>
 }
+
+if (currentQuestion) {
+  const questionIndex = currentStep - 2;
+  
+  return (
+    <div className="survey-container">
+      <div className="question-container">
+        <div className="question-header">
+          <div className="question-progress">
+            <div className="progress-text">
+              Question {questionIndex + 1} of {totalQuestions}
+            </div>
+            <div className="progress-bar">
+              <div 
+                className="progress-fill" 
+                style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+          <h2>{currentQuestion.questionText}</h2>
+        </div>
+        
+        {currentQuestion.questionType === 'selection' && (
+          <DirectSelectionUI question={currentQuestion} onSelect={handleAnswerSubmit} />
+        )}
+
+        {currentQuestion.questionType === 'star-rating' && (
+          <StarRatingUI question={currentQuestion} onRate={handleAnswerSubmit} />
+        )}
+
+        {currentQuestion.questionType === 'numeric-rating' && (
+          <NumericRatingUI question={currentQuestion} onRate={handleAnswerSubmit} />
+        )}
+
+        {currentQuestion.questionType === 'emoji-rating' && (
+          <EmojiRatingUI question={currentQuestion} onRate={handleAnswerSubmit} />
+        )}
+
+        {currentQuestion.questionType === 'ranking' && (
+          <RankingUI question={currentQuestion} onRank={handleAnswerSubmit} />
+        )}
+
+        <button onClick={() => handleAnswer(null, true)}>Skip</button>
+        
+        <div className="question-navigation">
+          <button 
+            className="secondary-button" 
+            onClick={handlePreviousQuestion}
+          >
+            Previous
+          </button>
+          <button 
+            className="skip-button" 
+            onClick={handleNextQuestion}
+          >
+            Skip Question
+          </button>
+          <button 
+            className="primary-button"
+            onClick={handleNextQuestion}
+            disabled={!hasValidResponse() && currentQuestion.questionType !== 'selection'}
+          >
+            Next Question
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+};
+
+  // Get current question based on step
+  const getCurrentQuestion = () => {
+    // The first step (0) is intro, second step (1) is demographics
+    // Questions start at step 2
+    const questionIndex = currentStep - 2;
+    if (questionIndex >= 0 && questionIndex < questions.length) {
+      return questions[questionIndex];
+    }
+    return null;
+  };
+
+  // Check if current question has a valid response
+  const hasValidResponse = () => {
+    const currentQuestion = getCurrentQuestion();
+    if (!currentQuestion) return false;
+    
+    const response = responses[currentQuestion.id];
+    
+    switch (currentQuestion.questionType) {
+      case 'selection':
+        return !!response; // Has selected an artifact
+      case 'star-rating':
+      case 'numeric-rating':
+      case 'emoji-rating':
+        // Check if all artifacts have ratings
+        return currentQuestion.artifacts.every(a => 
+          response && response[a.id] !== undefined
+        );
+      case 'ranking':
+        // Check if all artifacts are ranked
+        return response && response.length === currentQuestion.artifacts.length;
+      default:
+        return false;
+    }
+  };
+
+
+
+export default SurveyPage;
+
+return  null; 
