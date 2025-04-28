@@ -8,6 +8,7 @@ import { getAllStudies, deleteStudy } from "../../services/studyService.js";
 import { handleApiError } from "../../utils/errorHandler.js";
 import ConfirmationMsg from '../../components/common/ConfirmationMsg.jsx';
 import { handleDelete } from './utils/studyActions.js';
+import { getCurrentUser, logoutUser } from '../../services/authService.js';
 
 
 const DashboardPage = () => {
@@ -17,6 +18,23 @@ const DashboardPage = () => {
     const [studies, setStudies] = useState([]); // this is where list of studies fetched from backend will be stored, updated with SetStudies funciton
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [studyToDelete, setStudyToDelete] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
+
+
+
+  //fetching user data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getCurrentUser();
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error('failed to fetch user data:', error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
 
     // this funciton handles exporitng a tsudy to the export result page
   //this allows the export page to load the correct study data by its specific ID
@@ -48,7 +66,8 @@ const DashboardPage = () => {
     };
      
     const handleLogout = () => {
-      console.log("loggin out..");
+      logoutUser();
+      navigate('/login');
     };
     
        // Your specific navigation items for the Dashboard
@@ -75,6 +94,23 @@ const DashboardPage = () => {
         fetchStudies();
     }, []);
 
+    const greeting = () => { // https://dev.to/adrianvalenz/time-based-greeting-with-react-and-bridgetown-4b42
+      var myDate = new Date();
+      var hours = myDate.getHours();
+      var greet;
+
+      if (hours < 12)
+        greet = "Morning";
+      else if (hours >= 12 && hours <=17)
+        greet = "Afternoon";
+      else if (hours >=17 && hours <= 24)
+        greet = "Evening";
+
+        // at first i did not returned teh value greet which got me undefined value
+        // in js when fucntion defines varibales like here grett and set soemhting like in this case time
+        // and does not return anything, like any value, it iwll return undefined
+        return greet;
+    }
     return (
         <div className={styles.container}>
           {/*this is the header/navbar with props*/}
@@ -85,7 +121,8 @@ const DashboardPage = () => {
           />
           {/*main content*/}
           <main className={styles.mainContent}>
-            <h1 className={styles.welcomeHeader}>hello, you</h1> {/*this will take variable to username and time */}
+            <h1 className={styles.welcomeHeader}>
+               {greeting()}, {currentUser ? currentUser.username : "user"} </h1> 
             
             {loading && <div>Loading studies...</div>}
             

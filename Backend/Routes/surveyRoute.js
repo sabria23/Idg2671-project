@@ -1,20 +1,28 @@
 import express from "express";
-import { getSurvey, createSession, submitAnswer, updateAnswer } from "../Controllers/surveyController.js"; // Controllers
-//import {} from ''; // Validation
+import { getSurvey, createSession, submitAnswer, updateAnswer, completeSession } from "../Controllers/surveyController.js"; // Controllers
+//import {  validateSessionId } from "../Validators/surveyValidators.js";
 
 const surveyRouter = express.Router();
 
-// Displaying survey
-surveyRouter.get('/:studyId/survey', getSurvey);
+// Get study details for participants
+surveyRouter.get('/:studyId',  getSurvey);
 
+// Sessions resource
 // Create a new session
 surveyRouter.post('/:studyId/sessions', createSession);
 
-// Store responses
-surveyRouter.post('/:studyId/sessions/:sessionId/:questionId', submitAnswer);
+// Complete a session
+surveyRouter.patch('/:studyId/sessions/:sessionId/complete', 
+    completeSession);
 
-// Change answer
-surveyRouter.patch('/:studyId/sessions/:sessionId/:questionId', updateAnswer);
+// Responses resource
+// Submit an answer
+surveyRouter.post('/:studyId/sessions/:sessionId/responses', 
+    submitAnswer);
+
+// Update an answer
+surveyRouter.patch('/:studyId/sessions/:sessionId/responses/:responseId', 
+    updateAnswer);
 
 // patch to update to complete? This can maybe be used for denying further accsess based on that the user has already completed
 // surveyRouter.patch('/api/studies/studyid/sessions/sessionId')?
