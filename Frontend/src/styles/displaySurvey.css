@@ -1,3 +1,4 @@
+
 /* Main container */
 .survey-container {
     max-width: 1200px;
@@ -42,7 +43,9 @@
     flex-wrap: wrap;
   }
   
-  .intro-detail-item {
+
+/*body{
+
     display: flex;
     align-items: center;
     margin: 0.5rem;
@@ -547,3 +550,4 @@
       justify-content: space-between;
     }
   }
+
