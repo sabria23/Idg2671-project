@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+/*import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { UAParser } from 'ua-parser-js';
 import axios from 'axios';
@@ -327,4 +327,4 @@ export default function SurveyPage({ mode = 'live' }) {
 
 return null;
 
-}
+}*/
