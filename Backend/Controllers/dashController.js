@@ -17,7 +17,29 @@ console.log('Controller .env path:', path.join(__dirname, '../../.env'));
 
 const result = dotenv.config({ path: path.join(__dirname, '../../.env') });
 
+/*
+As a student, cost is definitely an important factor! Here's a breakdown of the cost-free options:
+Free options for development:
 
+Ethereal Mail: Completely free for development. It creates disposable test accounts and captures emails without sending them.
+Shared development email: You could create a free Gmail account specifically for development that all team members share.
+
+Free/low-cost options for production:
+
+SendGrid: Has a free tier with 100 emails per day
+Mailgun: Has a free trial with 5,000 emails for 3 months
+Brevo (formerly Sendinblue): Free tier with 300 emails per day
+
+Regarding OAuth2 with Gmail:
+
+This is free to implement but requires some setup with Google Cloud Console
+Good for letting users authorize your app to send on their behalf without storing passwords
+
+For a student project, I'd recommend:
+
+Use Ethereal for development (completely free)
+For production, either use SendGrid's free tier or implement the "users provide their credentials" approach
+*/
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465, // Use secure port
