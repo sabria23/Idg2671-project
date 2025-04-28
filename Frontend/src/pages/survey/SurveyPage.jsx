@@ -341,10 +341,6 @@ if (step === 0) {
               </button>
             </div>
 
-        )
-    }
-
-            
             <p className="intro-instructions">
               You will be asked to evaluate different artifacts using various rating methods.
               Please follow the instructions for each question carefully.
