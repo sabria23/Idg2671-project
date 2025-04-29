@@ -8,7 +8,9 @@ import DashboardPage from './pages/dashboard/DashPage';
 import CreateStudyPage from './pages/studies/CreateStudyPage';
 import RecruitmentPage from './pages/recruitment/RecruitmentPage.jsx';
 import ExportPage from './pages/exportResults/ExportPage.jsx';
-import SurveyPage from './pages/survey/SurveyPage.jsx';
+
+//import SurveyPage from './pages/survey/SurveyPage.jsx';
+
 import ProfilePage from './pages/profile/ProfilePage.jsx';
 import PortectedRoute from './components/auth/PortectedRoute.jsx';
 
@@ -64,7 +66,7 @@ const App = () => {
            
            {/* this route is for redirected root to dash */}
            <Route path="/" element={<Navigate to="/dashboard" />} />
-           <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview" />} />
+          {/* <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview" />} /> */}
 
 
   
