@@ -1,11 +1,18 @@
 import React from 'react';
 import styles from '../styles/QuestionBuilder.module.css';
+import NumericRating from './NumericRating';
+import ThumbsUpDown from './ThumbsUpDown';
+import StarRating from './StarRating';
+import EmojiRating from './EmojiRating';
+import LabelSlider from './LabelSlider';
 
-const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setSelectedQuestionIndex, selectedFiles, setSelectedFiles }) => {
+const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setSelectedQuestionIndex}) => {
     
     if(selectedQuestionIndex === null || !questions[selectedQuestionIndex]){
         return <div className={styles['rightSide-panel']}></div>
     }
+
+    const currentQuestion = questions[selectedQuestionIndex];
 
     const handleQuestionTitleChange = (index, value) =>{
         const updatedQuestions = [...questions];
@@ -31,84 +38,145 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
         setQuestions(updatedQuestions);
     };
 
-     const handleRemoveArtifact = (indexToRemove) => {
-            setSelectedFiles(prevFiles =>
-                prevFiles.filter((_, index) => index !== indexToRemove)
-            );
+    const renderRatingComponent = () => {
+            const ratingType = currentQuestion.ratingType || 'numeric-rating';
+    
+            switch(ratingType){
+                case 'numeric-rating':
+                    return <NumericRating />;
+                case 'thumbs-up-down':
+                    return <ThumbsUpDown />;
+                case 'star-rating':
+                    return <StarRating />;
+                case 'emoji-rating':
+                    return <EmojiRating />;
+                case 'label-slider':
+                    return <LabelSlider />;
+                default:
+                    return <NumericRating />;
+            }
         };
 
-
     return(
-        <div className={styles['rightSide-panel']}>
+        <div className={styles['question-settings']}>
             <h3>Question Settings</h3>
 
             {/* Question Text */}
-            <label>
-                Question Title
-                <input
-                    className={styles['question-title']}
-                    type="text"
-                    value={
-                        questions[selectedQuestionIndex].questionTitle
-                    }
-                    onChange={(e) =>
-                        handleQuestionTitleChange(
-                            selectedQuestionIndex,
-                            e.target.value
-                        )
-                    }
-                />
-            </label>
-
-            <label>
-                Question Type
-                <div>
-                    <select
-                        name={`questionType-${selectedQuestionIndex}`}
-                        value={questions[selectedQuestionIndex].questionType}
+            <div className={styles['question-text']}>
+                <label>
+                    Question Title
+                    <input
+                        className={styles['question-title']}
+                        type="text"
+                        value={
+                            questions[selectedQuestionIndex].questionTitle
+                        }
                         onChange={(e) =>
-                            handleQuestionTypeChange(
+                            handleQuestionTitleChange(
                                 selectedQuestionIndex,
                                 e.target.value
                             )
                         }
-                    >
-                        <option value='multiple-choice'>Multiple Choice</option>
-                        <option value='open-ended'>Open Ended</option>
-                    </select>
-                </div>
-            </label>
+                    />
+                </label>
+            </div>
 
-            {/* Multiple choice options */}
-            {questions[selectedQuestionIndex].questionType ===
-                'multiple-choice' && (
-                <>
-                    <label>
-                        Multiple Choice Option
-                    {questions[selectedQuestionIndex].options.map(
-                        (option, optIndex) => (
-                            <div key={optIndex}>
-                                <input
-                                    type="text"
+            <div className={styles['question-type']}>
+                <label>
+                    Question Type
+                    <div className={styles['question-type-grid']}>
+                        <div
+                            className={`${styles['type-option']} 
+                                        ${questions[selectedQuestionIndex].questionType === 'multiple-choice' ? styles['selected'] : ''}`}
+                            onClick={() => handleQuestionTypeChange(selectedQuestionIndex, 'multiple-choice')}
+                        >
+                            Multiple Choice
+                        </div>
+                        <div
+                            className={`${styles['type-option']} 
+                                        ${questions[selectedQuestionIndex].questionType === 'open-ended' ? styles['selected'] : ''}`}
+                            onClick={() => handleQuestionTypeChange(selectedQuestionIndex, 'open-ended')}
+                        >
+                            Open Ended
+                        </div>
+                        <div
+                            className={`${styles['type-option']}
+                                        ${questions[selectedQuestionIndex].questionType === 'scaling' ? styles['selected'] : ''}`} 
+                            onClick={() => handleQuestionTypeChange(selectedQuestionIndex, 'scaling')}          
+                        >
+                            Scaling
+                        </div>
+                        <div
+                            className={`${styles['type-option']}
+                                        ${questions[selectedQuestionIndex].questionType === 'checkbox' ? styles['checkbox'] : ''}`} 
+                            onClick={() => handleQuestionTypeChange(selectedQuestionIndex, 'checkbox')}
+                        >
+                            Checkbox
+                        </div>
+                    </div>
+
+                    {questions[selectedQuestionIndex].questionType === 'multiple-choice' && (
+                        <>
+                            <label>Multiple Choice Options</label>
+                            {questions[selectedQuestionIndex].options && questions[selectedQuestionIndex].options.map((option, optIndex) =>(
+                                <div key={optIndex}>
+                                    <input 
+                                        className={styles['multiple-choice-option']}
+                                        type='text'
+                                        value={option}
+                                        onChange={(e) =>{
+                                            const updatedQuestions = [...questions];
+                                            updatedQuestions[selectedQuestionIndex].options[optIndex] = e.target.value;
+                                            setQuestions(updatedQuestions);
+                                        }} 
+                                    />
+                                </div>
+                            ))}
+                        </>
+                    )}
+
+                    {questions[selectedQuestionIndex].questionType === 'scaling' && (
+                        <>
+                            <label>Ratings</label>
+                            <div className={styles['rating-type-grid']}>
+                                {['numeric-rating', 'star-rating', 'thumbs-up-down', 'emoji-rating', 'label-slider'].map((type) => (
+                                <div
+                                    key={type}
+                                    className={`${styles['type-option']} ${questions[selectedQuestionIndex].ratingType === type ? styles['selected'] : ''}`}
+                                    onClick={() => handleRatingTypeChange(selectedQuestionIndex, type)}
+                                >
+                                    {type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </div>
+                                ))}
+                            </div>
+                            <div>
+                                {renderRatingComponent()}
+                            </div>
+                        </>
+                    )}
+
+                    {questions[selectedQuestionIndex].questionType === 'checkbox' && (
+                        <>
+                            <label>Checkbox Options</label>
+                            {questions[selectedQuestionIndex].options && questions[selectedQuestionIndex].options.map((option, optIndex) =>(
+                                <div key={optIndex}>
+                                <input 
+                                    className={styles['multiple-choice-option']}
+                                    type='text'
                                     value={option}
-                                    onChange={(e) => {
-                                        const updatedQuestions = [
-                                            ...questions,
-                                        ];
-                                        updatedQuestions[
-                                            selectedQuestionIndex
-                                        ].options[optIndex] =
-                                            e.target.value;
+                                    onChange={(e) =>{
+                                        const updatedQuestions = [...questions];
+                                        updatedQuestions[selectedQuestionIndex].options[optIndex] = e.target.value;
                                         setQuestions(updatedQuestions);
                                     }}
                                 />
                             </div>
-
-                        )
+                            ))}
+                        </>
                     )}
-                    </label>
-                </>
-            )}
+                </label>
+            </div>
+
 
             {/* Layout Template */}
             <label>
@@ -130,95 +198,18 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                 </select>
             </label>
 
-            {/* Ratings */}
-            <div>
-                <label>
-                    Ratings
-                    <select 
-                        value={questions[selectedQuestionIndex].ratingType || 'numeric-rating'}
-                        onChange={(e) =>
-                            handleRatingTypeChange(
-                                selectedQuestionIndex,
-                                e.target.value
-                            )
-                        }
-                    >
-                        <option value='numeric-rating'>Numeric Rating</option>
-                        <option value='thumbs-up-down'>Thumbs Up/Down Rating</option>
-                        <option value='star-rating'>Star Rating</option>
-                        <option value='emoji-rating'>Emoji Rating</option>
-                        <option value='label-slider'>Label Slider Rating</option>
-                    </select>
-                </label>
-            </div>
-
-            {/* Uploaded files display */}
-            <div className={styles['uploadedFiles']}>
-                <h3>Uploaded artifacts</h3>
-                {selectedFiles.length === 0 ? (
-                    <p>No artifacts uploaded yet</p>
-                ) :(
-                    
-                    <ul className={styles['uploadedFiles-list']}>
-                    {selectedFiles.map((file, index) => {
-                        const fileURL = URL.createObjectURL(file);
-                        const fType = file.type.split('/')[0];
-
-                        return (
-                            <li
-                                key={index}
-                                className={styles['artifact-item']}
-                            >
-                                {fType === 'image' && (
-                                    <img
-                                        src={fileURL}
-                                        alt={file.name}
-                                        width="150"
-                                    />
-                                )}
-                                {fType === 'video' && (
-                                    <video width="250" controls>
-                                        <source
-                                            src={fileURL}
-                                            type={file.type}
-                                        />
-                                        Your browser does not support
-                                        video playback
-                                    </video>
-                                )}
-                                {fType === 'audio' && (
-                                    <audio controls>
-                                        <source
-                                            src={fileURL}
-                                            type={file.type}
-                                        />
-                                        Your browser does not support audio
-                                        playback
-                                    </audio>
-                                )}
-                                {(fType === 'text' ||
-                                    fType === 'application') && (
-                                    <p>
-                                        <strong>{file.name}</strong>
-                                    </p>
-                                )}
-
-                                <button
-                                    type="button"
-                                    className={
-                                        styles['removeArtifactBtn']
-                                    }
-                                    onClick={() =>
-                                        handleRemoveArtifact(index)
-                                    }
-                                >
-                                    Delete
-                                </button>
-                            </li>
-                        );
-                    })}
-                </ul>
-            )}
+            {/* Checkbox for required question */}
+            <div className={styles['required-checkbox']}>
+                    <label>Required</label>
+                        <input 
+                            type='checkbox'
+                            checked={questions[selectedQuestionIndex].isRequired || false}
+                            onChange={(e) => {
+                                const updatedQuestions = [...questions];
+                                updatedQuestions[selectedQuestionIndex].isRequired = e.target.checked;
+                                setQuestions(updatedQuestions);
+                            }} 
+                        />
             </div>
 
             {/* Delete question */}
