@@ -7,16 +7,8 @@ const QuestionBuilder = ({ questions, setQuestions, selectedFiles, selectedQuest
 
 
     return(
-        <div className={styles['questionBuilder-container']}>
-
-            {/* Middle panel: Edit Question Text */}
-            <QuestionEditor 
-                questions={questions}
-                setQuestions={setQuestions}
-                selectedQuestionIndex={selectedQuestionIndex}
-            />
-
-            {/* Right side panel: Question Settings */}
+        <>
+            {/* Question Settings */}
             <QuestionSettings 
                 questions={questions}
                 setQuestions={setQuestions}
@@ -24,8 +16,13 @@ const QuestionBuilder = ({ questions, setQuestions, selectedFiles, selectedQuest
                 selectedQuestionIndex={selectedQuestionIndex}
                 setSelectedQuestionIndex={setSelectedQuestionIndex}
             />
-        </div>
-
+            {/* Edit Question Text */}
+            <QuestionEditor 
+                questions={questions}
+                setQuestions={setQuestions}
+                selectedQuestionIndex={selectedQuestionIndex}
+            />
+        </>
     );
 };
 
