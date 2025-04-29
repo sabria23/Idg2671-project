@@ -6,6 +6,7 @@ import Navbar from "../../components/common/Navbar";
 import StudyDetails from './components/StudyDetails';
 import ArtifactsUploader from './components/ArtifactsUploader';
 import QuestionBuilder from './components/QuestionBuilder';
+import QuestionList from './components/QuestionList';
 
 const CreateStudyPage = () => {
     const [studyTitle, setStudyTitle] = useState('');
@@ -21,6 +22,21 @@ const CreateStudyPage = () => {
             layout: 'row'
         }
     ]);
+    const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
+
+    const addQuestion = () => {
+        setQuestions(prev => [
+            ...prev,
+            {
+                questionTitle: `Question ${prev.length + 1}`,
+                questionText: '',
+                questionType: '',
+                fileContent: null,
+                options: [],
+                layout: 'row'
+            },
+        ]);
+    };
 
     // SAVE STUDY "CONTROLLERS"
     const handleSave = async () => {
@@ -66,26 +82,42 @@ const CreateStudyPage = () => {
                 <p>Fill out the details below and save to see the created study on dashboard</p>
 
                 <form onSubmit={(e) => e.preventDefault()}>
+                    <div className={styles['studyPage-flexContent']}>
+                        {/* LIST OF ADDED QUESTIONS */}
+                        <div className={styles['studyPage-left']}>
+                            <QuestionList 
+                                    className={styles['questionBuilder-list']}
+                                    questions={questions}
+                                    selectedQuestionIndex={selectedQuestionIndex}
+                                    setSelectedQuestionIndex={setSelectedQuestionIndex}
+                                    addQuestion={addQuestion}
+                                />
+                        </div>
 
-                    {/* STUDY DETAILS */}
-                    <StudyDetails
-                        studyTitle={studyTitle} 
-                        studyDescription={studyDescription}
-                        setStudyTitle={setStudyTitle}
-                        setStudyDescription={setStudyDescription}
-                    />
-                    
-                    {/* ARTIFACTS */}
-                    <ArtifactsUploader
-                        selectedFiles={selectedFiles}
-                        setSelectedFiles={setSelectedFiles}
-                    />
+                        <div className={styles['studyPage-right']}>
+                            {/* STUDY DETAILS */}
+                            <StudyDetails
+                                studyTitle={studyTitle} 
+                                studyDescription={studyDescription}
+                                setStudyTitle={setStudyTitle}
+                                setStudyDescription={setStudyDescription}
+                            />
+                            
+                            {/* ARTIFACTS */}
+                            <ArtifactsUploader
+                                selectedFiles={selectedFiles}
+                                setSelectedFiles={setSelectedFiles}
+                            />
+                        </div>
+                    </div>
 
                     {/* QUESTION BUILDER */}
                     <QuestionBuilder
                         questions={questions}
                         setQuestions={setQuestions}
                         selectedFiles={selectedFiles}
+                        selectedQuestionIndex={selectedQuestionIndex}
+                        setSelectedQuestionIndex={setSelectedQuestionIndex}
                     />
 
                 </form>
