@@ -36,7 +36,7 @@ export const deleteStudy = async (studyId) => { // take in that specific studyId
 //studyRouter.get('/:studyId/sessions/responses', protect, dashController.getResponses);
 export const getResponses = async (studyId) => {
     try {
-        const response = await axios.get(`${API_URL}/studies/${studyId}/sessions/responses`, {
+        const response = await axios.get(`${API_URL}/studies/${studyId}/sessions/:sessionId/results`, {
             headers: {Authorization: `Bearer ${getToken()}`}
         });
         return response.data
@@ -50,7 +50,7 @@ export const getResponses = async (studyId) => {
 // update study publication status
 export const updateStudyPublicStatus = async (studyId, published) => {
     try {
-        const response = await axios.patch(`${API_URL}/studies/${studyId}/public`, 
+        const response = await axios.patch(`${API_URL}/studies/${studyId}`, 
             { published },
             {
                 headers: { Authorization: `Bearer ${getToken()}` }
@@ -65,7 +65,7 @@ export const updateStudyPublicStatus = async (studyId, published) => {
 // Generate study participation link
 export const generateStudyLink = async (studyId) => {
     try {
-        const response = await axios.post(`${API_URL}/studies/${studyId}/links`, 
+        const response = await axios.post(`${API_URL}/studies/${studyId}/link`, 
             {},
             {
                 headers: { Authorization: `Bearer ${getToken()}` }
