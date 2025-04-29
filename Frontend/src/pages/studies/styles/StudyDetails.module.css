@@ -9,8 +9,7 @@
     background-color: white;
 }
 
-.studyDetails-container label{
-    font-size: 15px;
+.studyDetails-container h2{
     font-weight: bold;
     color: #333;
     margin-bottom: 0.5rem;

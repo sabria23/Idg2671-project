@@ -1,6 +1,5 @@
 import React from 'react';
-import styles from '../styles/QuestionBuilder.module.css';
-import QuestionEditor from './QuestionEditor';
+//import styles from '../styles/QuestionBuilder.module.css';
 import QuestionSettings from './SettingsForQuestions';
 
 const QuestionBuilder = ({ questions, setQuestions, selectedFiles, selectedQuestionIndex, setSelectedQuestionIndex }) =>{
@@ -15,12 +14,6 @@ const QuestionBuilder = ({ questions, setQuestions, selectedFiles, selectedQuest
                 selectedFiles={selectedFiles}
                 selectedQuestionIndex={selectedQuestionIndex}
                 setSelectedQuestionIndex={setSelectedQuestionIndex}
-            />
-            {/* Edit Question Text */}
-            <QuestionEditor 
-                questions={questions}
-                setQuestions={setQuestions}
-                selectedQuestionIndex={selectedQuestionIndex}
             />
         </>
     );

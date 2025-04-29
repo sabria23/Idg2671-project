@@ -81,6 +81,20 @@ const CreateStudyPage = () => {
                 <h1>Create a new study</h1>
                 <p>Fill out the details below and save to see the created study on dashboard</p>
 
+                {/* STUDY DETAILS */}
+                <StudyDetails
+                    studyTitle={studyTitle} 
+                    studyDescription={studyDescription}
+                    setStudyTitle={setStudyTitle}
+                    setStudyDescription={setStudyDescription}
+                />
+
+                {/* ARTIFACTS */}
+                <ArtifactsUploader
+                    selectedFiles={selectedFiles}
+                    setSelectedFiles={setSelectedFiles}
+                />
+
                 <form onSubmit={(e) => e.preventDefault()}>
                     <div className={styles['studyPage-flexContent']}>
                         {/* LIST OF ADDED QUESTIONS */}
@@ -95,30 +109,18 @@ const CreateStudyPage = () => {
                         </div>
 
                         <div className={styles['studyPage-right']}>
-                            {/* STUDY DETAILS */}
-                            <StudyDetails
-                                studyTitle={studyTitle} 
-                                studyDescription={studyDescription}
-                                setStudyTitle={setStudyTitle}
-                                setStudyDescription={setStudyDescription}
-                            />
                             
-                            {/* ARTIFACTS */}
-                            <ArtifactsUploader
+
+                            {/* QUESTION BUILDER */}
+                            <QuestionBuilder
+                                questions={questions}
+                                setQuestions={setQuestions}
                                 selectedFiles={selectedFiles}
-                                setSelectedFiles={setSelectedFiles}
+                                selectedQuestionIndex={selectedQuestionIndex}
+                                setSelectedQuestionIndex={setSelectedQuestionIndex}
                             />
                         </div>
                     </div>
-
-                    {/* QUESTION BUILDER */}
-                    <QuestionBuilder
-                        questions={questions}
-                        setQuestions={setQuestions}
-                        selectedFiles={selectedFiles}
-                        selectedQuestionIndex={selectedQuestionIndex}
-                        setSelectedQuestionIndex={setSelectedQuestionIndex}
-                    />
 
                 </form>
                 

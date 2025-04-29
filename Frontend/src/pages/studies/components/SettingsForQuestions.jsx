@@ -1,11 +1,18 @@
 import React from 'react';
 import styles from '../styles/QuestionBuilder.module.css';
+import NumericRating from './NumericRating';
+import ThumbsUpDown from './ThumbsUpDown';
+import StarRating from './StarRating';
+import EmojiRating from './EmojiRating';
+import LabelSlider from './LabelSlider';
 
 const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setSelectedQuestionIndex}) => {
     
     if(selectedQuestionIndex === null || !questions[selectedQuestionIndex]){
         return <div className={styles['rightSide-panel']}></div>
     }
+
+    const currentQuestion = questions[selectedQuestionIndex];
 
     const handleQuestionTitleChange = (index, value) =>{
         const updatedQuestions = [...questions];
@@ -31,6 +38,24 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
         setQuestions(updatedQuestions);
     };
 
+    const renderRatingComponent = () => {
+            const ratingType = currentQuestion.ratingType || 'numeric-rating';
+    
+            switch(ratingType){
+                case 'numeric-rating':
+                    return <NumericRating />;
+                case 'thumbs-up-down':
+                    return <ThumbsUpDown />;
+                case 'star-rating':
+                    return <StarRating />;
+                case 'emoji-rating':
+                    return <EmojiRating />;
+                case 'label-slider':
+                    return <LabelSlider />;
+                default:
+                    return <NumericRating />;
+            }
+        };
 
     return(
         <div className={styles['question-settings']}>
@@ -89,56 +114,69 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                             Checkbox
                         </div>
                     </div>
+
+                    {questions[selectedQuestionIndex].questionType === 'multiple-choice' && (
+                        <>
+                            <label>Multiple Choice Options</label>
+                            {questions[selectedQuestionIndex].options && questions[selectedQuestionIndex].options.map((option, optIndex) =>(
+                                <div key={optIndex}>
+                                    <input 
+                                        className={styles['multiple-choice-option']}
+                                        type='text'
+                                        value={option}
+                                        onChange={(e) =>{
+                                            const updatedQuestions = [...questions];
+                                            updatedQuestions[selectedQuestionIndex].options[optIndex] = e.target.value;
+                                            setQuestions(updatedQuestions);
+                                        }} 
+                                    />
+                                </div>
+                            ))}
+                        </>
+                    )}
+
+                    {questions[selectedQuestionIndex].questionType === 'scaling' && (
+                        <>
+                            <label>Ratings</label>
+                            <div className={styles['rating-type-grid']}>
+                                {['numeric-rating', 'star-rating', 'thumbs-up-down', 'emoji-rating', 'label-slider'].map((type) => (
+                                <div
+                                    key={type}
+                                    className={`${styles['type-option']} ${questions[selectedQuestionIndex].ratingType === type ? styles['selected'] : ''}`}
+                                    onClick={() => handleRatingTypeChange(selectedQuestionIndex, type)}
+                                >
+                                    {type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </div>
+                                ))}
+                            </div>
+                            <div>
+                                {renderRatingComponent()}
+                            </div>
+                        </>
+                    )}
+
+                    {questions[selectedQuestionIndex].questionType === 'checkbox' && (
+                        <>
+                            <label>Checkbox Options</label>
+                            {questions[selectedQuestionIndex].options && questions[selectedQuestionIndex].options.map((option, optIndex) =>(
+                                <div key={optIndex}>
+                                <input 
+                                    className={styles['multiple-choice-option']}
+                                    type='text'
+                                    value={option}
+                                    onChange={(e) =>{
+                                        const updatedQuestions = [...questions];
+                                        updatedQuestions[selectedQuestionIndex].options[optIndex] = e.target.value;
+                                        setQuestions(updatedQuestions);
+                                    }}
+                                />
+                            </div>
+                            ))}
+                        </>
+                    )}
                 </label>
             </div>
 
-            {/* Multiple choice options */}
-            {questions[selectedQuestionIndex].options && questions[selectedQuestionIndex].options.map((option, optIndex) => (
-                <div key={optIndex}>
-                <input
-                    className={styles['multiple-choice-option']}
-                    type="text"
-                    value={option}
-                    onChange={(e) => {
-                        const updatedQuestions = [...questions,];
-                        updatedQuestions[selectedQuestionIndex].options[optIndex] = e.target.value;
-                        setQuestions(updatedQuestions);
-                    }}
-                />
-            </div>
-            ))}
-
-            {/* Ratings */}
-            <div>
-                <label>Ratings</label>
-                <div className={styles['rating-type-grid']}>
-                    {['numeric-rating', 'star-rating', 'thumbs-up-down', 'emoji-rating', 'label-slider'].map((type) => (
-                    <div
-                        key={type}
-                        className={`${styles['type-option']} ${questions[selectedQuestionIndex].ratingType === type ? styles['selected'] : ''}`}
-                        onClick={() => handleRatingTypeChange(selectedQuestionIndex, type)}
-                    >
-                        {type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                    </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Checkbox for required question */}
-            <div className={styles['required-checkbox']}>
-                    <label>
-                        <input 
-                            type='checkbox'
-                            checked={questions[selectedQuestionIndex].isRequired || false}
-                            onChange={(e) => {
-                                const updatedQuestions = [...questions];
-                                updatedQuestions[selectedQuestionIndex].isRequired = e.target.checked;
-                                setQuestions(updatedQuestions);
-                            }} 
-                        />
-                        Required
-                    </label>
-            </div>
 
             {/* Layout Template */}
             <label>
@@ -159,6 +197,20 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                     <option value="grid">Grid Layout</option>
                 </select>
             </label>
+
+            {/* Checkbox for required question */}
+            <div className={styles['required-checkbox']}>
+                    <label>Required</label>
+                        <input 
+                            type='checkbox'
+                            checked={questions[selectedQuestionIndex].isRequired || false}
+                            onChange={(e) => {
+                                const updatedQuestions = [...questions];
+                                updatedQuestions[selectedQuestionIndex].isRequired = e.target.checked;
+                                setQuestions(updatedQuestions);
+                            }} 
+                        />
+            </div>
 
             {/* Delete question */}
             <button
