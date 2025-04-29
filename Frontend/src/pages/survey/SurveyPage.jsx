@@ -186,12 +186,12 @@ if (step >= 2 && currentQuestion) {
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import UAParser from 'ua-parser-js';
+import {UAParser} from 'ua-parser-js';
 
-import SurveyIntro from './SurveyIntro';
-import SurveyDemographics from './SurveyDemographics';
-import SurveyQuestion from './SurveyQuestion';
-import SurveyThankYou from './SurveyThankYou';
+import SurveyIntro from "./components/SurveyIntro";
+import SurveyDemographics from "./components/SurveyDemographics";
+import SurveyQuestion from "./components/SurveyQuestion";
+import SurveyThankYou from "./components/SurveyThanks";
 
 import { shuffleArray } from '../../utils/shuffleArray';
 import '../../styles/displaySurvey.css';

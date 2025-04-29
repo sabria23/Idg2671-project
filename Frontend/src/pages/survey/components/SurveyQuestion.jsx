@@ -4,7 +4,7 @@ import {
     NumericRatingUI,
     EmojiRatingUI,
     RankingUI,
-  } from '../components/QuestionTypes';
+  } from './QuestionTypes';
   import '../../../styles/displaySurvey.css';
   
   const SurveyQuestion = ({ currentQuestion, onAnswer, onSkip, onPrevious, onNext }) => {

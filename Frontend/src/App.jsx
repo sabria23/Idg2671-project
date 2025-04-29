@@ -22,8 +22,8 @@ const App = () => {
           {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<SignupPage />} />
-           {/*} <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview"/>} />
-            <Route path="/study/:studyId/" element={<SurveyPage />} />*/}
+           <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview"/>} />
+            <Route path="/study/:studyId/" element={<SurveyPage />} />
 
             {/*Portected routes */}
             <Route path="/dashboard" element={
