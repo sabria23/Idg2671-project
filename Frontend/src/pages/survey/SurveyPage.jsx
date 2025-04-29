@@ -221,6 +221,18 @@ const SurveyPage = ({ mode = 'live' }) => {
     return shuffled;
   };
   
+  useEffect(() => {
+    if (!studyId) return;
+    const fetchStudy = async () => {
+      try {
+        const res = await axios.get(`/api/survey/${studyId}`);
+        setStudyInfo(res.data);
+      } catch (err) {
+        console.error('Error fetching study:', err);
+      }
+    };
+    fetchStudy();
+  }, [studyId]);
 
 useEffect(() => {
     const fetchQuestion = async () => {
@@ -341,8 +353,6 @@ if (step === 0) {
               </button>
             </div>
 
-        )
-    }
 
             
             <p className="intro-instructions">
