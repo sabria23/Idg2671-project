@@ -74,24 +74,12 @@ const uploadArtifact = async (req, res, next) => {
         const { studyId, questionId } = req.params;
         
         // Check if a file is provided
-        if (!req.file) {
-            const err = new Error('Could not upload file');
+        if (!req.file || req.files.length === 0) {
+            const err = new Error('No file uploaded');
             err.statusCode = 400;
             return next(err);
         }
 
-        // Determine fileType from MIME type
-        let fileType = 'other';
-        if (req.file.mimetype.startsWith('image/')) {
-            fileType = 'image';
-        } else if (req.file.mimetype.startsWith('video/')) {
-            fileType = 'video';
-        } else if (req.file.mimetype.startsWith('audio/')) {
-            fileType = 'audio';
-        } else if (req.file.mimetype.startsWith('text/') || req.file.mimetype === 'application/pdf') {
-            fileType = 'text';
-        }
-        
         // Find the study by id
         const study = await Study.findById(studyId);
         if (!study) {
@@ -99,7 +87,7 @@ const uploadArtifact = async (req, res, next) => {
             err.statusCode = 404;
             return next(err);
         }
-        
+
         // Find the question by id in the study
         const question = study.questions.id(questionId);
         if (!question) {
@@ -107,41 +95,49 @@ const uploadArtifact = async (req, res, next) => {
             err.statusCode = 404;
             return next(err);
         }
+
+        const artifacts = [];
+
+        // Determine fileType from MIME type
+        for (const file of req.files){
+        let fileType = 'other';
+        if (req.file.mimetype.startsWith('image/')) fileType = 'image';
+        else if (req.file.mimetype.startsWith('video/')) fileType = 'video';
+        else if (req.file.mimetype.startsWith('audio/')) fileType = 'audio';
+        else if (req.file.mimetype.startsWith('text/') || req.file.mimetype === 'application/pdf') fileType = 'text';
         
         // Create and save a new artifact
         const artifact = new Artifact({
             uploadedBy: req.userId || null, // Use req.userId for consistency
-            fileName: req.file.originalname,
+            fileName: file.originalname,
             fileType: fileType, // Use the determined fileType, not the MIME type
-            fileData: req.file.buffer, // Path from multer
+            fileData: file.buffer, // Path from multer
             usedInStudies: [studyId]
         });
         
         await artifact.save();
+
+        artifacts.push(artifact);
         
-        if(!question.artifactContent){
-            question.artifactContent = [];
-        }
+        if(!question.artifactContent) question.artifactContent = [];
+
         // Add artifact to a question
         question.artifactContent.push({
             artifactId: artifact._id,
-            //artifactUrl: `/${req.file.path.replace(/\\/g, '/')}`,
             artifactType: fileType // Use the local fileType variable
         });
+    }
         
         await study.save();
-        
-        // No need to push studyId again since it was already added during creation
         
         res.status(201).json({
             success: true,
             message: 'Artifact successfully uploaded',
-            data: {
-                id: artifact._id,
-                fileName: artifact.fileName,
-                fileType: artifact.fileType,
-                //filePath: artifact.filePath
-            }
+            data: artifacts.map(a => ({
+                id: a._id,
+                fileName: a.fileName,
+                fileType: a.fileType,
+            })),
         });
     } catch (err) {
         next(err);

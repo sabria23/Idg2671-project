@@ -2,7 +2,6 @@ import {useState, useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
 import styles from "../../styles/Dash.module.css";
 import React from 'react';
-import Navbar from "../../components/common/Navbar";
 import StudyItem from "./components/StudyItem.jsx";
 import { getAllStudies, deleteStudy } from "../../services/studyService.js";
 import { handleApiError } from "../../utils/errorHandler.js";
@@ -38,8 +37,8 @@ const DashboardPage = () => {
 
     // this funciton handles exporitng a tsudy to the export result page
   //this allows the export page to load the correct study data by its specific ID
-    const handleExport = (studyId) => {
-      navigate(`/export-results/${studyId}`);
+    const handleExport = (studyId) => { // where exactly is this cmoing from?
+      navigate(`/export/${studyId}`);
     };
     const handleEdit = (studyId) => {  
         navigate(`/study/${studyId}`)
@@ -65,17 +64,7 @@ const DashboardPage = () => {
       }
     };
      
-    const handleLogout = () => {
-      logoutUser();
-      navigate('/login');
-    };
-    
-       // Your specific navigation items for the Dashboard
-    const dashboardNavItems = [
-        { label: "Create a study", path: "/create-study" },
-        { label: "Profile", path: "/profile" },
-        { label: "Logout", action: handleLogout }
-    ];
+
 
     // fetch studies to display in dashboard
     useEffect(() => {

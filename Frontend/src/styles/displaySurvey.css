@@ -1,5 +1,9 @@
+<<<<<<< HEAD
+/* Main container */
+=======
 
 
+>>>>>>> 828a69a582ad5b995d7e2eb6f27b7c6e6aa191c8
 .survey-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -426,4 +430,129 @@
   .thankyou-container {
     max-width: 600px;
     margin: 2rem auto;
+<<<<<<< HEAD
+    padding: 3rem 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .thankyou-icon {
+    font-size: 3rem;
+    color: #48bb78;
+    margin-bottom: 1.5rem;
+  }
+  
+  .thankyou-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #2d3748;
+  }
+  
+  .thankyou-container p {
+    margin-bottom: 1rem;
+    color: #4a5568;
+  }
+  
+  /* Buttons */
+  .primary-button {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  
+  .primary-button:hover {
+    background-color: #2563eb;
+  }
+  
+  .primary-button:disabled {
+    background-color: #cbd5e0;
+    cursor: not-allowed;
+  }
+  
+  .secondary-button {
+    background-color: white;
+    color: #4a5568;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .secondary-button:hover {
+    background-color: #f7fafc;
+    border-color: #cbd5e0;
+  }
+  
+  .skip-button {
+    background-color: #f7fafc;
+    color: #718096;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .skip-button:hover {
+    background-color: #edf2f7;
+    color: #4a5568;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .survey-container {
+      padding: 1rem;
+    }
+    
+    .artifacts-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .intro-details {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .form-actions,
+    .question-navigation {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .form-actions button,
+    .question-navigation button {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    
+    .ranking-item {
+      flex-direction: column;
+      padding-right: 0;
+    }
+    
+    .ranking-item .artifact-content {
+      width: 100%;
+    }
+    
+    .rank-selector {
+      width: 100%;
+      padding: 1rem;
+      justify-content: space-between;
+    }
+  }
+=======
 }
+>>>>>>> 828a69a582ad5b995d7e2eb6f27b7c6e6aa191c8
