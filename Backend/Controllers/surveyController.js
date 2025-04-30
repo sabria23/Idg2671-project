@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 import Study from "../Models/studyModel.js"
 import Session from "../Models/participantModel.js";
 
@@ -48,7 +50,7 @@ export const getSurvey = async (req, res, next) => {
         id: study._id,
         title: study.title,
         descirption: study.description,
-        questions: study.questions,
+        question,
         currentIndex: page,
         totalQuestions,
         previousAnswer: previousResponse?.participantAnswer || null,

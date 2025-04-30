@@ -209,13 +209,27 @@ const SurveyPage = ({ mode = 'live' }) => {
   const [totalQuestions, setTotalQuestions] = useState(0);
 
   useEffect(() => {
+    const fetchStudyInfo = async () => {
+      try {
+        const res = await axios.get(`/api/survey/${studyId}`);
+        setStudyInfo({
+          title: res.data.title,
+          description: res.data.description
+        });
+      } catch (err) {
+        console.error("Failed to fetch study info:", err);
+      }
+    };
+    fetchStudyInfo();
+  }, [studyId]);
+
+  useEffect(() => {
     const fetchQuestion = async () => {
       if (currentStep < 2) return;
       const page = currentStep - 2;
       try {
         const res = await axios.get(`/api/survey/${studyId}?page=${page}&sessionId=${sessionId}`);
         const data = res.data;
-        setStudyInfo({ title: data.title, description: data.description });
         setCurrentQuestion({
           ...data.question,
           artifacts: shuffleArray(data.question.artifacts || [])
@@ -280,7 +294,7 @@ const SurveyPage = ({ mode = 'live' }) => {
   const handleNextQuestion = () => setCurrentStep(prev => prev + 1);
 
   if (currentStep === 0) {
-    return <SurveyIntro studyInfo={studyInfo} onStart={() => setCurrentStep(1)} />;
+    return <SurveyIntro studyInfo={studyInfo} totalQuestions={totalQuestions} onStart={() => setCurrentStep(1)} />;
   }
 
   if (currentStep === 1) {

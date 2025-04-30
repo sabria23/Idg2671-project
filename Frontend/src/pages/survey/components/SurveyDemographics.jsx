@@ -1,5 +1,10 @@
+import { useState } from 'react';
 import '../../../styles/displaySurvey.css';
-const SurveyDemographics = () => {
+const SurveyDemographics = ({demographics, setDemographics, onSubmit, onBack}) => {
+  const handleDemographics = (e) => {
+    e.preventDefault();
+    onSubmit(e);
+  };
     return (
         <div className="survey-container">
           <div className="demographics-container">
