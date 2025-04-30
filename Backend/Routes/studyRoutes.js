@@ -13,7 +13,7 @@ const studyRouter = express.Router();
 studyRouter.post('/', protect, studyController.createStudy);
 
 // Upload artifacts
-studyRouter.post('/:studyId/questions/:questionId/artifacts', protect, upload.single('file'), studyController.uploadArtifact);
+studyRouter.post('/:studyId/questions/:questionId/artifacts', protect, upload.array('file'), studyController.uploadArtifact);
 
 // Create a question
 studyRouter.post('/:studyId/questions', studyController.createQuestion);

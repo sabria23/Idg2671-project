@@ -40,7 +40,7 @@ For a student project, I'd recommend:
 Use Ethereal for development (completely free)
 For production, either use SendGrid's free tier or implement the "users provide their credentials" approach
 */
-const transporter = nodemailer.createTransport({
+/*const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465, // Use secure port
     secure: true, // Use SSL/TLS
@@ -59,7 +59,7 @@ console.log('Email Configuration:', {
     user: process.env.EMAIL_USER,
     host: 'smtp.gmail.com',
     port: 465
-});
+});*/
 
 // @desc Get all studies
 // @route GET /api/studies
