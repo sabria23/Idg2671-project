@@ -205,3 +205,253 @@ describe('Upload Artifacts: POST /api/studies/:studyId/questions/:questionId/art
     });
   });
   
+  /*import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert';
+import nock from 'nock';
+import path from 'path';
+import fs from 'fs';
+
+// Base URL for API
+const API_BASE = 'http://localhost:8000';
+
+// Test data
+const TEST_DATA = {
+  studyId: '60d21b4667d0d8992e610c90',
+  questionId: '60d21b4667d0d8992e610c91',
+  validToken: 'valid-auth-token',
+  nonOwnerToken: 'non-owner-token'
+};
+
+// Setup and teardown
+before(() => {
+  nock.disableNetConnect();
+  nock.enableNetConnect('localhost');
+});
+
+after(() => {
+  nock.cleanAll();
+  nock.enableNetConnect();
+});
+
+describe('Upload Artifacts: POST /api/studies/:studyId/questions/:questionId/artifacts', () => {
+  // Positive test cases
+  describe('Positive Cases', () => {
+    it('should successfully upload a single file', async () => {
+      // Mock response for file upload
+      const mockResponse = {
+        message: 'Artifact uploaded successfully',
+        artifact: {
+          _id: 'new-artifact-id',
+          filename: 'test-file.pdf',
+          path: '/uploads/artifacts/test-file.pdf',
+          size: 1024,
+          mimetype: 'application/pdf'
+        }
+      };
+      
+      // Mock the file upload endpoint
+      // Note: For file uploads, we need a more sophisticated approach to mocking
+      // This is a simplified version
+      nock(API_BASE)
+        .post(`/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`)
+        .reply(201, mockResponse);
+      
+      // Create FormData with a file
+      const formData = new FormData();
+      const testFile = new File(['test file content'], 'test-file.pdf', { type: 'application/pdf' });
+      formData.append('file', testFile);
+      
+      // Make the request
+      const response = await fetch(`${API_BASE}/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${TEST_DATA.validToken}`
+        },
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      // Assertions
+      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
+      assert.strictEqual(data.message, 'Artifact uploaded successfully', 'Should return success message');
+      assert.strictEqual(data.artifact.filename, 'test-file.pdf', 'Should return correct filename');
+    });
+  });
+  
+  // Negative test cases
+  describe('Negative Cases', () => {
+    it('should return 401 when no authentication is provided', async () => {
+      // Mock the response
+      nock(API_BASE)
+        .post(`/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`)
+        .reply(401, {
+          message: 'Not authorized, no token'
+        });
+      
+      // Create FormData with a file
+      const formData = new FormData();
+      const testFile = new File(['test file content'], 'test-file.pdf', { type: 'application/pdf' });
+      formData.append('file', testFile);
+      
+      // Make the request without token
+      const response = await fetch(`${API_BASE}/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`, {
+        method: 'POST',
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      // Assertions
+      assert.strictEqual(response.status, 401, 'Should return 401 Unauthorized status');
+      assert.strictEqual(data.message, 'Not authorized, no token', 'Should return auth error message');
+    });
+    
+    it('should return 404 when study is not found', async () => {
+      // Non-existent study ID
+      const nonExistentStudyId = 'non-existent-study';
+      
+      // Mock the response
+      nock(API_BASE)
+        .post(`/api/studies/${nonExistentStudyId}/questions/${TEST_DATA.questionId}/artifacts`)
+        .reply(404, {
+          message: 'Study not found'
+        });
+      
+      // Create FormData with a file
+      const formData = new FormData();
+      const testFile = new File(['test file content'], 'test-file.pdf', { type: 'application/pdf' });
+      formData.append('file', testFile);
+      
+      // Make the request
+      const response = await fetch(`${API_BASE}/api/studies/${nonExistentStudyId}/questions/${TEST_DATA.questionId}/artifacts`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${TEST_DATA.validToken}`
+        },
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      // Assertions
+      assert.strictEqual(response.status, 404, 'Should return 404 Not Found status');
+      assert.strictEqual(data.message, 'Study not found', 'Should return study not found message');
+    });
+    
+    it('should return 400 when file type is not allowed', async () => {
+      // Mock the response
+      nock(API_BASE)
+        .post(`/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`)
+        .reply(400, {
+          message: 'Invalid file type. Allowed types: pdf, doc, docx, jpg, png'
+        });
+      
+      // Create FormData with an invalid file type
+      const formData = new FormData();
+      const testFile = new File(['test file content'], 'test-file.exe', { type: 'application/octet-stream' });
+      formData.append('file', testFile);
+      
+      // Make the request
+      const response = await fetch(`${API_BASE}/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${TEST_DATA.validToken}`
+        },
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      // Assertions
+      assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
+      assert.strictEqual(data.message, 'Invalid file type. Allowed types: pdf, doc, docx, jpg, png', 'Should return file type error message');
+    });
+  });
+  
+  // Boundary test cases
+  describe('Boundary Cases', () => {
+    it('should accept file at maximum allowed size', async () => {
+      // Mock response for boundary file size upload
+      const mockResponse = {
+        message: 'Artifact uploaded successfully',
+        artifact: {
+          _id: 'max-size-artifact-id',
+          filename: 'max-size-file.pdf',
+          path: '/uploads/artifacts/max-size-file.pdf',
+          size: 5242880,  // 5MB (example max size)
+          mimetype: 'application/pdf'
+        }
+      };
+      
+      // Mock the endpoint
+      nock(API_BASE)
+        .post(`/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`)
+        .reply(201, mockResponse);
+      
+      // In a real test, you would create a file of exactly max size
+      // For this example, we're just simulating it
+      const formData = new FormData();
+      const maxSizeFile = new File(['x'.repeat(5242880)], 'max-size-file.pdf', { type: 'application/pdf' });
+      formData.append('file', maxSizeFile);
+      
+      // Make the request
+      const response = await fetch(`${API_BASE}/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${TEST_DATA.validToken}`
+        },
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      // Assertions
+      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
+      assert.strictEqual(data.message, 'Artifact uploaded successfully', 'Should return success message');
+    });
+  });
+  
+  // Edge test cases
+  describe('Edge Cases', () => {
+    it('should handle filename with special characters', async () => {
+      // Mock response for special filename upload
+      const mockResponse = {
+        message: 'Artifact uploaded successfully',
+        artifact: {
+          _id: 'special-name-artifact-id',
+          filename: 'test file with spaces & symbols!.pdf',
+          path: '/uploads/artifacts/test_file_with_spaces___symbols_.pdf',
+          size: 1024,
+          mimetype: 'application/pdf'
+        }
+      };
+      
+      // Mock the endpoint
+      nock(API_BASE)
+        .post(`/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`)
+        .reply(201, mockResponse);
+      
+      // Create FormData with a file that has special characters in name
+      const formData = new FormData();
+      const specialNameFile = new File(['test content'], 'test file with spaces & symbols!.pdf', { type: 'application/pdf' });
+      formData.append('file', specialNameFile);
+      
+      // Make the request
+      const response = await fetch(`${API_BASE}/api/studies/${TEST_DATA.studyId}/questions/${TEST_DATA.questionId}/artifacts`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${TEST_DATA.validToken}`
+        },
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      // Assertions
+      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
+      assert.strictEqual(data.message, 'Artifact uploaded successfully', 'Should return success message');
+      assert.strictEqual(data.artifact.filename, 'test file with spaces & symbols!.pdf', 'Should return original filename');
+    });
+  });
+});*/
