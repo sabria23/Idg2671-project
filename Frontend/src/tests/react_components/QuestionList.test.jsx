@@ -1,6 +1,7 @@
+import React from 'react';
 import QuestionList from '../../pages/studies/components/QuestionList';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { jest } from '@jest/globals';
+import { jest, it, expect } from '@jest/globals';
 
 // Positive test. Test if the component renders a list of questions and allows to select one
 it('renders a list of questions and allows to select one', () =>{
@@ -13,12 +14,12 @@ it('renders a list of questions and allows to select one', () =>{
     ];
 
     render(
-        <QuestionList
-            questions={questions}
-            selectedQuestionIndex={1}
-            setSelectedQuestionIndex={mockSetSelectedQuestionIndex}
-            addQuestion={mockAddQuestion}
-        />
+    <QuestionList
+        questions={questions}
+        selectedQuestionIndex={1}
+        setSelectedQuestionIndex={mockSetSelectedQuestionIndex}
+        addQuestion={mockAddQuestion}
+    />
     );
 
     expect(screen.getByText('Rate this image')).toBeInTheDocument();
@@ -32,4 +33,31 @@ it('renders a list of questions and allows to select one', () =>{
     expect(mockAddQuestion).toHaveBeenCalled();
 });
 
-// Edge test. 
+// Edge test. Test if the component renders correctly if there is no questions
+it('renders correctly when there are no questions', ()=>{
+    render(
+        <QuestionList
+            questions={[]}
+            selectedQuestionIndex={null}
+            setSelectedQuestionIndex={() => {}}
+            addQuestion={()=> {}}
+        />
+    );
+
+    expect(screen.getByText('+ Add Question')).toBeInTheDocument();
+});
+
+// Negative test 1. A test for missing questionTitle
+it('renders fallback label if questionTitle is missing', ()=>{
+    const questions = [{}]; // The missing title
+    render(
+        <QuestionList
+            questions={questions}
+            selectedQuestionIndex={0}
+            setSelectedQuestionIndex={() => {}}
+            addQuestion={()=> {}}
+        />
+    );
+
+    expect(screen.getByText('Question 1')).toBeInTheDocument();
+});
