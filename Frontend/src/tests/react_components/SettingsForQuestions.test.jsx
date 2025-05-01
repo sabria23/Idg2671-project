@@ -1,0 +1,1 @@
+import SettingsForQuestions from '../../pages/studies/components/SettingsForQuestions';

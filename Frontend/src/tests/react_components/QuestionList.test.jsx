@@ -1,5 +1,6 @@
-import QuestionList from '../src/pages/studies/components/QuestionList';
-
+import QuestionList from '../../pages/studies/components/QuestionList';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { jest } from '@jest/globals';
 
 // Positive test. Test if the component renders a list of questions and allows to select one
 it('renders a list of questions and allows to select one', () =>{
