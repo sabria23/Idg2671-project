@@ -61,3 +61,17 @@ it('renders fallback label if questionTitle is missing', ()=>{
 
     expect(screen.getByText('Question 1')).toBeInTheDocument();
 });
+
+// Negative test 2. 
+it('handles invalid questions prop gracefully (e.g., null)', ()=>{
+    render(
+        <QuestionList
+            questions={null}
+            selectedQuestionIndex={0}
+            setSelectedQuestionIndex={()=>{}}
+            addQuestion={()=>{}}
+        />
+    );
+
+    expect(screen.getByText('+ Add Question')).toBeInTheDocument();
+});
