@@ -21,7 +21,7 @@ const sessionSchema = new mongoose.Schema({
     age: {
       type: Number,
       min: 0,
-      max: 130,
+      max: 116,
     },
     gender: {
       type: String,

@@ -19,6 +19,21 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 900px;
+    max-width: 100%;
+}
+
+.studyPage-flexContent{
+    display: flex;
+}
+
+.studyPage-left{
+    flex: 1;
+}
+.studyPage-right{
+    flex: 2;
+    display: flex;
+    flex-direction: column;
 }
 
 .studyPage-content h1{
@@ -58,4 +73,6 @@
 .previewBtn{
     background-color: rgba(176, 192, 246, 0.692);
 }
+
+
 

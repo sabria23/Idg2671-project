@@ -16,7 +16,7 @@ const StudyDetails = ({ studyTitle, studyDescription, setStudyTitle, setStudyDes
 
     return(
             <div className={styles['studyDetails-container']}>
-                <label>Study Title:</label>
+                <h2>Study Title:</h2>
                 <input
                     type="text"
                     name="title"
@@ -25,7 +25,7 @@ const StudyDetails = ({ studyTitle, studyDescription, setStudyTitle, setStudyDes
                     onChange={handleInputChange}
                 />
 
-                <label>Study Description:</label>
+                <h2>Study Description:</h2>
                 <textarea
                     className={styles['studyDescription-textInput']}
                     name="description"

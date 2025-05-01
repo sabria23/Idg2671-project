@@ -13,7 +13,7 @@ const studyRouter = express.Router();
 studyRouter.post('/', protect, studyController.createStudy);
 
 // Upload artifacts
-studyRouter.post('/:studyId/questions/:questionId/artifacts', protect, upload.single('file'), studyController.uploadArtifact);
+studyRouter.post('/:studyId/questions/:questionId/artifacts', protect, upload.array('file'), studyController.uploadArtifact);
 
 // Create a question
 studyRouter.post('/:studyId/questions', studyController.createQuestion);
@@ -44,12 +44,12 @@ studyRouter.delete('/:studyId/questions/:questionId', studyController.deleteQues
 
 // routers for DASHBOARD
 studyRouter.get('/', protect,  dashController.getAllStudies);
-studyRouter.delete('/:studyId', protect, dashController.deleteStudy);
-studyRouter.get('/:studyId/sessions/responses', protect, dashController.getResponses);
-studyRouter.patch('/:studyId/public', protect, validatePublishStatus, dashController.updateStudyStatus);
-studyRouter.post('/:studyId/links', protect, dashController.generateLink);
+studyRouter.delete('/:studyId', dashController.deleteStudy);
+studyRouter.get('/:studyId/sessions/:sessionid/results', protect, dashController.getResponses);
+studyRouter.patch('/:studyId', protect, validatePublishStatus, dashController.updateStudyStatus);
+studyRouter.get('/:studyId/link', protect, dashController.generateLink);
 studyRouter.post('/:studyId/invitations', protect, dashController.emailInvitaitons);
-// later on: studyRouter.patch('/:studyId/links/:linkId', protect, dashController.updateLinkStatus);
+
 
 
 export default studyRouter;
