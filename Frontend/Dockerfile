@@ -1,7 +1,7 @@
 # Build the static frontend
 FROM node:18
 
-WORKDIR app/Frontend
+WORKDIR /app/Frontend
 
 COPY . .
 
