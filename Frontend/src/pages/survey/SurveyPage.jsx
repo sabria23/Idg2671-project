@@ -193,6 +193,7 @@ import SurveyDemographics from "./components/SurveyDemographics";
 import SurveyQuestion from "./components/SurveyQuestion";
 import SurveyThankYou from "./components/SurveyThanks";
 
+import { submitDemographics } from '../../utils/submitDemographics';
 import { shuffleArray } from '../../utils/shuffleArray';
 import '../../styles/displaySurvey.css';
 
@@ -242,27 +243,18 @@ const SurveyPage = ({ mode = 'live' }) => {
     fetchQuestion();
   }, [currentStep, sessionId, studyId]);
 
-  const handleDemographicsSubmit = async (e) => {
-    e.preventDefault();
-    if (isPreview) {
-      setCurrentStep(2);
-      return;
-    }
-    const parser = new UAParser();
-    const result = parser.getResult();
-    const deviceInfo = `${result.browser.name || 'Unknown Browser'} on ${result.os.name || 'Unknown OS'}`;
-
-    try {
-      const res = await axios.post(`/api/survey/${studyId}/sessions`, {
-        demographics,
-        deviceInfo
-      });
-      setSessionId(res.data.sessionId);
-      setCurrentStep(2);
-    } catch (err) {
-      console.error('Failed to create session:', err);
+  const handleDemographicsSubmit = async (demographicData) => {
+    const newSessionId = await submitDemographics(studyId, demographicData);
+  
+    if (newSessionId) {
+      setSessionId(newSessionId); // local state
+      setCurrentStep(prev => prev + 1);
+    } else {
+      console.error("Failed to submit demographics");
+      alert("Submission failed. Please check your input.");
     }
   };
+  
 
   const handleAnswerSubmit = async (responseValue, skipped = false) => {
     if (isPreview) {
