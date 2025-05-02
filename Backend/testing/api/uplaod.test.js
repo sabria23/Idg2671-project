@@ -3,6 +3,12 @@ import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert';
 import nock from 'nock'; // npm install nock --save-dev
 
+// https://medium.com/@nicholas.nisopoli/implementing-integration-tests-in-node-js-microservices-with-jest-dac6168f4bf4
+// https://exatosoftware.com/testing-in-nodejs/
+// https://sevic.dev/notes/integration-testing-nodejs/
+// https://blog.devgenius.io/how-to-integrate-jest-into-your-node-js-api-development-for-better-test-coverage-6b878738a833
+
+
 // Base URL for API
 const API_BASE = 'http://localhost:8000';
 
