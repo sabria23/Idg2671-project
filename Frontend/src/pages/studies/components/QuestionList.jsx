@@ -7,7 +7,7 @@ const QuestionList = ({ questions, selectedQuestionIndex, setSelectedQuestionInd
         <div className={styles['addQuestion']}>
             <h3>Questions</h3>
             <ul>
-                {questions.map((question, index) => (
+                {(questions || []).map((question, index) => (
                     <li
                         key={index}
                         onClick={() => setSelectedQuestionIndex(index)}
