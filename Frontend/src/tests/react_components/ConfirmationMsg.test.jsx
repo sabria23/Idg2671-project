@@ -25,7 +25,7 @@ it('renders and triggers confirm and cancel actions', () =>{
     expect(mockCancel).toHaveBeenCalled();
 });
 
-// Negative test 1.
+// Negative test 1. Checks if the component does not render anything if the isOpen is false.
 it('does not render anything when isOpen is false', ()=>{
     render(
         <ConfirmationMsg
@@ -39,7 +39,7 @@ it('does not render anything when isOpen is false', ()=>{
     expect(screen.queryByText('Hidden message')).not.toBeInTheDocument();
 });
 
-// Negative test 2.
+// Negative test 2. Checks if the component renders safely even if the message is undefined.
 it('renders safely even if message is undefined', ()=>{
     render(
         <ConfirmationMsg
