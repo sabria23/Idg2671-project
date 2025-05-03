@@ -6,7 +6,7 @@ import { loginUser } from "../../services/authService.js";
 
 
 const LoginPage = () => {
-    const [userName, setuserName] = useState("");
+    const [username, setusername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -18,10 +18,17 @@ const LoginPage = () => {
         setLoading(true);
         setError("");
 
+        if (!username || !password) {
+          setError("Please fill out both fields.");
+          setLoading(false);
+          return;
+        }
+
         try {
-          const userData = await loginUser(userName, password);
+          const userData = await loginUser(username, password);
           
-          if (userData) {
+          if (userData && userData.token) {
+            localStorage.setItem("token", userData.token);
               navigate("/dashboard");
           } else {
               setError("Login failed. Please check your credentials.");
@@ -49,10 +56,7 @@ const LoginPage = () => {
 
   return (
     <div className="auth-container">
-        <div className="bubble-container">
-            
-        </div>
-        
+        <div className="bubble-container"></div>
       <div className="left-container">
         <div className="bubble">
                 <span style={{"--i": "41s" }}></span>
@@ -80,14 +84,15 @@ const LoginPage = () => {
         <div className="auth-card">
           <h1>Login</h1>
           <form onSubmit={handleSubmit}>
-            <label htmlFor="userName">Username</label>
+            <label htmlFor="username">Username</label>
             <div className="input-group">
               <input 
                 type="text" 
-                name="userName" 
+                name="username" 
                 placeholder="Username"
                 required 
-                onChange={(e) => setuserName(e.target.value)}
+                data-testid="login-username"
+                onChange={(e) => setusername(e.target.value)}
                 />
             </div>
 
@@ -97,6 +102,7 @@ const LoginPage = () => {
                 type="password" 
                 name="password" 
                 placeholder="Password" 
+                data-testid="login-password"
                 required
                 onChange={(e) => setPassword(e.target.value)}
                 />
@@ -111,8 +117,15 @@ const LoginPage = () => {
               </Link>
             </div>
 
-            <button type="submit" className="auth-button">
-              Login
+            {error && <p className="error-message">{error}</p>}
+
+            <button
+              type="submit" 
+                className="auth-button"
+                data-testid="login-submit"
+                disabled={loading}
+            >
+              {loading ? "Login..." : "Login"}
             </button>
 
             <div className="auth-redirect">
