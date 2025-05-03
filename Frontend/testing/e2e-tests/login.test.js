@@ -37,7 +37,7 @@ describe("End to end login", () => {
             await page.waitForSelector(".error-message");
 
             // $eval returns the results
-            const errorMessage = await page.$$eval(".error-message", el => el.textContent.trim());
+            const errorMessage = await page.$eval(".error-message", el => el.textContent.trim());
             assert.strictEqual(errorMessage, "invalid credentials");
 
             await page.screenshot({ path: "login_error_username.png" });
