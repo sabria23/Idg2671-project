@@ -1,4 +1,4 @@
-import SettingsForQuestions from '../../pages/studies/components/SettingsForQuestions';
+import SettingsForQuestions from '../../src/pages/studies/components/SettingsForQuestions';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { it, expect } from '@jest/globals';
