@@ -2,13 +2,13 @@ import {useState, useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
 import styles from "../../styles/Dash.module.css";
 import React from 'react';
-import Navbar from "../../components/common/Navbar";
 import StudyItem from "./components/StudyItem.jsx";
 import { getAllStudies, deleteStudy } from "../../services/studyService.js";
 import { handleApiError } from "../../utils/errorHandler.js";
 import ConfirmationMsg from '../../components/common/ConfirmationMsg.jsx';
 import { handleDelete } from './utils/studyActions.js';
 import { getCurrentUser, logoutUser } from '../../services/authService.js';
+import Navbar from "../../components/common/Navbar";
 
 
 const DashboardPage = () => {
@@ -38,8 +38,8 @@ const DashboardPage = () => {
 
     // this funciton handles exporitng a tsudy to the export result page
   //this allows the export page to load the correct study data by its specific ID
-    const handleExport = (studyId) => {
-      navigate(`/export-results/${studyId}`);
+    const handleExport = (studyId) => { // where exactly is this cmoing from?
+      navigate(`/export/${studyId}`);
     };
     const handleEdit = (studyId) => {  
         navigate(`/study/${studyId}`)
@@ -65,17 +65,7 @@ const DashboardPage = () => {
       }
     };
      
-    const handleLogout = () => {
-      logoutUser();
-      navigate('/login');
-    };
-    
-       // Your specific navigation items for the Dashboard
-    const dashboardNavItems = [
-        { label: "Create a study", path: "/create-study" },
-        { label: "Profile", path: "/profile" },
-        { label: "Logout", action: handleLogout }
-    ];
+
 
     // fetch studies to display in dashboard
     useEffect(() => {
@@ -93,6 +83,16 @@ const DashboardPage = () => {
         };
         fetchStudies();
     }, []);
+
+    const handleLogout = () =>{
+      console.log('Loggin out...')
+  };
+
+    const createStudyNavItems = [
+      { label: "Dashboard", path: "/dashboard" },
+      { label: "Profile", path: "/profile" },
+      { label: "Logout", action: handleLogout }   
+    ];
 
     const greeting = () => { // https://dev.to/adrianvalenz/time-based-greeting-with-react-and-bridgetown-4b42
       var myDate = new Date();
@@ -114,11 +114,15 @@ const DashboardPage = () => {
     return (
         <div className={styles.container}>
           {/*this is the header/navbar with props*/}
-          <Navbar
-            title="StudyPlatform"
-            navItems={dashboardNavItems}
-            onLogout={handleLogout}
-          />
+        
+    
+            <Navbar 
+                className={styles.fullWidthNav}
+                title="StudyPlatform" 
+                navItems={createStudyNavItems}
+                //onLogout={handleLogout} // this needs to commented out because it is not working
+            />
+
           {/*main content*/}
           <main className={styles.mainContent}>
             <h1 className={styles.welcomeHeader}>
