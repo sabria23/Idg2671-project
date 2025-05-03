@@ -8,6 +8,7 @@ import { handleApiError } from "../../utils/errorHandler.js";
 import ConfirmationMsg from '../../components/common/ConfirmationMsg.jsx';
 import { handleDelete } from './utils/studyActions.js';
 import { getCurrentUser, logoutUser } from '../../services/authService.js';
+import Navbar from "../../components/common/Navbar";
 
 
 const DashboardPage = () => {
@@ -83,6 +84,16 @@ const DashboardPage = () => {
         fetchStudies();
     }, []);
 
+    const handleLogout = () =>{
+      console.log('Loggin out...')
+  };
+
+    const createStudyNavItems = [
+      { label: "Dashboard", path: "/dashboard" },
+      { label: "Profile", path: "/profile" },
+      { label: "Logout", action: handleLogout }   
+    ];
+
     const greeting = () => { // https://dev.to/adrianvalenz/time-based-greeting-with-react-and-bridgetown-4b42
       var myDate = new Date();
       var hours = myDate.getHours();
@@ -103,11 +114,15 @@ const DashboardPage = () => {
     return (
         <div className={styles.container}>
           {/*this is the header/navbar with props*/}
-          <Navbar
-            title="StudyPlatform"
-            navItems={dashboardNavItems}
-            onLogout={handleLogout}
-          />
+        
+    
+            <Navbar 
+                className={styles.fullWidthNav}
+                title="StudyPlatform" 
+                navItems={createStudyNavItems}
+                //onLogout={handleLogout} // this needs to commented out because it is not working
+            />
+
           {/*main content*/}
           <main className={styles.mainContent}>
             <h1 className={styles.welcomeHeader}>
