@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  test: 
+  test-backend: 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,13 +15,31 @@ jobs:
         with:
           node-version: 18.x
           cache: npm
-      - run: npm ci
-      - name: Run tests
-        run: npm run test
-        
+          cache-dependency-path: Backend/package-lock.json
+      - name: Install dependencies and run tests
+        working-directory: ./Backend
+        run: |
+          npm ci
+          npm run test
+          
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+      - name: Install dependencies and run tests
+        working-directory: ./Frontend
+        run: |
+          npm ci
+          npm run test
+          
   build-backend:
     runs-on: ubuntu-latest
-    needs: test
+    needs: [test-backend, test-frontend]
     steps: 
       - uses: actions/checkout@v3
       - uses: docker/login-action@v3
@@ -35,11 +53,11 @@ jobs:
           context: ./Backend
           file: ./Backend/Dockerfile
           push: true
-          tags: modestat/idg2671_25-backend:latest
+          tags: modestat/webproject25:latest
           
   build-frontend:
     runs-on: ubuntu-latest
-    needs: test
+    needs: [test-backend, test-frontend]
     steps: 
       - uses: actions/checkout@v3
       - uses: docker/login-action@v3
@@ -53,4 +71,4 @@ jobs:
           context: ./Frontend
           file: ./Frontend/Dockerfile
           push: true
-          tags: modestat/idg2671_25-frontend:latest
+          tags: modestat/webproject25-frontend:latest
