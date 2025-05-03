@@ -9,7 +9,8 @@ const SignupPage = () => {
   const [userName, setuserName] = useState(" ")
   const [email, setEmail] = useState(" ")
   const [password, setPassword] = useState(" ")
-
+  const [confirmPassword, setconfirmPassword] = useState(" ")
+  const [errorMessage, setErrorMessage] = useState("");
 
   // if (password !== confirmPass) {
   //   alert("Password do not match");
@@ -19,6 +20,13 @@ const navigate = useNavigate();
 
   const handleSubmit = (e) =>{
     e.preventDefault()
+
+    if(password !== confirmPassword) {
+      setErrorMessage("Password do not match");
+      return;
+    }
+
+
     axios.post("http://localhost:8000/api/auth/register", {username: userName, email, password})
     .then(result => {
       console.log(result);
@@ -27,14 +35,21 @@ const navigate = useNavigate();
         localStorage.setItem("token", result.data.token);
         navigate("/login")
       } else {
-        console.log("Token not found in response"); 
+        setErrorMessage("An error occrued. Please try again later")
       }
     })
-    .catch(err => console.log(err))
-  }
+    .catch(err => {
+      if (err.response && err.response.data) {
+        setErrorMessage(err.response.data.errorMessage || "An error occrued.")
+      } else {
+        setErrorMessage("Unable to register. Please try again later")
+      }
+      console.log("Error durig registration:", err);
+    });
+  };
   return (
     <div className="auth-container">
-<div className="left-container">
+      <div className="left-container">
         <div className="bubble">
                 <span style={{"--i": "41s" }}></span>
                 <span style={{"--i": "22s" }}></span>
@@ -67,7 +82,12 @@ const navigate = useNavigate();
               name="name"
               placeholder="Username"
               onChange={(e) => setuserName(e.target.value)}
-            />
+              required
+              />
+              {errorMessage && errorMessage.includes("Username") && (
+                <p>{errorMessage}</p>
+              )}
+            
           </div>
           
           <div className="input-group">
@@ -77,6 +97,7 @@ const navigate = useNavigate();
               name="email"
               placeholder="Email"
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           
@@ -87,6 +108,7 @@ const navigate = useNavigate();
               name="password"
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           
@@ -96,10 +118,9 @@ const navigate = useNavigate();
               type="password"
               name="confirmPassword"
               placeholder="Confirm Password"
+              onChange={(e) => setconfirmPassword(e.target.value)}
+              required
             />
-            {/*!passwordsMatch && (
-              <p className="error-message">Passwords do not match</p>
-            )*/}
           </div>
           
           <div className="form-options">
@@ -111,6 +132,8 @@ const navigate = useNavigate();
               I agree to the Terms and Privacy Policy
             </label>
           </div>
+
+          <p className="error-message">{errorMessage}</p>
           
           <button type="submit" className="auth-button">
             Sign Up
