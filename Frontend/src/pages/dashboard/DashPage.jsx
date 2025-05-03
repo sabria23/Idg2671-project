@@ -103,11 +103,7 @@ const DashboardPage = () => {
     return (
         <div className={styles.container}>
           {/*this is the header/navbar with props*/}
-          <Navbar
-            title="StudyPlatform"
-            navItems={dashboardNavItems}
-            onLogout={handleLogout}
-          />
+          
           {/*main content*/}
           <main className={styles.mainContent}>
             <h1 className={styles.welcomeHeader}>

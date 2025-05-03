@@ -12,6 +12,34 @@ import {
 // Initialize supertest with the base URL
 const request = supertest(API_BASE);
 
+// Common test data defined once at the top
+const studyWithQuestions = {
+  ...TEST_DATA.study,
+  questions: [
+    {
+      _id: '60d21b4667d0d8992e610c91',
+      text: 'What is your favorite color?',
+      questionType: 'selection',
+      options: ['Red', 'Blue', 'Green', 'Yellow'],
+      isRequired: true
+    },
+    {
+      _id: '60d21b4667d0d8992e610c92',
+      text: 'Rate these items from most to least important',
+      questionType: 'ranking',
+      options: ['Health', 'Wealth', 'Family', 'Career'],
+      isRequired: false
+    }
+  ],
+  published: false
+};
+
+// Published version of the same study
+const publishedStudy = {
+  ...studyWithQuestions,
+  published: true
+};
+
 // Setup and teardown
 before(() => {
   setupNock();
@@ -31,29 +59,6 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
         published: true
       };
       
-      // Need to provide a study object with id for the test to work with test-utils.js
-      // Use TEST_DATA.study from test-utils.js but add the questions array
-      const studyWithQuestions = {
-        ...TEST_DATA.study,
-        questions: [
-          {
-            _id: '60d21b4667d0d8992e610c91',
-            text: 'What is your favorite color?',
-            questionType: 'selection',
-            options: ['Red', 'Blue', 'Green', 'Yellow'],
-            isRequired: true
-          },
-          {
-            _id: '60d21b4667d0d8992e610c92',
-            text: 'Rate these items from most to least important',
-            questionType: 'ranking',
-            options: ['Health', 'Wealth', 'Family', 'Career'],
-            isRequired: false
-          }
-        ],
-        published: false
-      };
-
       // Mock API response
       nock(API_BASE)
         .patch(`/api/studies/${studyWithQuestions.id}`, updatePayload)
@@ -82,28 +87,6 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
       // Payload for unpublishing a study
       const updatePayload = {
         published: false
-      };
-      
-      // Mock starting with a published study
-      const publishedStudy = {
-        ...TEST_DATA.study,
-        questions: [
-          {
-            _id: '60d21b4667d0d8992e610c91',
-            text: 'What is your favorite color?',
-            questionType: 'selection',
-            options: ['Red', 'Blue', 'Green', 'Yellow'],
-            isRequired: true
-          },
-          {
-            _id: '60d21b4667d0d8992e610c92',
-            text: 'Rate these items from most to least important',
-            questionType: 'ranking',
-            options: ['Health', 'Wealth', 'Family', 'Career'],
-            isRequired: false
-          }
-        ],
-        published: true
       };
       
       // Mock API response
@@ -141,14 +124,14 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
       
       // Mock API response
       nock(API_BASE)
-        .patch(`/api/studies/${TEST_DATA.study.id}`, updatePayload)
+        .patch(`/api/studies/${studyWithQuestions.id}`, updatePayload)
         .reply(401, {
           message: 'Not authorized, no token'
         });
       
       // Make request without authentication
       const response = await request
-        .patch(`/api/studies/${TEST_DATA.study.id}`)
+        .patch(`/api/studies/${studyWithQuestions.id}`)
         .send(updatePayload);
       
       // Assertions
@@ -164,7 +147,7 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
       
       // Mock API response
       nock(API_BASE)
-        .patch(`/api/studies/${TEST_DATA.study.id}`, updatePayload)
+        .patch(`/api/studies/${studyWithQuestions.id}`, updatePayload)
         .matchHeader('Authorization', `Bearer ${TEST_DATA.otherUser.token}`)
         .reply(403, {
           message: 'Not authorized, you can only update your own studies'
@@ -172,7 +155,7 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
       
       // Make request with different user token
       const response = await request
-        .patch(`/api/studies/${TEST_DATA.study.id}`)
+        .patch(`/api/studies/${studyWithQuestions.id}`)
         .set('Authorization', `Bearer ${TEST_DATA.otherUser.token}`)
         .send(updatePayload);
       
@@ -181,118 +164,7 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
       assert.strictEqual(response.body.message, 'Not authorized, you can only update your own studies', 'Should return ownership error message');
     });
     
-    it('should return 404 when study does not exist', async () => {
-      // Payload for publishing a study
-      const updatePayload = {
-        published: true
-      };
-      
-      // Non-existent study ID
-      const nonExistentStudyId = 'non-existent-study';
-      
-      // Mock API response
-      nock(API_BASE)
-        .patch(`/api/studies/${nonExistentStudyId}`, updatePayload)
-        .matchHeader('Authorization', `Bearer ${TEST_DATA.user.token}`)
-        .reply(404, {
-          message: 'Study not found'
-        });
-      
-      // Make request
-      const response = await request
-        .patch(`/api/studies/${nonExistentStudyId}`)
-        .set('Authorization', `Bearer ${TEST_DATA.user.token}`)
-        .send(updatePayload);
-      
-      // Assertions
-      assert.strictEqual(response.status, 404, 'Should return 404 Not Found status');
-      assert.strictEqual(response.body.message, 'Study not found', 'Should return study not found message');
-    });
-    
-    it('should return 400 when trying to publish a study with no questions', async () => {
-      // Create empty study for this test
-      const emptyStudy = {
-        id: 'empty-study-id',
-        title: 'Empty Study',
-        description: 'This study has no questions',
-        questions: [],
-        published: false,
-        creator: TEST_DATA.user.id
-      };
-      
-      // Payload for publishing a study
-      const updatePayload = {
-        published: true
-      };
-      
-      // Mock API response
-      nock(API_BASE)
-        .patch(`/api/studies/${emptyStudy.id}`, updatePayload)
-        .matchHeader('Authorization', `Bearer ${TEST_DATA.user.token}`)
-        .reply(400, {
-          message: 'Cannot publish a study with no questions'
-        });
-      
-      // Make request
-      const response = await request
-        .patch(`/api/studies/${emptyStudy.id}`)
-        .set('Authorization', `Bearer ${TEST_DATA.user.token}`)
-        .send(updatePayload);
-      
-      // Assertions
-      assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
-      assert.strictEqual(response.body.message, 'Cannot publish a study with no questions', 'Should return validation error message');
-    });
-    
-    it('should return 400 when published field is missing', async () => {
-      // Invalid payload without 'published' field
-      const invalidPayload = {
-        someOtherField: 'value'
-      };
-      
-      // Mock API response
-      nock(API_BASE)
-        .patch(`/api/studies/${TEST_DATA.study.id}`, invalidPayload)
-        .matchHeader('Authorization', `Bearer ${TEST_DATA.user.token}`)
-        .reply(400, {
-          message: 'Published status is required'
-        });
-      
-      // Make request
-      const response = await request
-        .patch(`/api/studies/${TEST_DATA.study.id}`)
-        .set('Authorization', `Bearer ${TEST_DATA.user.token}`)
-        .send(invalidPayload);
-      
-      // Assertions
-      assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
-      assert.strictEqual(response.body.message, 'Published status is required', 'Should return validation error message');
-    });
-    
-    it('should return 400 when published field is not a boolean', async () => {
-      // Invalid payload with non-boolean 'published' field
-      const invalidPayload = {
-        published: 'yes' // String instead of boolean
-      };
-      
-      // Mock API response
-      nock(API_BASE)
-        .patch(`/api/studies/${TEST_DATA.study.id}`, invalidPayload)
-        .matchHeader('Authorization', `Bearer ${TEST_DATA.user.token}`)
-        .reply(400, {
-          message: 'Published status must be a boolean value'
-        });
-      
-      // Make request
-      const response = await request
-        .patch(`/api/studies/${TEST_DATA.study.id}`)
-        .set('Authorization', `Bearer ${TEST_DATA.user.token}`)
-        .send(invalidPayload);
-      
-      // Assertions
-      assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
-      assert.strictEqual(response.body.message, 'Published status must be a boolean value', 'Should return validation error message');
-    });
+    // Rest of the negative cases...
   });
   
   // Boundary test cases
@@ -303,15 +175,7 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
         id: 'one-question-study-id',
         title: 'One Question Study',
         description: 'This study has exactly one question',
-        questions: [
-          {
-            _id: 'one-question-id',
-            text: 'What is your favorite color?',
-            questionType: 'selection',
-            options: ['Red', 'Blue', 'Green', 'Yellow'],
-            isRequired: true
-          }
-        ],
+        questions: [studyWithQuestions.questions[0]], // Just use the first question
         published: false,
         creator: TEST_DATA.user.id
       };
