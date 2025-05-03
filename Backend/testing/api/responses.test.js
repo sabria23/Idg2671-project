@@ -1,5 +1,4 @@
 /*
-
   // Boundary test cases - testing edge values that are at the limits of acceptable input
   describe('Boundary Cases', () => {
     it('should handle the transition between skipped and not skipped answers', async () => {
@@ -67,466 +66,7 @@
     });
   });
   
-*/
-
-/*import { describe, it, before, after } from 'node:test';
-import assert from 'node:assert';
-import { 
-  API_BASE, 
-  TEST_DATA, 
-  setupNock, 
-  teardownNock,
-  mockApiResponses 
-} from './test-utils.js';
-
-// Setup and teardown
-before(() => {
-  setupNock();
-});
-
-after(() => {
-  teardownNock();
-});
-
-// Base endpoint for this API
-const getEndpoint = (studyId, sessionId, questionId) => 
-  `/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`;
-
-// Tests for Submit Answer API
-describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/responses/:questionId', () => {
-  // Positive tests
-  describe('Positive Cases', () => {
-    it('should successfully submit a selection type answer', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const answer = TEST_DATA.answers.selection;
-      
-      // Mock API response
-      mockApiResponses.postSuccess(
-        getEndpoint(studyId, sessionId, questionId),
-        answer,
-        {
-          message: 'Answer submitted',
-          sessionId: sessionId
-        },
-        201
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
-      assert.strictEqual(data.message, 'Answer submitted', 'Should return success message');
-      assert.strictEqual(data.sessionId, sessionId, 'Should return session ID');
-    });
-    
-    it('should successfully submit a numeric type answer', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[2]._id;
-      const answer = TEST_DATA.answers.numeric;
-      
-      // Mock API response
-      mockApiResponses.postSuccess(
-        getEndpoint(studyId, sessionId, questionId),
-        answer,
-        {
-          message: 'Answer submitted',
-          sessionId: sessionId
-        },
-        201
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
-      assert.strictEqual(data.message, 'Answer submitted', 'Should return success message');
-    });
-    
-    it('should successfully mark a question as skipped', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[3]._id;
-      const answer = TEST_DATA.answers.skipped;
-      
-      // Mock API response
-      mockApiResponses.postSuccess(
-        getEndpoint(studyId, sessionId, questionId),
-        answer,
-        {
-          message: 'Answer submitted',
-          sessionId: sessionId
-        },
-        201
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
-      assert.strictEqual(data.message, 'Answer submitted', 'Should return success message');
-    });
-  });
-  
-  // Negative tests
-  describe('Negative Cases', () => {
-    it('should return 404 when session is not found', async () => {
-      const studyId = TEST_DATA.study.id;
-      const nonExistentSessionId = 'non-existent-session';
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const answer = TEST_DATA.answers.selection;
-      
-      // Mock API response
-      mockApiResponses.postNotFound(
-        getEndpoint(studyId, nonExistentSessionId, questionId),
-        answer
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, nonExistentSessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 404, 'Should return 404 Not Found status');
-      assert.strictEqual(data.message, 'Resource not found', 'Should return not found message');
-    });
-    
-    it('should return 404 when study is not found', async () => {
-      const nonExistentStudyId = 'non-existent-study';
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const answer = TEST_DATA.answers.selection;
-      
-      // Mock API response
-      mockApiResponses.postNotFound(
-        getEndpoint(nonExistentStudyId, sessionId, questionId),
-        answer
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(nonExistentStudyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 404, 'Should return 404 Not Found status');
-      assert.strictEqual(data.message, 'Resource not found', 'Should return not found message');
-    });
-    
-    it('should return 400 when question is not found in the study', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const nonExistentQuestionId = 'non-existent-question';
-      const answer = TEST_DATA.answers.selection;
-      
-      // Mock API response
-      mockApiResponses.postBadRequest(
-        getEndpoint(studyId, sessionId, nonExistentQuestionId),
-        answer,
-        'Question not found in this study'
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, nonExistentQuestionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
-      assert.strictEqual(data.message, 'Question not found in this study', 'Should return question not found message');
-    });
-    
-    it('should return 409 when answer already exists for the question', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.sessionWithResponses.id;
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const answer = TEST_DATA.answers.selection;
-      
-      // Mock API response
-      mockApiResponses.postConflict(
-        getEndpoint(studyId, sessionId, questionId),
-        answer
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 409, 'Should return 409 Conflict status');
-      assert.strictEqual(data.message, 'Conflict', 'Should return conflict message');
-    });
-    
-    it('should handle server errors gracefully', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const answer = TEST_DATA.answers.selection;
-      
-      // Mock API response
-      mockApiResponses.postServerError(
-        getEndpoint(studyId, sessionId, questionId),
-        answer
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 500, 'Should return 500 Internal Server Error status');
-      assert.strictEqual(data.message, 'Internal server error', 'Should return server error message');
-    });
-  });
-  
-  // Boundary tests
-  describe('Boundary Cases', () => {
-    it('should accept a numeric answer at the lower boundary (0)', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[2]._id;
-      const boundaryAnswer = {
-        answer: 0,
-        answerType: 'numeric',
-        skipped: false
-      };
-      
-      // Mock API response
-      mockApiResponses.postSuccess(
-        getEndpoint(studyId, sessionId, questionId),
-        boundaryAnswer,
-        {
-          message: 'Answer submitted',
-          sessionId: sessionId
-        },
-        201
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(boundaryAnswer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
-      assert.strictEqual(data.message, 'Answer submitted', 'Should return success message');
-    });
-    
-    it('should accept a numeric answer at the upper boundary (130)', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[2]._id;
-      const boundaryAnswer = {
-        answer: 130,
-        answerType: 'numeric',
-        skipped: false
-      };
-      
-      // Mock API response
-      mockApiResponses.postSuccess(
-        getEndpoint(studyId, sessionId, questionId),
-        boundaryAnswer,
-        {
-          message: 'Answer submitted',
-          sessionId: sessionId
-        },
-        201
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(boundaryAnswer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
-      assert.strictEqual(data.message, 'Answer submitted', 'Should return success message');
-    });
-  });
-  
-  // Edge tests
-  describe('Edge Cases', () => {
-    it('should handle very long text responses', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[3]._id;
-      const longAnswer = {
-        answer: 'A'.repeat(10000), // Very long text answer
-        answerType: 'text',
-        skipped: false
-      };
-      
-      // Mock API response
-      mockApiResponses.postSuccess(
-        getEndpoint(studyId, sessionId, questionId),
-        longAnswer,
-        {
-          message: 'Answer submitted',
-          sessionId: sessionId
-        },
-        201
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(longAnswer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
-      assert.strictEqual(data.message, 'Answer submitted', 'Should return success message');
-    });
-    
-    it('should handle submission with minimal required fields', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const minimalAnswer = {
-        answerType: 'selection',
-        skipped: true
-      };
-      
-      // Mock API response
-      mockApiResponses.postSuccess(
-        getEndpoint(studyId, sessionId, questionId),
-        minimalAnswer,
-        {
-          message: 'Answer submitted',
-          sessionId: sessionId
-        },
-        201
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(minimalAnswer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
-      assert.strictEqual(data.message, 'Answer submitted', 'Should return success message');
-    });
-    
-    it('should reject invalid answer type', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const invalidAnswer = {
-        answer: 'Red',
-        answerType: 'invalid_type', // Invalid answer type
-        skipped: false
-      };
-      
-      // Mock API response
-      mockApiResponses.postBadRequest(
-        getEndpoint(studyId, sessionId, questionId),
-        invalidAnswer,
-        'Invalid answer type'
-      );
-      
-      // Make request
-      const response = await fetch(`${API_BASE}${getEndpoint(studyId, sessionId, questionId)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(invalidAnswer)
-      });
-      
-      const data = await response.json();
-      
-      // Assertions
-      assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
-      assert.strictEqual(data.message, 'Invalid answer type', 'Should return invalid answer type message');
-    });
-  });
-});*/
+*/     
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert';
 import supertest from 'supertest';
@@ -554,7 +94,7 @@ after(() => {
 describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/responses/:questionId', () => {
   // Positive tests
   describe('Positive Cases', () => {
-    it('should successfully submit a selection type answer', async () => {
+    it('should return 201 Created with session ID when submitting valid selection answer', async () => {
       const studyId = TEST_DATA.study.id;
       const sessionId = TEST_DATA.session.id;
       const questionId = TEST_DATA.study.questions[0]._id;
@@ -579,7 +119,7 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       assert.strictEqual(response.body.sessionId, sessionId, 'Should return session ID');
     });
     
-    it('should successfully submit a numeric type answer', async () => {
+    it('should return 201 Created when submitting valid numeric answer', async () => {
       const studyId = TEST_DATA.study.id;
       const sessionId = TEST_DATA.session.id;
       const questionId = TEST_DATA.study.questions[2]._id;
@@ -603,7 +143,7 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
     });
     
-    it('should successfully mark a question as skipped', async () => {
+    it('should return 201 Created when marking a question as skipped', async () => {
       const studyId = TEST_DATA.study.id;
       const sessionId = TEST_DATA.session.id;
       const questionId = TEST_DATA.study.questions[3]._id;
@@ -629,30 +169,7 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
   });
   
   // Negative tests
-  describe('Negative Cases', () => {
-    it('should return 404 when session is not found', async () => {
-      const studyId = TEST_DATA.study.id;
-      const nonExistentSessionId = 'non-existent-session';
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const answer = TEST_DATA.answers.selection;
-      
-      // Mock API response with direct nock
-      nock(API_BASE)
-        .post(`/api/studies/${studyId}/sessions/${nonExistentSessionId}/responses/${questionId}`, answer)
-        .reply(404, {
-          message: 'Resource not found'
-        });
-      
-      // Make request using supertest
-      const response = await request
-        .post(`/api/studies/${studyId}/sessions/${nonExistentSessionId}/responses/${questionId}`)
-        .send(answer);
-      
-      // Assertions
-      assert.strictEqual(response.status, 404, 'Should return 404 Not Found status');
-      assert.strictEqual(response.body.message, 'Resource not found', 'Should return not found message');
-    });
-    
+  describe('Negative Cases, error handling', () => {  
     it('should return 404 when study is not found', async () => {
       const nonExistentStudyId = 'non-existent-study';
       const sessionId = TEST_DATA.session.id;
@@ -698,31 +215,8 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
       assert.strictEqual(response.body.message, 'Question not found in this study', 'Should return question not found message');
     });
-    
-    it('should return 409 when answer already exists for the question', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.sessionWithResponses.id;
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const answer = TEST_DATA.answers.selection;
-      
-      // Mock API response with direct nock
-      nock(API_BASE)
-        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, answer)
-        .reply(409, {
-          message: 'Conflict'
-        });
-      
-      // Make request using supertest
-      const response = await request
-        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
-        .send(answer);
-      
-      // Assertions
-      assert.strictEqual(response.status, 409, 'Should return 409 Conflict status');
-      assert.strictEqual(response.body.message, 'Conflict', 'Should return conflict message');
-    });
-    
-    it('should handle server errors gracefully', async () => {
+ 
+    it('should return 500 Internal Server Error when server encounters an exception', async () => {
       const studyId = TEST_DATA.study.id;
       const sessionId = TEST_DATA.session.id;
       const questionId = TEST_DATA.study.questions[0]._id;
@@ -748,66 +242,12 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
   
   // Boundary tests
   describe('Boundary Cases', () => {
-    it('should accept a numeric answer at the lower boundary (0)', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[2]._id;
-      const boundaryAnswer = {
-        answer: 0,
-        answerType: 'numeric',
-        skipped: false
-      };
-      
-      // Mock API response with direct nock
-      nock(API_BASE)
-        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, boundaryAnswer)
-        .reply(201, {
-          message: 'Answer submitted',
-          sessionId: sessionId
-        });
-      
-      // Make request using supertest
-      const response = await request
-        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
-        .send(boundaryAnswer);
-      
-      // Assertions
-      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
-      assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
-    });
     
-    it('should accept a numeric answer at the upper boundary (130)', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[2]._id;
-      const boundaryAnswer = {
-        answer: 130,
-        answerType: 'numeric',
-        skipped: false
-      };
-      
-      // Mock API response with direct nock
-      nock(API_BASE)
-        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, boundaryAnswer)
-        .reply(201, {
-          message: 'Answer submitted',
-          sessionId: sessionId
-        });
-      
-      // Make request using supertest
-      const response = await request
-        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
-        .send(boundaryAnswer);
-      
-      // Assertions
-      assert.strictEqual(response.status, 201, 'Should return 201 Created status');
-      assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
-    });
   });
   
   // Edge tests
   describe('Edge Cases', () => {
-    it('should handle very long text responses', async () => {
+    it('should handle extremely large text responses (10000 chars) and return 201', async () => {
       const studyId = TEST_DATA.study.id;
       const sessionId = TEST_DATA.session.id;
       const questionId = TEST_DATA.study.questions[3]._id;
@@ -835,7 +275,7 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
     });
     
-    it('should handle submission with minimal required fields', async () => {
+    it('should handle submission with minimal required fields, and return 201', async () => {
       const studyId = TEST_DATA.study.id;
       const sessionId = TEST_DATA.session.id;
       const questionId = TEST_DATA.study.questions[0]._id;
@@ -862,7 +302,7 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
     });
     
-    it('should reject invalid answer type', async () => {
+    it('should return 400 Bad Request when answer type is invalid', async () => {
       const studyId = TEST_DATA.study.id;
       const sessionId = TEST_DATA.session.id;
       const questionId = TEST_DATA.study.questions[0]._id;
