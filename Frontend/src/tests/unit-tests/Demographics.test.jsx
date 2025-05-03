@@ -7,7 +7,7 @@ const studyId = '123abc';
 
 test('Positive case: valid submission returns sessionId', async () => {
   axios.post.mockResolvedValue({ data: { sessionId: 'abc123' } });
-  const result = await submitDemographics(studyId, { age: '25-35', gender: 'female' });
+  const result = await submitDemographics(studyId, { age: '25', gender: 'female' });
   expect(result).toBe('abc123');
 });
 
@@ -18,7 +18,7 @@ test('Edge case: missing age returns null', async () => {
 
 test('Boundary case: borderline age accepted', async () => {
   axios.post.mockResolvedValue({ data: { sessionId: 'edge456' } });
-  const result = await submitDemographics(studyId, { age: '18', gender: 'male' });
+  const result = await submitDemographics(studyId, { age: '0', gender: 'male' });
   expect(result).toBe('edge456');
 });
 

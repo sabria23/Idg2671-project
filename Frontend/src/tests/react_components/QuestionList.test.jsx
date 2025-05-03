@@ -62,7 +62,7 @@ it('renders fallback label if questionTitle is missing', ()=>{
     expect(screen.getByText('Question 1')).toBeInTheDocument();
 });
 
-// Negative test 2. 
+// Negative test 2. Checking if the component can handle invalid question props gracefully
 it('handles invalid questions prop gracefully (e.g., null)', ()=>{
     render(
         <QuestionList
