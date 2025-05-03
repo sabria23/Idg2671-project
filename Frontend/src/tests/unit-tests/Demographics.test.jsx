@@ -24,6 +24,6 @@ test('Boundary case: borderline age accepted', async () => {
 
 test('Negative case: server error returns null', async () => {
   axios.post.mockRejectedValue(new Error('network error'));
-  const result = await submitDemographics(studyId, { age: '25-35', gender: 'female' });
+  const result = await submitDemographics(studyId, { age: '25', gender: 'female' });
   expect(result).toBeNull();
 });
