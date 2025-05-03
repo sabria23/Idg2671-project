@@ -1,0 +1,27 @@
+
+services:
+  backend:
+    build: ./Backend
+    ports:
+      - "8000:8000"
+    restart: always
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  frontend:
+    build: ./Frontend
+    ports:
+      - "3030:3030"
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
