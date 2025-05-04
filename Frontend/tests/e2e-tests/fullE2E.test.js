@@ -10,7 +10,9 @@ let browser, page;
 const screenshotF = path.resolve("screenshots");
 fs.mkdirSync(screenshotF, { recursive: true});
 
-
+// inspired by: 
+// https://www.youtube.com/watch?v=BuTUT03vfnU&ab_channel=SoftwareTestingTipsandTricks
+// https://www.udemy.com/course/cypress-test-automation-for-beginners/learn/lecture/45276689#overview
 // https://pptr.dev/guides/page-interactions
 describe("End to end login", () => { 
   
@@ -90,13 +92,13 @@ describe("End to end login", () => {
             const url = await page.url();
             assert.strictEqual(url, "http://localhost:3030/dashboard");
 
-           
+
     });
     it("Should navigate to create new study page when clicking create your first project button", async () =>{
 
       await page.waitForSelector("h1");
 
-      await page.waitForSelector('[data-testid="create-first-project-button"]');
+      await page.waitForSelector('[data-testid="create-first-project-button]', { timeout: 6000 });
 
       await page.click('[data-testid="create-first-project-button"]');
     
