@@ -73,7 +73,7 @@ describe("End to end login", () => {
 
         it("Should allow login with correct credentials", async () => {
             const testUsername = "aliakseix";
-            const testPassword = "aliakseix";
+            const testPassword = "aliakseix123";
 
             await page.goto(`http://localhost:3030/login`);
 
