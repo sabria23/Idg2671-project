@@ -144,7 +144,10 @@ const DashboardPage = () => {
                   <div className={styles.emptyStateContainer}>
                     <div className={styles.emptyState}>
                       <h3>Organize all your studies with projects</h3>
-                      <button className={styles.createFirstButton} onClick={() => navigate('/create-study')}>
+                      <button 
+                      data-testid="create-first-project-button"
+                      className={styles.createFirstButton} 
+                      onClick={() => navigate('/create-study')}>
                         Create your first project
                       </button>
                     </div>
