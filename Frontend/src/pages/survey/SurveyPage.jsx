@@ -181,373 +181,142 @@ if (step >= 2 && currentQuestion) {
             <button onClick={() => handleAnswer(null)}>Next</button>
         </div>
     )
-}
+}*/
 
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import UAParser from 'ua-parser-js';
 import axios from 'axios';
+import {UAParser} from 'ua-parser-js';
+
+import SurveyIntro from "./components/SurveyIntro";
+import SurveyDemographics from "./components/SurveyDemographics";
+import SurveyQuestion from "./components/SurveyQuestion";
+import SurveyThankYou from "./components/SurveyThanks";
+
+import { submitDemographics } from '../../utils/submitDemographics';
+import { shuffleArray } from '../../utils/shuffleArray';
 import '../../styles/displaySurvey.css';
-
-import {
-  DirectSelectionUI,
-  StarRatingUI,
-  NumericRatingUI,
-  EmojiRatingUI,
-  RankingUI,
-  renderArtifactContent
-} from '/components/QuestionTypes';
-
 
 const SurveyPage = ({ mode = 'live' }) => {
   const { studyId } = useParams();
   const isPreview = mode === 'preview';
 
-  const [step, setStep] = useState(0) // For managing the steps of the study 0 = intro, 1 = Demographics, 3 questions, 4 = submission and thank you
-  const [studyInfo, setStudyInfo] = useState(null); // For title and description of the study
-  const [demographics, setDemographics] = useState({age:'', gender:''});
+  const [currentStep, setCurrentStep] = useState(0);
+  const [studyInfo, setStudyInfo] = useState(null);
+  const [demographics, setDemographics] = useState({ age: '', gender: '' });
   const [sessionId, setSessionId] = useState(null);
 
-  const [currentQuestion, setCurrentQuestion] = useState(null); 
+  const [currentQuestion, setCurrentQuestion] = useState(null);
   const [totalQuestions, setTotalQuestions] = useState(0);
-  const [responses, setResponses] = useState({});
-  
-  const shuffleArray = (array) => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
-  
 
-useEffect(() => {
-    const fetchQuestion = async () => {
-      if (currentStep < 2) return; // Skip if not in question phase
-      const page = currentStep - 2;
-
+  useEffect(() => {
+    const fetchStudyInfo = async () => {
       try {
-        const res = await axios.get(`/api/survey/${studyId}/questions/${page}&sessionId=${sessionId}`);
-        const data = res.data;
+        const res = await axios.get(`/api/survey/${studyId}`);
+        setStudyInfo({
+          title: res.data.title,
+          description: res.data.description
+        });
+      } catch (err) {
+        console.error("Failed to fetch study info:", err);
+      }
+    };
+    fetchStudyInfo();
+  }, [studyId]);
 
-        setStudyInfo({ title: data.title, description: data.description });
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      if (currentStep < 2) return;
+      const page = currentStep - 2;
+      try {
+        const res = await axios.get(`/api/survey/${studyId}?page=${page}&sessionId=${sessionId}`);
+        const data = res.data;
         setCurrentQuestion({
           ...data.question,
-          artifacts: shuffleArray(data.question.artifacts || []) // Shuffle artifacts for the question
+          artifacts: shuffleArray(data.question.artifacts || [])
         });
         setTotalQuestions(data.totalQuestions);
       } catch (err) {
-        console.error('Error fetching question:', err);
+        console.error('Failed to fetch question:', err);
       }
     };
     fetchQuestion();
-  }, [currentStep, studyId, sessionId]);
+  }, [currentStep, sessionId, studyId]);
 
+  const handleDemographicsSubmit = async (demographicData) => {
+    const newSessionId = await submitDemographics(studyId, demographicData);
+  
+    if (newSessionId) {
+      setSessionId(newSessionId); // local state
+      setCurrentStep(prev => prev + 1);
+    } else {
+      console.error("Failed to submit demographics");
+      alert("Submission failed. Please check your input.");
+    }
+  };
+  
 
-  const handleDemographics = async (e) => {
-    e.preventDefault();
-    // if the page is in preview mode skip to questions
+  const handleAnswerSubmit = async (responseValue, skipped = false) => {
     if (isPreview) {
-        setCurrentStep(2);
-        return;
+      setCurrentStep(prev => prev + 1);
+      return;
     }
-
-    // UAParser to get the device information
-    const parser = new UAParser();
-    const result = parser.getResult();
-    const browser = result.browser.name || 'Unknown browser';
-    const os = result.os.name || 'Unknown os';
-
-    const deviceInfo = `${browser} on ${os}`;
-
+    const questionId = currentQuestion._id;
     try {
-      const res = await axios.post(`/api/survey/${studyId}/sessions`, {
-        deviceInfo,
-        demographics
+      await axios.post(`/api/studies/${studyId}/sessions/${sessionId}/${questionId}`, {
+        answer: skipped ? null : responseValue,
+        skipped,
+        answerType: currentQuestion.questionType
       });
-      setSessionId(res.data.sessionId);
-      setStep(2); // Go to the first question
     } catch (err) {
-      console.error('Error creating session:', err);
-    }
-};
-
-const handleAnswer = async (responseValue, skipped = false) => {
-  if (isPreview) {
-    setCurrentStep(prev => prev + 1);
-    return;
-  }
-
-  const questionId = currentQuestion._id;
-
-  try {
-      await axios.post(`/api/survey/${studyId}/sessions/${sessionId}/${questionId}`, {
-          participantAnswer: skipped ? null : responseValue,
+      if (err.response?.status === 409) {
+        await axios.patch(`/api/studies/${studyId}/sessions/${sessionId}/${questionId}`, {
+          answer: skipped ? null : responseValue,
           skipped,
           answerType: currentQuestion.questionType
-      });
-      
-  } catch (err) {
-      if (err.response?.status === 409) {
-          await axios.put(`/api/survey/${studyId}/sessions/${sessionId}/${questionId}`, {
-              participantAnswer: responseValue,
-              skipped,
-              answerType: currentQuestion.questionType
-          });
+        });
       } else {
-        console.error('Error submitting answer:', err);
-      }
-  }
-  setCurrentStep(prev => prev + 1)
-};
-
-useEffect(() => {
-  const completeSession = async () => {
-    if (!isPreview && sessionId && currentStep === totalQuestions + 2) {
-      try {
-        await axios.patch(`/api/survey/${studyId}/sessions/${sessionId}/complete`);
-      } catch (err) {
-        console.error('Error completing session:', err);
+        console.error('Failed to submit answer', err);
       }
     }
+    setCurrentStep(prev => prev + 1);
   };
-  completeSession();
-}, [currentStep]);
 
-const handleNextQuestion = () => setCurrentStep(prev => prev + 1);
-const handlePreviousQuestion = () => setCurrentStep(prev => Math.max(prev - 1, 2));
+  const handlePreviousQuestion = () => setCurrentStep(prev => Math.max(prev - 1, 2));
+  const handleNextQuestion = () => setCurrentStep(prev => prev + 1);
 
+  if (currentStep === 0) {
+    return <SurveyIntro studyInfo={studyInfo} totalQuestions={totalQuestions} onStart={() => setCurrentStep(1)} />;
+  }
 
-if (step === 0) {
-  return (
-      <div className="survey-container">
-          <div className="intro-container">
-            <h1>{studyInfo.title || 'Loading...'}</h1>
-            <div className="intro-content">
-              <p>{studyInfo.description}</p>
-              <div className="intro-details">
-                <div className="intro-detail-item">
-                  <span className="detail-icon">⏱️</span>
-                  <span>Approximately {questions.length * 2} minutes</span>
-                </div>
-                <div className="intro-detail-item">
-                  <span className="detail-icon">🔍</span>
-                  <span>{questions.length} questions to answer</span>
-                </div>
-              </div>
-              <button className="primary-button" onClick={() => setCurrentStep(1)}>
-                Start Study
-              </button>
-            </div>
-
-
-            <p className="intro-instructions">
-              You will be asked to evaluate different artifacts using various rating methods.
-              Please follow the instructions for each question carefully.
-            </p>
-            
-            <button className="primary-button" onClick={handleStart}>
-              Start Study
-            </button>
-
-          </div>
-
-        </div>
-
-  
-
-  )
-}
-
-  // Render demographics form
   if (currentStep === 1) {
     return (
-      <div className="survey-container">
-        <div className="demographics-container">
-          <h2>Before we begin</h2>
-          <p>Please provide some information about yourself.</p>
-          
-          <form onSubmit={handleDemographics} className="demographics-form">
-            <div className="form-group">
-              <label htmlFor="age">Age</label>
-              <input
-                type="number"
-                id="age"
-                min="0"
-                max="130"
-                value={demographics.age} 
-                onChange={(e) => setDemographics({...demographics, age: e.target.value})}
-                required
-              />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="gender">Gender</label>
-              <select 
-                id="gender"
-                value={demographics.gender} 
-                onChange={(e) => setDemographics({...demographics, gender: e.target.value})}
-                required
-              >
-                <option value="">Select your gender</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-                <option value="prefer_not_to_say">Prefer not to say</option>
-              </select>
-            </div>
-            
-            <div className="form-actions">
-              <button 
-                type="button" 
-                className="secondary-button" 
-                onClick={() => setCurrentStep(0)}
-              >
-                Back
-              </button>
-              <button 
-                type="submit" 
-                className="primary-button"
-                disabled={!demographics.age || !demographics.gender}
-              >
-                Continue
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <SurveyDemographics 
+        demographics={demographics}
+        setDemographics={setDemographics}
+        onSubmit={handleDemographicsSubmit}
+        onBack={() => setCurrentStep(0)}
+      />
     );
   }
 
-  // Render thank you page (last step)
-  if (currentStep >= questions.length + 2) {
+  if (currentStep >= 2 && currentStep < totalQuestions + 2) {
     return (
-      <div className="survey-container">
-        <div className="thankyou-container">
-          <div className="thankyou-icon">✅</div>
-          <h1>Thank You!</h1>
-          <p>Your responses have been successfully submitted.</p>
-          <p>We appreciate your participation in this study.</p>
-        </div>
-      </div>
+      <SurveyQuestion
+        currentQuestion={currentQuestion}
+        onAnswer={handleAnswerSubmit}
+        onSkip={() => handleAnswerSubmit(null, true)}
+        onPrevious={handlePreviousQuestion}
+        onNext={handleNextQuestion}
+      />
     );
   }
 
-if (!currentQuestion) {
-   return <div className='survey-container'>Loading...</div>
-}
-
-if (currentQuestion) {
-  const questionIndex = currentStep - 2;
-  
-  return (
-    <div className="survey-container">
-      <div className="question-container">
-        <div className="question-header">
-          <div className="question-progress">
-            <div className="progress-text">
-              Question {questionIndex + 1} of {totalQuestions}
-            </div>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill" 
-                style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-          <h2>{currentQuestion.questionText}</h2>
-        </div>
-        
-        {currentQuestion.questionType === 'selection' && (
-          <DirectSelectionUI question={currentQuestion} onSelect={handleAnswerSubmit} />
-        )}
-
-        {currentQuestion.questionType === 'star-rating' && (
-          <StarRatingUI question={currentQuestion} onRate={handleAnswerSubmit} />
-        )}
-
-        {currentQuestion.questionType === 'numeric-rating' && (
-          <NumericRatingUI question={currentQuestion} onRate={handleAnswerSubmit} />
-        )}
-
-        {currentQuestion.questionType === 'emoji-rating' && (
-          <EmojiRatingUI question={currentQuestion} onRate={handleAnswerSubmit} />
-        )}
-
-        {currentQuestion.questionType === 'ranking' && (
-          <RankingUI question={currentQuestion} onRank={handleAnswerSubmit} />
-        )}
-
-        <button onClick={() => handleAnswer(null, true)}>Skip</button>
-        
-        <div className="question-navigation">
-          <button 
-            className="secondary-button" 
-            onClick={handlePreviousQuestion}
-          >
-            Previous
-          </button>
-          <button 
-            className="skip-button" 
-            onClick={handleNextQuestion}
-          >
-            Skip Question
-          </button>
-          <button 
-            className="primary-button"
-            onClick={handleNextQuestion}
-            disabled={!hasValidResponse() && currentQuestion.questionType !== 'selection'}
-          >
-            Next Question
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+  return <SurveyThankYou />;
 };
 
-  // Get current question based on step
-  const getCurrentQuestion = () => {
-    // The first step (0) is intro, second step (1) is demographics
-    // Questions start at step 2
-    const questionIndex = currentStep - 2;
-    if (questionIndex >= 0 && questionIndex < questions.length) {
-      return questions[questionIndex];
-    }
-    return null;
-  };
-
-  // Check if current question has a valid response
-  const hasValidResponse = () => {
-    const currentQuestion = getCurrentQuestion();
-    if (!currentQuestion) return false;
-    
-    const response = responses[currentQuestion.id];
-    
-    switch (currentQuestion.questionType) {
-      case 'selection':
-        return !!response; // Has selected an artifact
-      case 'star-rating':
-      case 'numeric-rating':
-      case 'emoji-rating':
-        // Check if all artifacts have ratings
-        return currentQuestion.artifacts.every(a => 
-          response && response[a.id] !== undefined
-        );
-      case 'ranking':
-        // Check if all artifacts are ranked
-        return response && response.length === currentQuestion.artifacts.length;
-      default:
-        return false;
-    }
-  };
-
-
-
 export default SurveyPage;
-*/
+
 
 
 
