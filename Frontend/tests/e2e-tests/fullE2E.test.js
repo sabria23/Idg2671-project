@@ -78,20 +78,21 @@ describe("End to end login", () => {
             const testPassword = "aliakseix123";
 
             await page.goto(`http://localhost:3030/login`);
-
+            await page.screenshot({ path: path.resolve(screenshotF, "login_correct_screenshot.png") });
             await page.waitForSelector('input[name="username"]');
             
             await page.type('input[name="username"]', testUsername); 
             await page.type('input[name="password"]', testPassword);
             await page.click('button[type="submit"]');
 
-            await page.screenshot({ path: path.resolve(screenshotF, "login_correct_screenshot.png") });
+            
 
             await page.waitForSelector("h1")
 
             const url = await page.url();
             assert.strictEqual(url, "http://localhost:3030/dashboard");
 
+            await page.screenshot({ path: path.resolve(screenshotF, "dashboard_screenshot.png") });
 
     });
     it("Should navigate to create new study page when clicking create your first project button", async () =>{
