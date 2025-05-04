@@ -25,6 +25,7 @@ surveyRouter.patch('/:studyId/sessions/:sessionId/responses/:responseId',
     updateAnswer);
 
 // patch to update to complete? This can maybe be used for denying further accsess based on that the user has already completed
-// surveyRouter.patch('/api/studies/studyid/sessions/sessionId')?
+surveyRouter.patch('/api/studies/studyid/sessions/sessionId', 
+    completeSession);
 
 export default surveyRouter;

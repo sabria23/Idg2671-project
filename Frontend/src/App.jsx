@@ -9,7 +9,7 @@ import CreateStudyPage from './pages/studies/CreateStudyPage';
 import RecruitmentPage from './pages/recruitment/RecruitmentPage.jsx';
 import ExportPage from './pages/exportResults/ExportPage.jsx';
 
-//import SurveyPage from './pages/survey/SurveyPage.jsx';
+import SurveyPage from './pages/survey/SurveyPage.jsx';
 
 import ProfilePage from './pages/profile/ProfilePage.jsx';
 import PortectedRoute from './components/auth/PortectedRoute.jsx';
@@ -24,8 +24,8 @@ const App = () => {
           {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<SignupPage />} />
-           {/*} <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview"/>} />
-            <Route path="/study/:studyId/" element={<SurveyPage />} />*/}
+           <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview"/>} />
+            <Route path="/study/:studyId/live" element={<SurveyPage />} />
 
             {/*Portected routes */}
             <Route path="/dashboard" element={

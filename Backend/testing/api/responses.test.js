@@ -1,72 +1,3 @@
-/*
-  // Boundary test cases - testing edge values that are at the limits of acceptable input
-  describe('Boundary Cases', () => {
-    it('should handle the transition between skipped and not skipped answers', async () => {
-      // Testing boundary between skipped/not skipped with a blank answer
-      const answerData = {
-        answer: "", // Empty string (not null, but no content)
-        skipped: false, // Not officially skipped, just empty
-        answerType: 'text'
-      };
-      
-      // Mock the API response
-      nock(API_BASE)
-        .post(`/api/studies/${TEST_DATA.studyId}/sessions/${TEST_DATA.sessionId}/responses/${TEST_DATA.questionId}`, answerData)
-        .reply(201, {
-          message: 'Answer submitted',
-          sessionId: TEST_DATA.sessionId
-        });
-      
-      // Make the request
-      const response = await fetch(`${API_BASE}/api/studies/${TEST_DATA.studyId}/sessions/${TEST_DATA.sessionId}/responses/${TEST_DATA.questionId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answerData)
-      });
-      
-      const data = await response.json();
-      
-      // Check that the response is as expected
-      assert.strictEqual(response.status, 201, 'Should return 201 status code');
-      assert.strictEqual(data.message, 'Answer submitted', 'Should return success message');
-    });
-    
-    it('should accept single selection from multiple choices', async () => {
-      // Testing boundary case with single selection
-      const answerData = {
-        answer: "Option1", // Just one option selected
-        skipped: false,
-        answerType: 'selection'
-      };
-      
-      // Mock the API response
-      nock(API_BASE)
-        .post(`/api/studies/${TEST_DATA.studyId}/sessions/${TEST_DATA.sessionId}/responses/${TEST_DATA.questionId}`, answerData)
-        .reply(201, {
-          message: 'Answer submitted',
-          sessionId: TEST_DATA.sessionId
-        });
-      
-      // Make the request
-      const response = await fetch(`${API_BASE}/api/studies/${TEST_DATA.studyId}/sessions/${TEST_DATA.sessionId}/responses/${TEST_DATA.questionId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(answerData)
-      });
-      
-      const data = await response.json();
-      
-      // Check that the response is as expected
-      assert.strictEqual(response.status, 201, 'Should return 201 status code');
-      assert.strictEqual(data.message, 'Answer submitted', 'Should return success message');
-    });
-  });
-  
-*/     
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert';
 import supertest from 'supertest';
@@ -242,6 +173,31 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
   
   // Boundary tests
   describe('Boundary Cases', () => {
+    it('should handle the transition between skipped and not skipped answers', async () => {
+      // Testing boundary between skipped/not skipped with a blank answer
+    const answerData = {
+      answer: "", // Empty string (not null, but no content)
+      skipped: false, // Not officially skipped, just empty
+      answerType: 'text'
+    };
+    
+    // Mock the API response
+    nock(API_BASE)
+      .post(`/api/studies/${TEST_DATA.studyId}/sessions/${TEST_DATA.sessionId}/responses/${TEST_DATA.questionId}`, answerData)
+      .reply(201, {
+        message: 'Answer submitted',
+        sessionId: TEST_DATA.sessionId
+      });
+    
+    // Make the request
+    const response = await request
+      .post(`/api/studies/${TEST_DATA.studyId}/sessions/${TEST_DATA.sessionId}/responses/${TEST_DATA.questionId}`)
+      .send(answerData);  // Send the request data
+     
+      // Check that the response is as expected
+      assert.strictEqual(response.status, 201, 'Should return 201 status code');
+      assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
+    });
     
   });
   

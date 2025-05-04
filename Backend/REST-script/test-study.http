@@ -1,0 +1,199 @@
+### Environment Variables
+@baseUrl = http://localhost:8000
+
+### 1. Register a user (only needed first time)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "emi123",
+  "email": "emi123@example.com",
+  "password": "noobs"
+}
+
+### 2. Login to get JWT token
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "bob",
+  "password": "bob123"
+}
+
+### Store token from login response
+@token = {{login.response.body.token}}
+
+### 3. Get current user details (to verify token works)
+# @name getUser
+GET {{baseUrl}}/api/auth/user
+Authorization: Bearer {{token}}
+
+@userId = {{getUser.response.body._id}}
+
+#----------------------TEST STUDY WITH QUESTION TYPES-------------------------
+### Create new test study
+# @name createStudy
+POST {{baseUrl}}/api/studies
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+   "creator": "{{userId}}",
+   "title": "Test Study - All Question Types",
+   "description": "Study to test multiple question types",
+   "published": true,
+   "questions": []
+}
+
+@studyId = {{createStudy.response.body._id}}
+
+### Create a dummy question to associate artifacts with (will be updated later)
+# @name createDummyQuestion
+POST {{baseUrl}}/api/studies/{{studyId}}/questions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "questionText": "Placeholder",
+  "questionType": "text"
+}
+
+@questionId = {{createDummyQuestion.response.body.question._id}}
+
+### Upload test image artifacts
+# @name uploadArtifact1
+POST {{baseUrl}}/api/studies/{{studyId}}/questions/{{questionId}}/artifacts
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data
+
+file=@./uploads/test1.png
+
+@artifact1 = {{uploadArtifact1.response.body.artifactId}}
+
+### Upload second artifact
+# @name uploadArtifact2
+POST {{baseUrl}}/api/studies/{{studyId}}/questions/{{questionId}}/artifacts
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data
+
+file=@./uploads/test2.png
+
+@artifact2 = {{uploadArtifact2.response.body.artifactId}}
+
+### Upload third artifact
+# @name uploadArtifact3
+POST {{baseUrl}}/api/studies/{{studyId}}/questions/{{questionId}}/artifacts
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data
+
+file=@./uploads/test3.png
+
+@artifact3 = {{uploadArtifact3.response.body.artifactId}}
+
+### Single Choice Question
+POST {{baseUrl}}/api/studies/{{studyId}}/questions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{
+  "questionText": "Which image do you prefer?",
+  "questionType": "single",
+  "options": [
+    { "label": "Left", "value": "left" },
+    { "label": "Right", "value": "right" }
+  ],
+  "artifactIds": ["{{artifact1}}", "{{artifact2}}"]
+}
+
+### Multiple Choice Question
+POST {{baseUrl}}/api/studies/{{studyId}}/questions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{
+  "questionText": "Select all images that are cleanly designed",
+  "questionType": "multiple",
+  "options": [
+    { "label": "A", "value": "a" },
+    { "label": "B", "value": "b" },
+    { "label": "C", "value": "c" }
+  ],
+  "artifactIds": ["{{artifact1}}", "{{artifact2}}", "{{artifact3}}"]
+}
+
+### Rating Scale Question
+POST {{baseUrl}}/api/studies/{{studyId}}/questions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{
+  "questionText": "Rate this design",
+  "questionType": "scale",
+  "scale": { "min": 1, "max": 5, "step": 1 },
+  "artifactIds": ["{{artifact1}}"]
+}
+
+### Ranking Question
+POST {{baseUrl}}/api/studies/{{studyId}}/questions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{
+  "questionText": "Rank these from best to worst",
+  "questionType": "ranking",
+  "artifactIds": ["{{artifact1}}", "{{artifact2}}", "{{artifact3}}"]
+}
+
+### Open Text Question
+POST {{baseUrl}}/api/studies/{{studyId}}/questions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{
+  "questionText": "Write your impression of this image",
+  "questionType": "text",
+  "artifactIds": ["{{artifact1}}"]
+}
+
+### Pairwise Comparison Question
+POST {{baseUrl}}/api/studies/{{studyId}}/questions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+{
+  "questionText": "Which image looks more trustworthy?",
+  "questionType": "pairwise",
+  "artifactIds": ["{{artifact1}}", "{{artifact2}}"]
+}
+
+#---------------------GET-----------------------------------
+### Get study by id
+GET {{baseUrl}}/api/studies/:studyId
+Authorization: Bearer {{token}}
+
+### Get artifacts for sorting
+GET {{baseUrl}}/api/artifacts
+Authorization: Bearer {{token}}
+
+#---------------------PATCH(UPDATE)-------------------------
+### Update study by id
+PATCH {{baseUrl}}/api/studies/:studyId
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Update question in study
+PATCH {{baseUrl}}/api/studies/{{studyId}}/questions/:questionId
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+#---------------------DELETE--------------------------------
+### Delete/remove artifact from question
+@studyId = 67ea4ab9839619ffc625ddd4
+@questionId = 67ea4ab9839619ffc625dddb
+@artifactId = 67ea579cc5cec63778c68a1e
+DELETE {{baseUrl}}/api/studies/{{studyId}}/questions/{{questionId}}/artifacts/{{artifactId}}
+Authorization: Bearer {{token}}
+
+### Delete a artifact from the collection
+@artifactId = 67ea579cc5cec63778c68a1e
+DELETE {{baseUrl}}/api/studies/artifacts/{{artifactId}}
+Authorization: Bearer {{token}}
+
+### Delete a question from study
+DELETE {{baseUrl}}/api/studies/:studyId/questions/:questionId
+Authorization: Bearer {{token}}

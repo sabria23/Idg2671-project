@@ -104,7 +104,7 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
       // Make request using supertest
       const response = await request
         .patch(`/api/studies/${publishedStudy.id}`)
-        .set('Authorization', `Bearer ${TEST_DATA.user.token}`)
+        .set('Authorization', `Bearer ${TEST_DATA.user.token}`) 
         .send(updatePayload);
       
       // Assertions
@@ -197,13 +197,11 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
           }
         });
       
-      // Make request
       const response = await request
         .patch(`/api/studies/${studyWithOneQuestion.id}`)
         .set('Authorization', `Bearer ${TEST_DATA.user.token}`)
         .send(updatePayload);
       
-      // Assertions
       assert.strictEqual(response.status, 200, 'Should return 200 OK status');
       assert.strictEqual(response.body.message, 'Study published successfully', 'Should return success message');
       assert.strictEqual(response.body.study.published, true, 'Study should be marked as published');
@@ -245,13 +243,11 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
           }
         });
       
-      // Make request
       const response = await request
         .patch(`/api/studies/${minimalStudy.id}`)
         .set('Authorization', `Bearer ${TEST_DATA.user.token}`)
         .send(updatePayload);
       
-      // Assertions
       assert.strictEqual(response.status, 200, 'Should return 200 OK status');
       assert.strictEqual(response.body.message, 'Study published successfully', 'Should return success message');
       assert.strictEqual(response.body.study.published, true, 'Study should be marked as published');
