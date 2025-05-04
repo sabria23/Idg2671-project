@@ -1,4 +1,4 @@
-import { submitDemographics } from '../../src/utils/submitDemographics';
+import { submitDemographics } from '../../src/utils/submitDemographics.js';
 import axios from 'axios';
 
 jest.mock('axios');

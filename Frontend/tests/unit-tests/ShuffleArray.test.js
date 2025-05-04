@@ -1,4 +1,4 @@
-import { shuffleArray } from '../../src/utils/shuffleArray';
+import { shuffleArray } from '../../src/utils/shuffleArray.js';
 
 describe('shuffleArray', () => {
   beforeAll(() => {
