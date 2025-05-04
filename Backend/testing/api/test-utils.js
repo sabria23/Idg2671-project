@@ -1,6 +1,5 @@
 import nock from 'nock';
 
-// Base URL for API
 export const API_BASE = 'http://localhost:8000';
 
 // Test data
@@ -124,8 +123,6 @@ export const setupNock = () => {
   nock.disableNetConnect();
   // But allow localhost connections
   nock.enableNetConnect('localhost');
-  
-  console.log('Nock setup complete - HTTP requests will be intercepted');
 };
 
 export const teardownNock = () => {
@@ -133,7 +130,20 @@ export const teardownNock = () => {
   nock.cleanAll();
   // Re-enable network connections
   nock.enableNetConnect();
-  
-  console.log('Nock teardown complete - HTTP requests restored');
 };
 
+
+/*Why Allow Localhost Connections?
+The line nock.enableNetConnect('localhost'); is important because:
+
+nock.disableNetConnect() prevents all real HTTP requests during tests
+nock.enableNetConnect('localhost') makes an exception for localhost connections
+
+This is needed because your tests use Supertest to make requests to a URL, but those requests shouldn't actually go to the network. Instead, Nock intercepts them and returns mock responses. The localhost exception makes this possible.*/
+/*The .set() method is for setting http headers, not responses status. The Testing Architecture
+Here's what's happening in your tests:
+You have setupNock() and teardownNock() functions that configure Nock to intercept all HTTP requests during tests.
+In the test-utils.js file, you have TEST_DATA with mock users, tokens, studies, questions, and answers for testing.
+In each test case, you use Nock to define what happens when a specific API endpoint is called - what response code and data should be returned.
+Then you use Supertest to make a request to that endpoint and verify that your code handles the response correctly.
+*/

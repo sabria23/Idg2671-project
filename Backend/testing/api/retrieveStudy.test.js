@@ -2,9 +2,7 @@
 // https://www.stackhawk.com/blog/creating-test-cases-for-api-testing-a-comprehensive-guide-with-examples/
 // Setup and teardown
 // https://testfully.io/blog/use-api/
-// 
 */
-
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert';
 import supertest from 'supertest';
@@ -33,18 +31,15 @@ after(() => {
 describe('Get All Studies: GET /api/studies', () => {
   describe('Positive Cases', () => {
     it('should retrieve studies for authenticated user - general for a logged in user', async () => {
-      // Mock API response with multiple studies
       nock(API_BASE)
         .get('/api/studies')
         .matchHeader('Authorization', `Bearer ${TEST_DATA.user.token}`)
         .reply(200, MOCK_STUDIES.userStudies);
       
-      // Make request with auth token using supertest
       const response = await request
         .get('/api/studies')
         .set('Authorization', `Bearer ${TEST_DATA.user.token}`);
       
-      // Assertions
       assert.strictEqual(response.status, 200, 'Should return 200 OK status');
       assert.strictEqual(Array.isArray(response.body), true, 'Should return an array');
       assert.strictEqual(response.body.length, 2, 'Should return 2 studies');
