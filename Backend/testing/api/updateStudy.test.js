@@ -104,7 +104,7 @@ describe('Update Study Status: PATCH /api/studies/:studyId', () => {
       // Make request using supertest
       const response = await request
         .patch(`/api/studies/${publishedStudy.id}`)
-        .set('Authorization', `Bearer ${TEST_DATA.user.token}`)
+        .set('Authorization', `Bearer ${TEST_DATA.user.token}`) 
         .send(updatePayload);
       
       // Assertions
