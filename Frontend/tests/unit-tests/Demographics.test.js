@@ -1,4 +1,5 @@
-import { submitDemographics } from '../../src/utils/submitDemographics';
+import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals';
+import { submitDemographics } from '../../src/utils/submitDemographics.js';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -143,7 +144,7 @@ describe('submitDemographics', () => {
       expect(result).toBe('sessionCaseInsensitive');
     });
 
-    it('should handle gender with spaces', async () => {
+    it('should handle gender with uppercase text', async () => {
       axios.post.mockResolvedValue({ data: { sessionId: 'sessionCaseInsensitive' } });
   
       const result = await submitDemographics(studyId, { age: '25', gender: 'FEMALE' });

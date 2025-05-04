@@ -1,4 +1,5 @@
-import { shuffleArray } from '../../src/utils/shuffleArray';
+import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals';
+import { shuffleArray } from '../../src/utils/shuffleArray.js';
 
 describe('shuffleArray', () => {
   beforeAll(() => {

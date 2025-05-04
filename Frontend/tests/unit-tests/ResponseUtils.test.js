@@ -1,7 +1,8 @@
-import { getResponseCount } from '../../src/utils/responseUtils';
-import { getResponses } from '../../src/services/studyService';
+import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals';
+import { getResponseCount } from '../../src/utils/responseUtils.js';
+import { getResponses } from '../../src/services/studyService.js';
 
-jest.mock('../../src/services/studyService');
+jest.mock('../../src/services/studyService.js');
 
 describe('getResponseCount', () => {
   const studyId = 'study1d';
