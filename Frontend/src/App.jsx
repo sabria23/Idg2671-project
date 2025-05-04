@@ -9,7 +9,7 @@ import CreateStudyPage from './pages/studies/CreateStudyPage';
 import RecruitmentPage from './pages/recruitment/RecruitmentPage.jsx';
 import ExportPage from './pages/exportResults/ExportPage.jsx';
 
-//import SurveyPage from './pages/survey/SurveyPage.jsx';
+import SurveyPage from './pages/survey/SurveyPage.jsx';
 
 import ProfilePage from './pages/profile/ProfilePage.jsx';
 import PortectedRoute from './components/auth/PortectedRoute.jsx';

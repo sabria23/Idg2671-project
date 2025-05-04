@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "node -r dotenv/config --test",
+    "jest": "jest",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",

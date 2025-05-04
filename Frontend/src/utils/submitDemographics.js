@@ -3,8 +3,14 @@ import { UAParser } from 'ua-parser-js';
 
 export const submitDemographics = async (studyId, demographics) => {
   // Ensure required fields exist
-  if (!studyId || !demographics || !demographics.age || !demographics.gender) {
-    console.error("Missing studyId or demographics");
+  if (
+    !studyId ||
+    !demographics ||
+    !demographics.age ||
+    isNaN(Number(demographics.age)) ||
+    !demographics.gender
+  ) {
+    console.error("Invalid demographics input");
     return null;
   }
 
