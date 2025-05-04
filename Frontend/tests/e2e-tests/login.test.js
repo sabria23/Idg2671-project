@@ -75,7 +75,6 @@ describe("End to end login", () => {
             const testUsername = "aliakseix";
             const testPassword = "aliakseix";
 
-            console.log("Navigate to loginPage...");
             await page.goto(`http://localhost:3030/login`);
 
             await page.waitForSelector('input[name="username"]');
