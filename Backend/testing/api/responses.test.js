@@ -9,10 +9,9 @@ import {
   teardownNock 
 } from './test-utils.js';
 
-// Initialize supertest with the base URL
 const request = supertest(API_BASE);
 
-// Setup and teardown
+// Setup and teardown od db
 before(() => {
   setupNock();
 });
@@ -31,20 +30,17 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       const questionId = TEST_DATA.study.questions[0]._id;
       const answer = TEST_DATA.answers.selection;
       
-      // Mock API response with direct nock
       nock(API_BASE)
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, answer)
         .reply(201, {
           message: 'Answer submitted', 
           sessionId: sessionId
         });
-      
-      // Make request using supertest
+
       const response = await request
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
         .send(answer);
       
-      // Assertions
       assert.strictEqual(response.status, 201, 'Should return 201 Created status');
       assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
       assert.strictEqual(response.body.sessionId, sessionId, 'Should return session ID');
@@ -55,8 +51,7 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       const sessionId = TEST_DATA.session.id;
       const questionId = TEST_DATA.study.questions[2]._id;
       const answer = TEST_DATA.answers.numeric;
-      
-      // Mock API response with direct nock
+
       nock(API_BASE)
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, answer)
         .reply(201, {
@@ -64,12 +59,10 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
           sessionId: sessionId
         });
       
-      // Make request using supertest
       const response = await request
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
         .send(answer);
       
-      // Assertions
       assert.strictEqual(response.status, 201, 'Should return 201 Created status');
       assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
     });
@@ -80,7 +73,6 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       const questionId = TEST_DATA.study.questions[3]._id;
       const answer = TEST_DATA.answers.skipped;
       
-      // Mock API response with direct nock
       nock(API_BASE)
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, answer)
         .reply(201, {
@@ -88,12 +80,10 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
           sessionId: sessionId
         });
       
-      // Make request using supertest
       const response = await request
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
         .send(answer);
       
-      // Assertions
       assert.strictEqual(response.status, 201, 'Should return 201 Created status');
       assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
     });
@@ -107,14 +97,12 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       const questionId = TEST_DATA.study.questions[0]._id;
       const answer = TEST_DATA.answers.selection;
       
-      // Mock API response with direct nock
       nock(API_BASE)
         .post(`/api/studies/${nonExistentStudyId}/sessions/${sessionId}/responses/${questionId}`, answer)
         .reply(404, {
           message: 'Resource not found'
         });
-      
-      // Make request using supertest
+
       const response = await request
         .post(`/api/studies/${nonExistentStudyId}/sessions/${sessionId}/responses/${questionId}`)
         .send(answer);
@@ -130,19 +118,16 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       const nonExistentQuestionId = 'non-existent-question';
       const answer = TEST_DATA.answers.selection;
       
-      // Mock API response with direct nock
       nock(API_BASE)
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${nonExistentQuestionId}`, answer)
         .reply(400, {
           message: 'Question not found in this study'
         });
       
-      // Make request using supertest
       const response = await request
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${nonExistentQuestionId}`)
         .send(answer);
       
-      // Assertions
       assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
       assert.strictEqual(response.body.message, 'Question not found in this study', 'Should return question not found message');
     });
@@ -152,22 +137,42 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       const sessionId = TEST_DATA.session.id;
       const questionId = TEST_DATA.study.questions[0]._id;
       const answer = TEST_DATA.answers.selection;
-      
-      // Mock API response with direct nock
+
       nock(API_BASE)
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, answer)
         .reply(500, {
           message: 'Internal server error'
         });
       
-      // Make request using supertest
       const response = await request
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
         .send(answer);
       
-      // Assertions
       assert.strictEqual(response.status, 500, 'Should return 500 Internal Server Error status');
       assert.strictEqual(response.body.message, 'Internal server error', 'Should return server error message');
+    });
+    it('should return 400 Bad Request when answer type is invalid', async () => {
+      const studyId = TEST_DATA.study.id;
+      const sessionId = TEST_DATA.session.id;
+      const questionId = TEST_DATA.study.questions[0]._id;
+      const invalidAnswer = {
+        answer: 'Red',
+        answerType: 'invalid_type', // Invalid answer type
+        skipped: false
+      };
+      
+      nock(API_BASE)
+        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, invalidAnswer)
+        .reply(400, {
+          message: 'Invalid answer type'
+        });
+      
+      const response = await request
+        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
+        .send(invalidAnswer);
+      
+      assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
+      assert.strictEqual(response.body.message, 'Invalid answer type', 'Should return invalid answer type message');
     });
   });
   
@@ -181,7 +186,6 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
       answerType: 'text'
     };
     
-    // Mock the API response
     nock(API_BASE)
       .post(`/api/studies/${TEST_DATA.studyId}/sessions/${TEST_DATA.sessionId}/responses/${TEST_DATA.questionId}`, answerData)
       .reply(201, {
@@ -189,12 +193,10 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
         sessionId: TEST_DATA.sessionId
       });
     
-    // Make the request
     const response = await request
       .post(`/api/studies/${TEST_DATA.studyId}/sessions/${TEST_DATA.sessionId}/responses/${TEST_DATA.questionId}`)
       .send(answerData);  // Send the request data
      
-      // Check that the response is as expected
       assert.strictEqual(response.status, 201, 'Should return 201 status code');
       assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
     });
@@ -213,7 +215,6 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
         skipped: false
       };
       
-      // Mock API response with direct nock
       nock(API_BASE)
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, longAnswer)
         .reply(201, {
@@ -221,12 +222,10 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
           sessionId: sessionId
         });
       
-      // Make request using supertest
       const response = await request
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
         .send(longAnswer);
       
-      // Assertions
       assert.strictEqual(response.status, 201, 'Should return 201 Created status');
       assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
     });
@@ -240,7 +239,6 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
         skipped: true
       };
       
-      // Mock API response with direct nock
       nock(API_BASE)
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, minimalAnswer)
         .reply(201, {
@@ -248,41 +246,12 @@ describe('Submit Answer: POST /api/studies/:studyId/sessions/:sessionId/response
           sessionId: sessionId
         });
       
-      // Make request using supertest
       const response = await request
         .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
         .send(minimalAnswer);
-      
-      // Assertions
+    
       assert.strictEqual(response.status, 201, 'Should return 201 Created status');
       assert.strictEqual(response.body.message, 'Answer submitted', 'Should return success message');
-    });
-    
-    it('should return 400 Bad Request when answer type is invalid', async () => {
-      const studyId = TEST_DATA.study.id;
-      const sessionId = TEST_DATA.session.id;
-      const questionId = TEST_DATA.study.questions[0]._id;
-      const invalidAnswer = {
-        answer: 'Red',
-        answerType: 'invalid_type', // Invalid answer type
-        skipped: false
-      };
-      
-      // Mock API response with direct nock
-      nock(API_BASE)
-        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`, invalidAnswer)
-        .reply(400, {
-          message: 'Invalid answer type'
-        });
-      
-      // Make request using supertest
-      const response = await request
-        .post(`/api/studies/${studyId}/sessions/${sessionId}/responses/${questionId}`)
-        .send(invalidAnswer);
-      
-      // Assertions
-      assert.strictEqual(response.status, 400, 'Should return 400 Bad Request status');
-      assert.strictEqual(response.body.message, 'Invalid answer type', 'Should return invalid answer type message');
     });
   });
 });
