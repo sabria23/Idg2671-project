@@ -79,8 +79,9 @@ const navigate = useNavigate();
           <label htmlFor="fullname">Username</label>
             <input
               type="text"
-              name="name"
+              name="username"
               placeholder="Username"
+              data-testid="register-username"
               onChange={(e) => setuserName(e.target.value)}
               required
               />
@@ -96,6 +97,7 @@ const navigate = useNavigate();
               type="email"
               name="email"
               placeholder="Email"
+              data-testid="register-email"
               onChange={(e) => setEmail(e.target.value)}
               required
             />
@@ -107,6 +109,7 @@ const navigate = useNavigate();
               type="password"
               name="password"
               placeholder="Password"
+              data-testid="register-password"
               onChange={(e) => setPassword(e.target.value)}
               required
             />
@@ -118,6 +121,7 @@ const navigate = useNavigate();
               type="password"
               name="confirmPassword"
               placeholder="Confirm Password"
+              data-testid="register-confirmPassword"
               onChange={(e) => setconfirmPassword(e.target.value)}
               required
             />
@@ -135,7 +139,11 @@ const navigate = useNavigate();
 
           <p className="error-message">{errorMessage}</p>
           
-          <button type="submit" className="auth-button">
+          <button 
+          type="submit" 
+          className="auth-button"
+          data-testid="register-submit"
+          >
             Sign Up
           </button>
           
