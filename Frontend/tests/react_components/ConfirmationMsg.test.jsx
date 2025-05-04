@@ -1,5 +1,5 @@
 import React from 'react';
-import ConfirmationMsg from '../../components/common/ConfirmationMsg';
+import ConfirmationMsg from '../../src/components/common/ConfirmationMsg';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { jest, it, expect } from '@jest/globals';
 

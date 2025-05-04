@@ -47,6 +47,8 @@ const createUser = async (req, res, next) => {
 // @route post /api/auth/login
 // @desc authenticates user creddentials after registers 
 const authenticateLogin = async (req, res, next) => {
+    console.log(req.body);
+
     try {
         const {username, password} = req.body 
         console.log(req.body);
