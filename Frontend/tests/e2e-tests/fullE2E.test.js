@@ -98,7 +98,7 @@ describe("End to end login", () => {
 
       await page.waitForSelector("h1");
 
-      await page.waitForSelector('[data-testid="create-first-project-button]', { timeout: 6000 });
+      await page.waitForSelector('[data-testid="create-first-project-button"]', { timeout: 6000 });
 
       await page.click('[data-testid="create-first-project-button"]');
     
