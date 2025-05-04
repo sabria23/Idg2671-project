@@ -1,5 +1,5 @@
 import React from 'react';
-import QuestionList from '../../pages/studies/components/QuestionList';
+import QuestionList from '../../src/pages/studies/components/QuestionList';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { jest, it, expect } from '@jest/globals';
 
