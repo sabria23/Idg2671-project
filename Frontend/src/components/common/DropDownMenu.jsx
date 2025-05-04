@@ -99,6 +99,7 @@ const DropdownMenu = ({
                 option.action();
                 setIsOpen(false);
               }}
+              // data-testid={option.label.toLowercase() === "delete" ? "delete-button" : undefined}
             >
               {option.label}
             </button>
