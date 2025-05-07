@@ -40,12 +40,16 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
 
         try {
             const formData = new FormData();
-            files.forEach((file) => formData.append('files', file));
+            files.forEach(file => formData.append('files', file));
 
-            // Replace with correct API endpoint if different
-            await axios.post(`/api/${studyId}/questions/${questionId}/artifacts`, formData,
-                { headers: { 'Content-Type': 'multipart/form-data '} }
-            );
+            const token = localStorage.getItem('token');
+
+            await axios.post('http://localhost:3030/api/artifacts', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`,
+              },
+            });
 
             setUploadStatus('Upload successful!');
             setSelectedFiles([...selectedFiles, ...files]);

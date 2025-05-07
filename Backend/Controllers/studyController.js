@@ -68,6 +68,50 @@ const createStudy = async (req, res) => {
     };
 
 // Upload artifacts
+// Upload general artifacts
+const uploadGeneralArtifacts = async (req, res, next) =>{
+  try{
+    console.log('📦 Received req.files:', req.files);
+
+    if(!req.files || req.files.length === 0){
+      console.log('No files received by multer')
+      return res.status(400).json({ message: 'No files uploaded'});
+    }
+
+    const artifacts =[];
+
+    for(const file of req.files){
+      let fileType = 'other';
+        if (file.mimetype.startsWith('image/')) fileType = 'image';
+        else if (file.mimetype.startsWith('video/')) fileType = 'video';
+        else if (file.mimetype.startsWith('audio/')) fileType = 'audio';
+        else if (file.mimetype.startsWith('text/') || file.mimetype === 'application/pdf') fileType = 'text';
+
+        const artifact = new Artifact({
+          uploadedBy: req.userId || null,
+          fileName: file.originalname,
+          fileType: fileType,
+          fileData: file.buffer
+        });
+    
+        await artifact.save();
+        artifacts.push(artifact);
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Artifact successfully uploaded',
+      data: artifacts.map(a => ({
+        id: a._id,
+        fileName: a.fileName,
+        fileType: a.fileType
+      })),
+    });
+  }catch(err){
+    next(err);
+  }
+};
+ 
 // The code is reused from @modestat's oblig2 in full-stack
 const uploadArtifact = async (req, res, next) => {
     try {
@@ -329,7 +373,8 @@ const deleteQuestionById = async (req, res) => {
 
 export const studyController ={
     createStudy,
-    uploadArtifact,
+    uploadGeneralArtifacts,
+    //uploadArtifact,
     createQuestion,
     getStudyById,
     getArtifacts,
