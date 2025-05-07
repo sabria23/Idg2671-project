@@ -44,7 +44,7 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
 
             const token = localStorage.getItem('token');
 
-            await axios.post('http://localhost:3030/api/artifacts', formData, {
+            await axios.post('/api/artifacts', formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${token}`,

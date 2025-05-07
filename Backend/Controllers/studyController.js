@@ -5,29 +5,6 @@ import checkStudyAuthorization from '../Utils/authHelperFunction.js';
 
 //----------------POST(CREATE)----------------------------
 // Create a new study
-/*const createStudy = async (req, res) => {
-    try {
-        
-        const { creator, title, description, published, questions } = req.body;
-
-        await checkStudyAuthorization(req.userId);
-        if(!title || !description){
-            return res.status(400).json({ error: 'Title and description is required'});
-        }
-
-        const study = new Study({
-            creator: new mongoose.Types.ObjectId(creator),
-            title,
-            description,
-            published,
-            questions
-        });
-        await study.save();
-        res.status(201).json({ message: 'A new study successfully created!'})
-    } catch (err){
-        res.status(400).json({ err: err.message});
-    }
-};*/
 const createStudy = async (req, res) => {
     try {
         const { creator, title, description, published, questions } = req.body;
@@ -70,9 +47,10 @@ const createStudy = async (req, res) => {
 // Upload artifacts
 // Upload general artifacts
 const uploadGeneralArtifacts = async (req, res, next) =>{
-  try{
-    console.log('📦 Received req.files:', req.files);
+  console.log('req.files:', req.files);
+  console.log('req.body:', req.body)  
 
+  try{
     if(!req.files || req.files.length === 0){
       console.log('No files received by multer')
       return res.status(400).json({ message: 'No files uploaded'});
@@ -248,6 +226,16 @@ const getArtifacts = async (req, res) => {
     }
 };
 
+// Get 
+const getUserArtifacts = async (req, res) => {
+  try{
+    const artifacts = await Artifact.find({ uploadedBy: req.userId });
+    res.status(200).json(artifacts);
+  }catch(err){
+    res.status(500).json({ error: err.message });
+  }
+};
+
 //----------------PATCH(UPDATE)-----------------------------
 // Updating the study's title, answer options, desc etc
 // Reuses code from @emilirol's oblig2 in full-stack
@@ -374,10 +362,11 @@ const deleteQuestionById = async (req, res) => {
 export const studyController ={
     createStudy,
     uploadGeneralArtifacts,
-    //uploadArtifact,
+    uploadArtifact,
     createQuestion,
     getStudyById,
     getArtifacts,
+    getUserArtifacts,
     patchStudyById,
     patchQuestionById,
     deleteArtifactFromQuestion,

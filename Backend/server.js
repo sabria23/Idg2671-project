@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
 import userRouter from './Routes/userRoutes.js';
 import studyRouter from './Routes/studyRoutes.js';
+import artifactRouter from "./Routes/artifactRouter.js";
 import surveyRouter from "./Routes/surveyRoute.js";
 import connectToDB from "./Config/db.js";
 import errorHandler from "./Middleware/errorHandler.js";
@@ -31,7 +32,7 @@ app.use(cors({
 // put your routes downbelow:
 app.use('/api/auth', userRouter);
 app.use('/api/studies', studyRouter);
-app.use('/api/artifacts', studyRouter);
+app.use('/api/artifacts', artifactRouter);
 app.use('/api/survey', surveyRouter);
 
 app.use(errorHandler);
