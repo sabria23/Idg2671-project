@@ -11,7 +11,7 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 Content-Disposition: form-data; name="file"; filename="profile_picture_woman.png"
 Content-Type: image/png
 
-<./profile_picture_woman.png
+</profile_picture_woman.png
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 

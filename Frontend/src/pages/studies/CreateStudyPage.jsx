@@ -93,6 +93,7 @@ const CreateStudyPage = () => {
                 <ArtifactsUploader
                     selectedFiles={selectedFiles}
                     setSelectedFiles={setSelectedFiles}
+                    studyId={studyId}
                 />
 
                 <form onSubmit={(e) => e.preventDefault()}>

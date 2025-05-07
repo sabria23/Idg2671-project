@@ -4,6 +4,8 @@ import { studyController } from '../Controllers/studyController.js';
 import {dashController} from "../Controllers/dashController.js";
 import protect from "../Middleware/authMiddleware.js";
 import { validateStudyId, validatePublishStatus } from "../Validators/dashValidators.js";
+import multer from 'multer';
+
 
 
 const studyRouter = express.Router();
@@ -11,6 +13,13 @@ const studyRouter = express.Router();
 //----------------POST(CREATE)----------------------------
 // Create new study
 studyRouter.post('/', protect, studyController.createStudy);
+
+// Upload general artifacts
+studyRouter.post('/', (req, res, next) => {
+  console.log('✅ HIT /api/artifacts');
+  next();
+}, upload.array('files'), studyController.uploadGeneralArtifacts);
+
 
 // Upload artifacts
 studyRouter.post('/:studyId/questions/:questionId/artifacts', protect, upload.array('file'), studyController.uploadArtifact);
