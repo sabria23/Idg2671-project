@@ -37,16 +37,5 @@
 }
 
 .uploadedFiles-list{
-
-}
-
-.artifact-item{
-
-}
-.removeArtifactBtn{
-
-}
-
-.uploadedFiles{
-    
+  list-style: none;
 }

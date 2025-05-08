@@ -17,8 +17,6 @@ studyRouter.post('/:studyId/questions', studyController.createQuestion);
 // Get study for preview, for editing
 studyRouter.get('/:studyId', protect, studyController.getStudyById);
 
-studyRouter.get('/user/artifacts', protect, studyController.getUserArtifacts);
-
 //----------------PATCH(UPDATE)-----------------------
 // Update a study (title, answer options etc)
 studyRouter.patch('/:studyId', protect, studyController.patchStudyById);

@@ -19,7 +19,10 @@ const CreateStudyPage = () => {
             questionText: '',
             questionType: 'multiple-choice',
             options: ['Option 1', 'Option 2'],
-            layout: 'row'
+            layout: 'row',
+            isRequired: false,
+            ratingType: 'numeric-rating',
+            artifactIds:[]
         }
     ]);
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
@@ -33,7 +36,10 @@ const CreateStudyPage = () => {
                 questionType: '',
                 fileContent: null,
                 options: [],
-                layout: 'row'
+                layout: 'row',
+                isRequired: false,
+                ratingType: 'numeric-rating',
+                artifactIds:[]
             },
         ]);
     };
@@ -93,6 +99,9 @@ const CreateStudyPage = () => {
                 <ArtifactsUploader
                     selectedFiles={selectedFiles}
                     setSelectedFiles={setSelectedFiles}
+                    questions={questions}
+                    setQuestions={setQuestions}
+                    selectedQuestionIndex={selectedQuestionIndex}
                     studyId={studyId}
                 />
 
