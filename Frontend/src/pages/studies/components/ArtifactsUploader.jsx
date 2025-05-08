@@ -1,6 +1,7 @@
 import React, {useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/ArtifactUpload.module.css';
+import { FaRegTimesCircle } from "react-icons/fa";
 
 
 const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) => {
@@ -209,6 +210,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                                 key={file._id || index}
                                 className={styles['artifact-item']}
                             >
+                              <div className={styles['artifact-wrapper']}>
                                 {fType === 'image' && (
                                     <img
                                         src={fileURL}
@@ -247,26 +249,29 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                                     </p>
                                 )}
 
-                                {/* Link checkbox */}
-                                <label>
-                                  <input
-                                    type='checkbox'
-                                    checked={file.linkedToQuestion || false}
-                                    onChange={() => toggleLinkToQuestion(file._id)}
-                                    disabled={selectedQuestionIndex === null}
-                                  /> 
-                                  Link to selected question
-                                </label>
-
                                 <button
-                                    type="button"
-                                    className={styles['removeArtifactBtn']}
-                                    onClick={() =>
-                                        handleRemoveArtifact(file._id)
-                                    }
+                                  type="button"
+                                  className={styles['removeArtifactIcon']}
+                                  onClick={() =>
+                                      handleRemoveArtifact(file._id)
+                                  }
                                 >
-                                    Delete
+                                  <FaRegTimesCircle />
                                 </button>
+                              </div>
+
+                                {/* Link checkbox */}
+                                <div className={styles['artifact-meta']}>
+                                  <label>
+                                    <input
+                                      type='checkbox'
+                                      checked={file.linkedToQuestion || false}
+                                      onChange={() => toggleLinkToQuestion(file._id)}
+                                      disabled={selectedQuestionIndex === null}
+                                    /> 
+                                    Link to selected question
+                                  </label>
+                                </div>
                             </li>
                         );
                     })}
