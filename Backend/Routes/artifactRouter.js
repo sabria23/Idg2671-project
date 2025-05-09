@@ -22,10 +22,10 @@ artifactRouter.get('/:id/view', artifactController.getArtifactView);
 artifactRouter.get('/user/artifacts', protect, artifactController.getUserArtifacts);
 
 // Delete/remove artifact from question
-artifactRouter.delete('/:studyId/questions/:questionId/artifacts/:artifactsId', artifactController.deleteArtifactFromQuestion);
+//artifactRouter.delete('/:studyId/questions/:questionId/artifacts/:artifactsId', artifactController.deleteArtifactFromQuestion);
 
 // Delete artifact from the collection
-artifactRouter.delete('/artifacts/:artifactId', protect, artifactController.deleteArtifactFromCollection);
+artifactRouter.delete('/:id', protect, artifactController.deleteArtifactFromCollection);
 
 
 export default artifactRouter;

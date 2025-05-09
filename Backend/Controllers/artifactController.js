@@ -109,16 +109,8 @@ const uploadArtifact = async (req, res, next) => {
     }
         
         await study.save();
-        
-        res.status(201).json({
-            success: true,
-            message: 'Artifact successfully uploaded',
-            data: artifacts.map(a => ({
-                id: a._id,
-                fileName: a.fileName,
-                fileType: a.fileType,
-            })),
-        });
+
+        res.status(201).json({ files: artifacts, });
     } catch (err) {
         next(err);
     }
@@ -170,7 +162,7 @@ const getArtifactView = async (req, res) =>{
 //--------------DELETE----------------------------
 // Remove a artifact from a question
 // The code is reused from @modestat's oblig2 in full-stack
-const deleteArtifactFromQuestion = async (req, res, next) => {
+/*const deleteArtifactFromQuestion = async (req, res, next) => {
   try{
       const { studyId, questionId, artifactId } = req.params;
 
@@ -216,16 +208,23 @@ const deleteArtifactFromQuestion = async (req, res, next) => {
   } catch (err){
       res.status(400).json({ error: err.message});
   }
-};
+};*/
 
 // Delete the artifact from the collection
 const deleteArtifactFromCollection = async (req, res) => {
   try{
-      const deleteArtifact = await Artifact.findByIdAndDelete(req.params.artifactId);
-      if (!deleteArtifact) return res.status(404).json({ message: 'Could not find artifact'});
-      res.json({ message: 'Artifacts successfully deleted'});
+      console.log('Attempting to delete artifact with id:', req.params.id);
+      const artifact = await Artifact.findById(req.params.id);
+
+      if (!artifact){
+        return res.status(404).json({ message: 'Could not find artifact'});
+      }
+
+      await artifact.deleteOne();
+      res.status(200).json({ message: 'Artifacts successfully deleted'});
   } catch (err){
-      res.status(400).json({ error: err.message});
+      console.error('Delete error.', err);
+      res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -236,6 +235,7 @@ export const artifactController ={
   getArtifacts,
   getUserArtifacts,
   getArtifactView,
-  deleteArtifactFromQuestion,
   deleteArtifactFromCollection
 };
+
+ //deleteArtifactFromQuestion,
