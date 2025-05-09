@@ -46,9 +46,10 @@ const uploadGeneralArtifacts = async (req, res, next) =>{
   }catch(err){
     next(err);
   }
-};
+}
  
 // The code is reused from @modestat's oblig2 in full-stack
+// Uploads files from users computer
 const uploadArtifact = async (req, res, next) => {
     try {
         const { studyId, questionId } = req.params;
@@ -132,17 +133,18 @@ const getArtifacts = async (req, res) => {
     }
 };
 
-// Get 
-const getUserArtifacts = async (req, res) => {
+// Get artifact from user
+/*const getUserArtifacts = async (req, res) => {
   try{
     const artifacts = await Artifact.find({ uploadedBy: req.userId });
     res.status(200).json(artifacts);
   }catch(err){
     res.status(500).json({ error: err.message });
   }
-};
+};*/
 
 // Get artifact for viewing
+// Displays the artifacts on the create-study page
 const getArtifactView = async (req, res) =>{
   try{
     const artifact = await Artifact.findById(req.params.id);
@@ -233,9 +235,11 @@ export const artifactController ={
   uploadGeneralArtifacts,
   uploadArtifact,
   getArtifacts,
-  getUserArtifacts,
   getArtifactView,
   deleteArtifactFromCollection
 };
 
- //deleteArtifactFromQuestion,
+
+
+  //getUserArtifacts,
+  //deleteArtifactFromQuestion,
