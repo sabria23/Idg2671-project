@@ -18,8 +18,10 @@ const CreateStudyPage = () => {
             questionTitle: 'Question1',
             questionText: '',
             questionType: 'multiple-choice',
-            options: ['Option 1', 'Option 2'],
-            layout: 'row'
+            options: [],
+            layout: 'row',
+            isRequired: false,
+            artifactIds:[]
         }
     ]);
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
@@ -33,7 +35,9 @@ const CreateStudyPage = () => {
                 questionType: '',
                 fileContent: null,
                 options: [],
-                layout: 'row'
+                layout: 'row',
+                isRequired: false,
+                artifactIds:[]
             },
         ]);
     };
@@ -47,9 +51,15 @@ const CreateStudyPage = () => {
         formData.append('questions', JSON.stringify(questions));
 
         try {
-            const response = await axios.post('/api/studies', formData);
+            const token = localStorage.getItem('token');
+            const response = await axios.post('/api/studies', formData, {
+              headers:{
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+              }
+            });
             alert('Study successfully created!');
-            setStudyId(response.data.id); // Assuming the study ID is returned in response
+            setStudyId(response.data.id); 
         } catch (err) {
             console.error(err);
             alert('Error creating study');
@@ -93,6 +103,10 @@ const CreateStudyPage = () => {
                 <ArtifactsUploader
                     selectedFiles={selectedFiles}
                     setSelectedFiles={setSelectedFiles}
+                    questions={questions}
+                    setQuestions={setQuestions}
+                    selectedQuestionIndex={selectedQuestionIndex}
+                    studyId={studyId}
                 />
 
                 <form onSubmit={(e) => e.preventDefault()}>
@@ -136,7 +150,7 @@ const CreateStudyPage = () => {
 
                     {/* LINK/ BUTTON THE PREVIEW */}
                     <button className={styles['previewBtn']} type="button">
-                            <Link to={`/survey/${studyId}/preview`}>Preview Study</Link>
+                            <Link to={`/study/${studyId}/preview`}>Preview Study</Link>
                     </button>
                 </div>
             </main>

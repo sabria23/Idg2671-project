@@ -135,6 +135,21 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                         </>
                     )}
 
+                    {questions[selectedQuestionIndex].questionType === 'open-ended' && (
+                        <>
+                          <label>Open ended</label>
+                            <textarea 
+                              className={styles['open-ended-option']}
+                              value={questions[selectedQuestionIndex].answer || ''}
+                              onChange={(e) =>{
+                                  const updatedQuestions = [...questions];
+                                  updatedQuestions[selectedQuestionIndex].answer = e.target.value;
+                                  setQuestions(updatedQuestions);
+                              }} 
+                            />
+                        </>
+                    )}
+
                     {questions[selectedQuestionIndex].questionType === 'scaling' && (
                         <>
                             <label>Ratings</label>
@@ -159,19 +174,50 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                         <>
                             <label>Checkbox Options</label>
                             {questions[selectedQuestionIndex].options && questions[selectedQuestionIndex].options.map((option, optIndex) =>(
-                                <div key={optIndex}>
+                                <div 
+                                  key={optIndex}
+                                  className={styles['checkbox-option']}
+                                >
                                 <input 
-                                    className={styles['multiple-choice-option']}
-                                    type='text'
-                                    value={option}
+                                    type='checkbox'
+                                    value={option.checked || false}
                                     onChange={(e) =>{
                                         const updatedQuestions = [...questions];
-                                        updatedQuestions[selectedQuestionIndex].options[optIndex] = e.target.value;
+                                        updatedQuestions[selectedQuestionIndex].options[optIndex].checked = e.target.checked;
                                         setQuestions(updatedQuestions);
                                     }}
                                 />
+                                <input 
+                                  type='text'
+                                  value={option.label}
+                                  onChange={(e) =>{
+                                    const updatedQuestions = [...questions];
+                                    updatedQuestions[selectedQuestionIndex].options[optIndex].label = e.target.value;
+                                    setQuestions(updatedQuestions);
+                                  }}
+                                />
+                                <button
+                                  type='button'
+                                  onClick={() =>{
+                                    const updatedQuestions = [...questions];
+                                    updatedQuestions[selectedQuestionIndex].options.splice(optIndex, 1);
+                                    setQuestions(updatedQuestions);
+                                  }}
+                                >
+                                  Remove
+                                </button>
                             </div>
                             ))}
+                            <button
+                              type='button'
+                              onClick={() =>{
+                                const updatedQuestions = [...questions];
+                                updatedQuestions[selectedQuestionIndex].options.push({ label: '', checked: false });
+                                setQuestions(updatedQuestions);
+                              }}
+                            >
+                              +Add
+                            </button>
                         </>
                     )}
                 </label>
@@ -194,6 +240,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                     }}
                 >
                     <option value="row">Row Layout</option>
+                    <option value="column">Column Layout</option>
                     <option value="grid">Grid Layout</option>
                 </select>
             </label>
