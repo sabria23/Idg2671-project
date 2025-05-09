@@ -56,10 +56,10 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
 
             console.log('Upload response:', response.data);
 
-            const uploaded = files.map((file, i) =>({
-              ...response.data,
+            const uploaded = response.data.files.map((artifact, i) => ({
+              ...artifact,
               originalFile: files[i],
-              likedToQuestion: false
+              linkedToQuestion: false,
             }));
 
            
@@ -108,6 +108,10 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
     };
 
     const handleRemoveArtifact = async (artifactId) => {
+        if(!artifactId){
+          console.warn('No artifact id provided');
+          return;
+        }
         try{
           const token = localStorage.getItem('token');
           await axios.delete(`/api/artifacts/${artifactId}`, {
@@ -116,9 +120,8 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
             }
           });
 
-          setSelectedFiles(prev =>
-            prev.filter(file => file._id !== artifactId)
-          );
+          setSelectedFiles(prev => prev.filter(f => f._id !== artifactId));
+
         }catch (err){
           console.error('Failed to delete artifact:', err);
         }
@@ -269,7 +272,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                                       onChange={() => toggleLinkToQuestion(file._id)}
                                       disabled={selectedQuestionIndex === null}
                                     /> 
-                                    Link to selected question
+                                    Add to selected question
                                   </label>
                                 </div>
                             </li>
