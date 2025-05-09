@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals';
+import pkg from '@jest/globals';
+const { describe, it, expect, beforeAll, afterAll, jest } = pkg;
 import { getResponseCount } from '../../src/utils/responseUtils.js';
 import { getResponses } from '../../src/services/studyService.js';
 

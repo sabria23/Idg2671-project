@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals';
+import pkg from '@jest/globals';
+const { describe, it, expect, beforeAll, afterAll, jest } = pkg;
 import { submitDemographics } from '../../src/utils/submitDemographics.js';
 import axios from 'axios';
 
