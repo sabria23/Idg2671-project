@@ -3,12 +3,15 @@ import { studyController } from '../Controllers/studyController.js';
 import {dashController} from "../Controllers/dashController.js";
 import protect from "../Middleware/authMiddleware.js";
 import { validateStudyId, validatePublishStatus } from "../Validators/dashValidators.js";
+import multer from 'multer';
+
+const upload = multer();
 
 const studyRouter = express.Router();
 
 //----------------POST(CREATE)----------------------------
 // Create new study
-studyRouter.post('/', protect, studyController.createStudy);
+studyRouter.post('/', protect, upload.array('files'), studyController.createStudy);
 
 // Create a question
 studyRouter.post('/:studyId/questions', studyController.createQuestion);

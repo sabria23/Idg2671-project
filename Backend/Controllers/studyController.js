@@ -6,30 +6,42 @@ import { app } from '../server.js';
 //----------------POST(CREATE)----------------------------
 // Create a new study
 const createStudy = async (req, res) => {
+  console.log('----- Incoming Request -----');
+  console.log('Headers:', req.headers);
+  console.log('BODY:', req.body);
+  console.log('FILES:', req.files);  // if using multer for files
+  console.log('User ID:', req.userId);
+
     try {
-        const { creator, title, description, published, questions } = req.body;
+        const { creator, title, description, published } = req.body;
         
         // Use req.userId from the authentication middleware
         // If creator is not provided, use req.userId
-        const creatorId = creator || req.userId;
+        const creatorId = req.user?._id;
     
         // Validate the creator ID
         if (!creatorId) {
             return res.status(400).json({ error: 'Creator ID is required' });
         }
-    
         // No need to check authorization when creating a new study
         // The checkStudyAuthorization is typically used when accessing an existing study
         if(!title || !description){
             return res.status(400).json({ error: 'Title and description are required'});
         }
+
+        let parsedQuestions = [];
+          try{
+            parsedQuestions = req.body.questions ? JSON.parse(req.body.questions) : [];
+          }catch(err){
+            return res.status(400).json({ error: 'Invalid format for questions'});
+          }
     
         const study = new Study({
             creator: new mongoose.Types.ObjectId(creatorId),
             title,
             description,
             published: published || false,
-            questions: questions || []
+            questions: parsedQuestions
         });
     
         await study.save();
