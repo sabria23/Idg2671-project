@@ -24,7 +24,6 @@ const CreateStudyPage = () => {
             ],
             layout: 'row',
             isRequired: false,
-            artifactIds:[],
             fileContent: []
         }
     ]);
@@ -43,8 +42,7 @@ const CreateStudyPage = () => {
                   { text: 'Option 2', label: 'Option 2' }
                 ],
                 layout: 'row',
-                isRequired: false,
-                artifactIds:[]
+                isRequired: false
             },
         ]);
     };
