@@ -136,17 +136,31 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
       setSelectedFiles(updated);
 
       const updatedQuestions = [...questions];
-      const artifactIds = new Set(updatedQuestions[selectedQuestionIndex]?.artifactIds || []);
+      const selecetedQuestion = updatedQuestions[selectedQuestionIndex];
+      const existingFileContent = selecetedQuestion.fileContent || [];
 
-      if(artifactIds.has(artifactId)){
-        artifactIds.delete(artifactId);
+      const artifact = selectedFiles.find(f => f._id === artifactId);
+      if (!artifact) return;
+
+      const isLinked = existingFileContent.some(fc => fc.fileId === artifactId);
+
+      let newFileContent;
+      if(isLinked){
+        newFileContent = existingFileContent.filter(fc => fc.fileId !== artifactId);
       }else{
-        artifactIds.add(artifactId);
+        newFileContent = [
+          ...existingFileContent,
+          {
+            fileId: artifact._id,
+            fileUrl: `/api/artifacts/${artifact._id}/view`,
+            fileType: artifact.fileType || artifact.originalFile?.type || 'unknown'
+          }
+        ];
       }
 
       updatedQuestions[selectedQuestionIndex] ={
-        ...updatedQuestions[selectedQuestionIndex],
-        artifactIds: Array.from(artifactIds),
+        ...selecetedQuestion,
+        fileContent: newFileContent
       };
 
       setQuestions(updatedQuestions);
