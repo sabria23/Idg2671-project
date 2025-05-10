@@ -18,10 +18,14 @@ const CreateStudyPage = () => {
             questionTitle: 'Question1',
             questionText: '',
             questionType: 'multiple-choice',
-            options: [],
+            options: [
+              { value: 'Option 1', label: 'Option 1' },
+              { value: 'Option 2', label: 'Option 2' }
+            ],
             layout: 'row',
             isRequired: false,
-            artifactIds:[]
+            artifactIds:[],
+            fileContent: []
         }
     ]);
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
@@ -32,9 +36,12 @@ const CreateStudyPage = () => {
             {
                 questionTitle: `Question ${prev.length + 1}`,
                 questionText: '',
-                questionType: '',
-                fileContent: null,
-                options: [],
+                questionType: 'multiple-choice',
+                fileContent: [],
+                options: [
+                  { value: 'Option 1', label: 'Option 1' },
+                  { text: 'Option 2', label: 'Option 2' }
+                ],
                 layout: 'row',
                 isRequired: false,
                 artifactIds:[]
