@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from '../styles/EmojiThumbs.module.css';
 
 //----------------------Thumbs Up/Down Rating-------------------------------
 const ThumbsUpDown = () =>{
@@ -6,23 +7,23 @@ const ThumbsUpDown = () =>{
 
     return(
         <>
-            <div>
+            <div className={styles['ratingContainer']}>
                 <h2>Thumbs Up/ Down</h2>
                 <div>
                     <button
-                    
-                        onClick={() => setThumbRating(false)}
+                      className={styles['emojis']}
+                      onClick={() => setThumbRating(false)}
                     >
-                        🖕
+                        👎
                     </button>
                     <button
-                    
-                        onClick={() => setThumbRating(true)}
+                      className={styles['emojis']}
+                      onClick={() => setThumbRating(true)}
                     >
-                        👌
+                        👍
                     </button>
                 </div>
-                <p>
+                <p className={styles['emojiRating']}>
                     {thumbRating === true && 'Liked'}
                     {thumbRating === false && 'Disliked'}
                     {thumbRating === null && 'No Rating Selected'}

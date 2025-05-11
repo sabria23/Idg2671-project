@@ -136,8 +136,8 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
       setSelectedFiles(updated);
 
       const updatedQuestions = [...questions];
-      const selecetedQuestion = updatedQuestions[selectedQuestionIndex];
-      const existingFileContent = selecetedQuestion.fileContent || [];
+      const selectedQuestion = updatedQuestions[selectedQuestionIndex];
+      const existingFileContent = selectedQuestion.fileContent || [];
 
       const artifact = selectedFiles.find(f => f._id === artifactId);
       if (!artifact) return;
@@ -159,7 +159,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
       }
 
       updatedQuestions[selectedQuestionIndex] ={
-        ...selecetedQuestion,
+        ...selectedQuestion,
         fileContent: newFileContent
       };
 
@@ -203,6 +203,8 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                     + Add
                 </button>
 
+                <p className={styles['fileSize']}>Maximum allowed file size 10 MB</p>
+
                 {uploadStatus && (
                     <p className={styles['upload-status']}>{uploadStatus}</p>
                 )}
@@ -216,7 +218,9 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                 ) :(
                     
                     <ul className={styles['uploadedFiles-list']}>
-                    {selectedFiles.map((file, index) => {
+                    {selectedFiles
+                      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                      .map((file, index) => {
                         const fileURL = file.originalFile 
                         ? URL.createObjectURL(file.originalFile) 
                         : `/api/artifacts/${file._id}/view`;
@@ -243,7 +247,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                                     <video width="250" controls>
                                         <source
                                             src={fileURL}
-                                            type={file.type}
+                                            type={file.fileType}
                                         />
                                         Your browser does not support
                                         video playback
@@ -253,7 +257,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                                     <audio controls>
                                         <source
                                             src={fileURL}
-                                            type={file.type}
+                                            type={file.fileType}
                                         />
                                         Your browser does not support audio
                                         playback
@@ -261,8 +265,8 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                                 )}
                                 {(fType === 'text' ||
                                     fType === 'application') && (
-                                    <p>
-                                        <strong>{file.name}</strong>
+                                    <p className={styles['textFile']}>
+                                        <strong>{file.fileName}</strong>
                                     </p>
                                 )}
 
@@ -278,11 +282,13 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                               </div>
 
                                 {/* Link checkbox */}
-                                <div className={styles['artifact-meta']}>
+                                <div className={styles['artifact-addToQuestion']}>
                                   <label>
                                     <input
                                       type='checkbox'
-                                      checked={file.linkedToQuestion || false}
+                                      checked={
+                                        questions[selectedQuestionIndex]?.fileContent?.some(fc => fc.fileId === file._id) || false
+                                      }
                                       onChange={() => toggleLinkToQuestion(file._id)}
                                       disabled={selectedQuestionIndex === null}
                                     /> 
