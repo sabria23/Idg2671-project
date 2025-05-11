@@ -5,11 +5,12 @@ import ThumbsUpDown from './ThumbsUpDown';
 import StarRating from './StarRating';
 import EmojiRating from './EmojiRating';
 import LabelSlider from './LabelSlider';
+import { FaRegTimesCircle } from "react-icons/fa";
 
 const ratingTypes = [
   'numeric-rating',
   'star-rating',
-  'thumb-up-down',
+  'thumbs-up-down',
   'emoji-rating',
   'label-slider'
 ];
@@ -159,6 +160,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                                   }}
                                 />
                                 <button
+                                  className={styles['checkboxRemove']}
                                   type='button'
                                   onClick={() =>{
                                     const updatedQuestions = [...questions];
@@ -166,11 +168,12 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                                     setQuestions(updatedQuestions);
                                   }}
                                 >
-                                  Remove
+                                  <FaRegTimesCircle />
                                 </button>
                             </div>
                             ))}
                             <button
+                              className={styles['checkboxAdd']}
                               type='button'
                               onClick={() =>{
                                 const updatedQuestions = [...questions];
@@ -178,7 +181,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                                 setQuestions(updatedQuestions);
                               }}
                             >
-                              +Add
+                              +Add option
                             </button>
                         </>
                     )}

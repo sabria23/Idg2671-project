@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from '../styles/LabelNumericSlider.module.css';
 
 //------------------------Slider with label--------------------------
 const LabelSlider = () =>{
@@ -13,22 +14,24 @@ const LabelSlider = () =>{
     };
 
     return(
-        <div>
+        <div className={styles['ratingContainer']}>
             <h2>Slider With Labels</h2>
             <div>
                 <input 
-                    type='range'
-                    min='0'
-                    max='100'
-                    value={labelRating}
-                    onChange={(e) => setLabelRating(parseInt(e.target.value))}
+                  className={styles['ratingSlider']}
+                  type='range'
+                  min='0'
+                  max='100'
+                  step='1'
+                  value={labelRating}
+                  onChange={(e) => setLabelRating(parseInt(e.target.value))}
                 />
-                <div>
-                    <span>Very Dissatisfied</span>
-                    <span>Neutral</span>
-                    <span>Very Satisfied</span>
+                <div className={styles['sliderLabels']}>
+                    <p>0 <span>Very Dissatisfied</span></p>
+                    <p>50 <span>Neutral</span></p>
+                    <p>100 <span>Very Satisfied</span></p>
                 </div>
-                <p>{getLabelSlider(labelRating)}</p>
+                <p className={styles['labelSlider-value']}>{getLabelSlider(labelRating)}</p>
             </div>
 
         </div>
