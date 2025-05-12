@@ -3,7 +3,7 @@ services:
   backend:
     image: modestat/webproject25:latest
     ports:
-      - "8000:8000"
+      - "8284:8000"
     restart: always
     env_file:
       - ./.env
@@ -15,7 +15,7 @@ services:
   frontend:
     image: modestat/webproject25-frontend:latest
     ports:
-      - "3030:3030"
+      - "8184:3030"
     restart: always
     depends_on:
       - backend
