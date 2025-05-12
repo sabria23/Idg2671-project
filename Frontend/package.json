@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "test": "node -r dotenv/config --test",
+    "test": "node -r dotenv/config --test -- --disable-dev-shm-usage --no-sandbox",
     "jest": "jest",
     "dev": "vite",
     "build": "vite build",
