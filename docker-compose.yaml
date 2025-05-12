@@ -1,7 +1,7 @@
 
 services:
   backend:
-    build: ./Backend
+    image: modestat/webproject25:latest
     ports:
       - "8000:8000"
     restart: always
@@ -13,11 +13,10 @@ services:
       - app-network
 
   frontend:
-    build: ./Frontend
+    image: modestat/webproject25-frontend:latest
     ports:
       - "3030:3030"
     restart: always
-    command: sh -c "cd /app/Frontend && npm install @rollup/rollup-linux-x64-gnu && npm run dev -- --host"
     depends_on:
       - backend
     networks:
