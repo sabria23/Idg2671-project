@@ -1,27 +1,21 @@
-# Stage 1: Build the frontend
-FROM node:18 AS builder
+# Simple frontend Dockerfile - development mode only
+FROM node:16-alpine
+
 WORKDIR /app/Frontend
 
-# Copy package files and install dependencies
+# Copy package files first for better caching
 COPY package*.json ./
-RUN npm install --no-optional
 
-# Copy the rest of the application and build it
+# Create .npmrc file to skip optional dependencies
+RUN echo "omit=optional" > .npmrc
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application
 COPY . .
-RUN npm run build
-
-# Stage 2: Serve the frontend
-FROM node:18-alpine
-WORKDIR /app
-
-# Install serve to run the built application
-RUN npm install -g serve
-
-# Copy only the built application from the previous stage
-COPY --from=builder /app/Frontend/dist /app/dist
 
 EXPOSE 3030
 
-# Serve the static files
-CMD ["serve", "-s", "dist", "-l", "3030"]
-
+# Run in development mode
+CMD ["npm", "run", "dev", "--", "--host"]
