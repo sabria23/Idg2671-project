@@ -1,3 +1,4 @@
+
 FROM node:18-alpine
 
 WORKDIR /app/Frontend
@@ -10,4 +11,5 @@ COPY . .
 
 EXPOSE 3030
 
+# Run in development mode
 CMD ["npm", "run", "dev", "--", "--host"]
