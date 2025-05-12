@@ -1,11 +1,12 @@
-# Build the static frontend
-FROM node:20
+FROM node:18-alpine
 
 WORKDIR /app/Frontend
 
-COPY . .
+COPY package*.json ./
 
-RUN npm install --platform=linux --arch=x64 || npm install --no-optional
+RUN npm install
+
+COPY . .
 
 EXPOSE 3030
 
