@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../styles/createStudy.module.css';
 import Navbar from "../../components/common/Navbar";
@@ -9,6 +9,7 @@ import QuestionBuilder from './components/QuestionBuilder';
 import QuestionList from './components/QuestionList';
 
 const CreateStudyPage = () => {
+    const navigate = useNavigate();
     const [studyTitle, setStudyTitle] = useState('');
     const [studyDescription, setStudyDescription] = useState('');
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -65,6 +66,7 @@ const CreateStudyPage = () => {
             });
             alert('Study successfully created!');
             setStudyId(response.data.id); 
+            navigate(`/dashboard/${response.data.id}`);
         } catch (err) {
             console.error(err);
             alert('Error creating study');
