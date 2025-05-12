@@ -1,11 +1,11 @@
 # Build the static frontend
-FROM node:20
+FROM node:18
 
 WORKDIR /app/Frontend
 
 COPY . .
 
-RUN npm install --platform=linux --arch=x64 || npm install --no-optional
+RUN npm install 
 
 EXPOSE 3030
 
