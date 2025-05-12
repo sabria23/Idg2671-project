@@ -1,9 +1,10 @@
-# https://mihirpopat.medium.com/understanding-dockerfiles-workdir-instruction-best-practices-and-pitfalls-1531bca48d3f
 FROM node:18-alpine
 
 WORKDIR /app/Backend
 
 COPY . .
+
+COPY .env /app/.env  
 
 RUN npm install
 
