@@ -16,6 +16,8 @@ services:
     image: modestat/webproject25-frontend:latest
     ports:
       - "8184:80"
+    environment:
+      - VITE_API_URL=https://group4-api.sustainability.it.ntnu.no
     command: sh -c "cd /app/Frontend && npm install @rollup/rollup-linux-x64-gnu && npm run build && npx serve -s dist -l 80"
     restart: always
     depends_on:
