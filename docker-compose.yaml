@@ -17,6 +17,7 @@ services:
     ports:
       - "3030:3030"
     restart: always
+    command: sh -c "cd /app/Frontend && npm install @rollup/rollup-linux-x64-gnu && npm run dev -- --host"
     depends_on:
       - backend
     networks:
