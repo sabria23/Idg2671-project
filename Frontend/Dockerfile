@@ -1,5 +1,5 @@
 # Build the static frontend
-FROM node:18
+FROM node:20
 
 WORKDIR /app/Frontend
 
