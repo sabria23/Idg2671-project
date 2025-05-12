@@ -3,8 +3,14 @@ import styles from '../styles/LabelNumericSlider.module.css';
 
 
 //---------------Numeric Rating-----------------------------
-const NumericRating = () =>{
-    const [numericRating, setNumericRating] = useState();
+const NumericRating = ({ externalValue, onExternalChange }) =>{
+    const [numericRating, setNumericRating] = useState(externalValue || 0);
+
+    useEffect(() => {
+    if (onExternalChange && numericRating !== null) {
+      onExternalChange(numericRating);
+    }
+  }, [numericRating]);
 
     return(
         <>

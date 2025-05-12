@@ -4,9 +4,16 @@ import { VscStarFull } from 'react-icons/vsc';
 import styles from '../styles/StarRating.module.css';
 
 //----------------------Star Rating-------------------------
-const StarRating = () =>{
-    const [starRating, setStarRating] = useState();
+const StarRating = ({ externalValue, onExternalChange }) =>{ // Props added for the survey sections 
+    const [starRating, setStarRating] = useState(externalValue || null);
     const [hoverStar, setHoverStar] = useState(null);
+
+  // Used to notify the survey of changes
+  useEffect(() => {
+    if (onExternalChange && starRating !== null) {
+      onExternalChange(starRating);
+    }
+  }, [starRating]);
 
     return(
       <>

@@ -3,10 +3,16 @@ import styles from '../styles/EmojiThumbs.module.css';
 
 
 //------------------Emoji Rating------------------------------
-const EmojiRating = () =>{
+const EmojiRating = ({ externalValue, onExternalChange }) =>{
     const [emojiRating, setEmojiRating] = useState();
 
     const emojis = ['😠', '🙁', '😐', '🙂', '😄'];
+
+    useEffect(() => {
+    if (onExternalChange && emojiRating !== null) {
+      onExternalChange(emojiRating);
+    }
+  }, [emojiRating]);
 
     return(
         <>
