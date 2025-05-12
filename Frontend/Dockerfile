@@ -1,12 +1,16 @@
-# Build the static frontend
-FROM node:18
+FROM node:20
 
 WORKDIR /app/Frontend
 
+COPY package*.json ./
+RUN npm install --no-optional
+
 COPY . .
 
-RUN npm install
+EXPOSE 80
 
-EXPOSE 3030
+# Install serve
+RUN npm install -g serve
 
-CMD ["npm", "run", "dev", "--", "--host"]
+# Build the app and then serve it
+CMD npm run build && serve -s dist -l 80

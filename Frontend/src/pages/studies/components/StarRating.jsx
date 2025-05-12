@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { VscStarEmpty } from 'react-icons/vsc';
 import { VscStarFull } from 'react-icons/vsc';
 import styles from '../styles/StarRating.module.css';
