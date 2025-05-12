@@ -21,4 +21,4 @@ const MultipleChoice = ({ question, onAnswer }) => {
   );
 };
 
-export default MultipleChoicey;
+export default MultipleChoice;
