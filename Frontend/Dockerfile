@@ -5,7 +5,7 @@ WORKDIR /app/Frontend
 
 COPY . .
 
-RUN npm install 
+RUN npm install --no-optional
 
 EXPOSE 3030
 
