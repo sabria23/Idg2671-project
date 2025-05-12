@@ -93,7 +93,8 @@ const uploadArtifact = async (req, res, next) => {
             fileName: file.originalname,
             fileType: fileType, // Use the determined fileType, not the MIME type
             fileData: file.buffer, // Path from multer
-            usedInStudies: [studyId]
+            usedInStudies: [studyId],
+            createdAt: createdAt
         });
         
         await artifact.save();

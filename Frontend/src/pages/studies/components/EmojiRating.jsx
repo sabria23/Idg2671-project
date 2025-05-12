@@ -1,27 +1,35 @@
 import React, { useState } from 'react';
+import styles from '../styles/EmojiThumbs.module.css';
+
 
 //------------------Emoji Rating------------------------------
-const EmojiRating = () =>{
+const EmojiRating = ({ externalValue, onExternalChange }) =>{
     const [emojiRating, setEmojiRating] = useState();
 
-    const emojis = ['💩', '😞', '🤷‍♂️', '😺', '💖'];
+    const emojis = ['😠', '🙁', '😐', '🙂', '😄'];
+
+    useEffect(() => {
+    if (onExternalChange && emojiRating !== null) {
+      onExternalChange(emojiRating);
+    }
+  }, [emojiRating]);
 
     return(
         <>
-            <div>
+            <div className={styles['ratingContainer']}>
                 <h2>Emoji Rating</h2>
                 <div>
                     {emojis.map((emoji, index) =>(
                         <button
-                        
-                            key={index}
-                            onClick={() => setEmojiRating(index +1)}
+                          className={styles['emojis']}
+                          key={index}
+                          onClick={() => setEmojiRating(index +1)}
                         >
-                            {emoji}
+                          {emoji}
                         </button>
                     ))}
                 </div>
-                <p>
+                <p className={styles['emojiRating']}>
                     {emojiRating === 1 && 'Very Dissatisfied'}
                     {emojiRating === 2 && 'Dissatisfied'}
                     {emojiRating === 3 && 'Neutral'}

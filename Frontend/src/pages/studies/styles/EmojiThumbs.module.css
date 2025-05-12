@@ -1,0 +1,23 @@
+.ratingContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ratingContainer h2{
+  font-size: 1.2rem;
+  margin: 1rem;
+}
+
+.emojis{
+  font-size: 2rem;
+  background-color: white;
+  border: none;
+  margin: 1rem;
+  cursor: pointer;
+}
+
+.emojiRating{
+  margin: 1rem;
+  letter-spacing: 2px;
+}

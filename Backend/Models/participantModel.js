@@ -41,7 +41,7 @@ const sessionSchema = new mongoose.Schema({
       participantAnswer: mongoose.Schema.Types.Mixed, // Allow different answer types
       answerType: {
         type: String,
-        enum: ['text', 'ranking', 'numeric', 'selection'],
+        enum: ['text', 'numeric', 'selection'],
         required: true
       },
       skipped: {
