@@ -1,15 +1,16 @@
-
-FROM node:18-alpine
+FROM node:20
 
 WORKDIR /app/Frontend
 
 COPY package*.json ./
-
-RUN npm install
+RUN npm install --no-optional
 
 COPY . .
 
-EXPOSE 3030
+EXPOSE 80
 
-# Run in development mode
-CMD ["npm", "run", "dev", "--", "--host"]
+# Install serve
+RUN npm install -g serve
+
+# Build the app and then serve it
+CMD npm run build && serve -s dist -l 80
