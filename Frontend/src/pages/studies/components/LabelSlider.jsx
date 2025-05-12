@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import styles from '../styles/LabelNumericSlider.module.css';
 
 //------------------------Slider with label--------------------------
-const LabelSlider = () =>{
-    const [labelRating, setLabelRating] = useState();
+const LabelSlider = ({ externalValue, onExternalChange }) =>{
+    const [labelRating, setLabelRating] = useState(externalValue || 0);
+
+    useEffect(() => {
+    if (onExternalChange && labelRating !== null) {
+      onExternalChange(labelRating);
+    }
+  }, [labelRating]);
 
     const getLabelSlider = (value) =>{
         if(value <20) return 'Very Dissatisfied';

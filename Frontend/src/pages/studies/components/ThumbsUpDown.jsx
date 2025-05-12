@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import styles from '../styles/EmojiThumbs.module.css';
 
 //----------------------Thumbs Up/Down Rating-------------------------------
-const ThumbsUpDown = () =>{
-    const [thumbRating, setThumbRating] = useState(null);
+const ThumbsUpDown = ({ externalValue, onExternalChange }) =>{
+    const [thumbRating, setThumbRating] = useState(externalValue !== undefined ? externalValue : null); // use externalvalue if available
+
+  useEffect(() => {
+    if (onExternalChange && thumbRating !== null) {
+      onExternalChange(thumbRating);
+    }
+  }, [thumbRating]);
 
     return(
         <>

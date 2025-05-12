@@ -225,9 +225,11 @@ const SurveyPage = ({ mode = 'live' }) => {
   }, [studyId]);
 
   useEffect(() => {
+    if (currentStep < 2) return;
+
     const fetchQuestion = async () => {
-      if (currentStep < 2) return;
       const page = currentStep - 2;
+
       try {
         const res = await axios.get(`/api/survey/${studyId}?page=${page}&sessionId=${sessionId}`);
         const data = res.data;
@@ -244,6 +246,10 @@ const SurveyPage = ({ mode = 'live' }) => {
   }, [currentStep, sessionId, studyId]);
 
   const handleDemographicsSubmit = async (demographicData) => {
+    if (isPreview) {
+      setCurrentStep(2);
+      return;
+    }
     const newSessionId = await submitDemographics(studyId, demographicData);
   
     if (newSessionId) {
@@ -262,18 +268,19 @@ const SurveyPage = ({ mode = 'live' }) => {
       return;
     }
     const questionId = currentQuestion._id;
+    const answerType = mapQuestionTypeToAnswerType(currentQuestion.questionType);
     try {
       await axios.post(`/api/studies/${studyId}/sessions/${sessionId}/${questionId}`, {
         answer: skipped ? null : responseValue,
         skipped,
-        answerType: currentQuestion.questionType
+        answerType
       });
     } catch (err) {
       if (err.response?.status === 409) {
         await axios.patch(`/api/studies/${studyId}/sessions/${sessionId}/${questionId}`, {
           answer: skipped ? null : responseValue,
           skipped,
-          answerType: currentQuestion.questionType
+          answerType
         });
       } else {
         console.error('Failed to submit answer', err);
@@ -284,6 +291,29 @@ const SurveyPage = ({ mode = 'live' }) => {
 
   const handlePreviousQuestion = () => setCurrentStep(prev => Math.max(prev - 1, 2));
   const handleNextQuestion = () => setCurrentStep(prev => prev + 1);
+
+  // Translates the questiontype in the study to the answer type in session
+  const mapQuestionTypeToAnswerType = (questionType) => {
+    switch (questionType) {
+      case 'emoji-rating':
+      case 'numeric-rating':
+      case 'star-rating':
+      case 'thumbs-up-down':
+      case 'label-slider':
+        return 'numeric';
+
+      case 'multiple-choice':
+      case 'checkbox':
+        return 'selection';
+
+      case 'open-ended':
+        return 'text';
+        
+      default:
+        return 'text';
+    }
+  };
+
 
   if (currentStep === 0) {
     return <SurveyIntro studyInfo={studyInfo} totalQuestions={totalQuestions} onStart={() => setCurrentStep(1)} />;
