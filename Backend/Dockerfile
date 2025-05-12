@@ -4,8 +4,6 @@ WORKDIR /app/Backend
 
 COPY . .
 
-COPY .env /app/.env  
-
 RUN npm install
 
 EXPOSE 8000
