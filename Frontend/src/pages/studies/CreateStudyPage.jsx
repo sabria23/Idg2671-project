@@ -65,7 +65,7 @@ const CreateStudyPage = () => {
             });
             alert('Study successfully created!');
             setStudyId(response.data.id); 
-            navigate(`/dashboard/${response.data.id}`);
+            navigate(`/dashboard`, { state: { newStudyId: response.data.id }});
         } catch (err) {
             console.error(err);
             alert('Error creating study');
