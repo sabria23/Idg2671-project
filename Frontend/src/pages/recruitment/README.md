@@ -113,3 +113,11 @@ Unpublish the study → The link should become inaccessible
 Publish the study again → The link should become accessible again
 Access a non-existent study → Should show a "not found" error
 Access a study with a malformed ID → Should handle the error gracefully
+
+### implementing sharebale link generation for studies after it has been published
+Overview of the Implementation
+The shareable link feature consists of three main parts:
+
+1. Backend API to generate (and optionally track) study links
+2. rontend component to display and copy the link
+3. Access control logic to ensure only published studies are accessible

@@ -241,7 +241,7 @@ const updateStudyStatus = async (req, res, next) => {
 // @route POST /api/studies/:studyId/generate-link
 // IDONT TUHINK THIS GENERATES A UNIQUE URL!!!!
 // @access Private (after auth is added)
-const generateLink = async (req, res, next) => {
+/*const generateLink = async (req, res, next) => {
     try {
         const {studyId } = req.params;
         // Add this line to extract description from request body
@@ -256,7 +256,7 @@ const generateLink = async (req, res, next) => {
             return next(error);
         }
 
-        // Generate a unique access token for this link
+        /*Generate a unique access token for this link
         const accessToken = generateRandomToken(16);
         const shortId = study.accessTokens.length + 1; // Simple sequential numbering
           // Initialize accessTokens array if it doesn't exist
@@ -271,20 +271,99 @@ const generateLink = async (req, res, next) => {
             active: true
         });
 
-        await study.save();
+        await study.save();*/
 
-        const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
-        const studyUrl = `${baseUrl}/participate/${studyId}/${shortId}`;
+        // Optional: Generate a shorter link or track link usage
+    // This is where you could add code to create a shortened URL or track link clicks
+    
+    // Optional: Store link information in the database
+    // For example, to track when it was generated, by whom, etc.
+
+        /*const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
+        const studyUrl = `${baseUrl}/public/study/${studyId}`;
 
         res.status(200).json({
-            message: 'Study link generated succesfully',
-            title: study.title,
-            studyUrl: studyUrl,
-            description: description || `Link ${shortId}`
+          success: true,
+          message: 'Study link generated successfully',
+          title: study.title,
+          studyUrl: studyUrl,
+          data: {
+            shareableUrl: studyUrl  // Add this to match frontend expectations
+          }
+              // You could also add other fields like:
+        // expiresAt: null,  // If you want links to expire
+        // accessCount: 0,   // If you want to track link usage
+            
         });
     } catch (error) {
         next(error);
     }
+};*/
+const generateLink = async (req, res, next) => {
+  try {
+    console.log("Generate link endpoint called for studyId:", req.params.studyId);
+    
+    const { studyId } = req.params;
+    
+    // Debug user information
+    console.log("User making request:", req.user ? req.user._id : "No user");
+    
+    // Check if studyId is valid
+    if (!studyId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Study ID is required'
+      });
+    }
+    
+    // Debug step
+    console.log("About to check study authorization");
+    
+    // Check authorization and get the study
+    const study = await checkStudyAuthorization(studyId, req.user._id, "get url link");
+    
+    // Debug study information
+    console.log("Study found:", study ? "Yes" : "No");
+    console.log("Study published status:", study ? study.published : "N/A");
+    
+    if (!study) {
+      return res.status(404).json({
+        success: false,
+        message: 'Study not found'
+      });
+    }
+    
+    if (!study.published) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot generate link for unpublished study'
+      });
+    }
+    
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173'; // Update with your correct frontend URL
+    const studyUrl = `${baseUrl}/public/study/${studyId}`;
+    
+    console.log("Generated URL:", studyUrl);
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Study link generated successfully',
+      title: study.title,
+      studyUrl: studyUrl,
+      data: {
+        shareableUrl: studyUrl
+      }
+    });
+  } catch (error) {
+    console.error("Error generating link:", error);
+    console.error("Error stack:", error.stack);
+    
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to generate link',
+      error: error.message
+    });
+  }
 };
 
 // helper funciton -> which align with what lefti sayd to generate a uniqye token to trakc users
@@ -487,8 +566,6 @@ const accessStudyByLink = async (req, res, next) => {
         studyId: study._id,
         title: study.title,
         description: study.description,
-        // Add other fields participants need to see
-        // But don't include sensitive researcher data
       }
     });
     
