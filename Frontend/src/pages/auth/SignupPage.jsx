@@ -6,47 +6,67 @@ import axios from "axios";
 // Sources: (https://www.youtube.com/watch?v=ZVyIIyZJutM&ab_channel=CodeWithYousaf)
 // Used for "useState" and "link"
 const SignupPage = () => {
-  const [userName, setuserName] = useState(" ")
-  const [email, setEmail] = useState(" ")
-  const [password, setPassword] = useState(" ")
-  const [confirmPassword, setconfirmPassword] = useState(" ")
+  const [userName, setuserName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setconfirmPassword] = useState("")
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isAgreeTerms, setIsAgreeTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // if (password !== confirmPass) {
-  //   alert("Password do not match");
-  //   return;
-  // }
+  
 const navigate = useNavigate();
 
-  const handleSubmit = (e) =>{
-    e.preventDefault()
+  const handleSubmit = async (e) =>{
+    e.preventDefault();
+    setErrorMessage("");
+    setSuccessMessage(""); // reset success
+    setIsLoading(true);
 
     if(password !== confirmPassword) {
       setErrorMessage("Password do not match");
+      setIsLoading(false); //stop loading
       return;
     }
 
+    if (!isAgreeTerms) {
+      setErrorMessage("You must agree to the Terms and Privacy Policy");
+      setIsLoading(false);
+      return;
+    }
 
-    axios.post("http://localhost:8000/api/auth/register", {username: userName, email, password})
-    .then(result => {
-      console.log(result);
+    try {
+      const res = await  axios.post("http://localhost:8000/api/auth/register", {
+        username: userName,
+        email,
+        password,
+        confirmPassword
+      });
 
-      if(result.data && result.data.token) {
-        localStorage.setItem("token", result.data.token);
-        navigate("/login")
+    if (res.data && res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        setSuccessMessage("Registration successful! Redirecting to login...")
+        setTimeout(() => navigate("/login"), 2000);
       } else {
-        setErrorMessage("An error occrued. Please try again later")
+        setErrorMessage("Something went wrong. Please try again later")
       }
-    })
-    .catch(err => {
-      if (err.response && err.response.data) {
-        setErrorMessage(err.response.data.errorMessage || "An error occrued.")
+    } catch (err) {
+     
+      if (err.response?.data?.message) {
+        setErrorMessage(err.response.data.message);
+      } else if (err.response?.data?.errors) {
+        const messages = err.response.data.errors || [{ msg: "Something went wrong" }];
+        setErrorMessage(messages.map((e) => e.msg).join(" "));
       } else {
         setErrorMessage("Unable to register. Please try again later")
       }
       console.log("Error durig registration:", err);
-    });
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <div className="auth-container">
       <div className="left-container">
@@ -65,18 +85,18 @@ const navigate = useNavigate();
                 <span style={{"--i": "95s" }}></span>
             </div>
             <h1>Welcome</h1>
-        <h2>to the study creator</h2>
-        <p>Create, analyze your studies with ease.</p>
-        <p>Whether it's for research, surveys or learning materials</p>
-        <p>Study Creator helps you design på en enkel måte.</p>
-        <p>Start building your study today!</p>
+        <h2>Join Study Creator</h2>
+        <p>Create and analyze your studies easily.</p>
+        <p>Whether you're working on research, surveys or learning materials</p>
+        <p>we've got you covered.</p>
+        <p>Get started and make the most of your study today!</p>
       </div>
       <div className="right-container">
         <div className="auth-card">
         <h1>Create Account</h1>
         <form onSubmit={handleSubmit}>
           <div className="input-group">
-          <label htmlFor="fullname">Username</label>
+          <label htmlFor="username">Username</label>
             <input
               type="text"
               name="username"
@@ -84,9 +104,10 @@ const navigate = useNavigate();
               data-testid="register-username"
               onChange={(e) => setuserName(e.target.value)}
               required
+              className={errorMessage && errorMessage.includes("Username") ? "error-input" : ""}
               />
               {errorMessage && errorMessage.includes("Username") && (
-                <p>{errorMessage}</p>
+                <p className="error-message">{errorMessage}</p>
               )}
             
           </div>
@@ -100,7 +121,11 @@ const navigate = useNavigate();
               data-testid="register-email"
               onChange={(e) => setEmail(e.target.value)}
               required
+              className={errorMessage && errorMessage.includes("email") ? "error-input" : ""}
             />
+            {errorMessage && errorMessage.includes("email") && (
+                <p className="error-message">{errorMessage}</p>
+              )}
           </div>
           
           <div className="input-group">
@@ -112,7 +137,11 @@ const navigate = useNavigate();
               data-testid="register-password"
               onChange={(e) => setPassword(e.target.value)}
               required
+              className={errorMessage && errorMessage.includes("password") ? "error-input" : ""}
             />
+            {errorMessage && errorMessage.includes("password") && (
+                <p className="error-message">{errorMessage}</p>
+              )}
           </div>
           
           <div className="input-group">
@@ -124,7 +153,11 @@ const navigate = useNavigate();
               data-testid="register-confirmPassword"
               onChange={(e) => setconfirmPassword(e.target.value)}
               required
+              className={errorMessage && errorMessage.includes("confirmPassword") ? "error-input" : ""}
             />
+            {errorMessage && errorMessage.includes("confirmPassword") && (
+                <p className="error-message">{errorMessage}</p>
+              )}
           </div>
           
           <div className="form-options">
@@ -132,17 +165,27 @@ const navigate = useNavigate();
               <input
                 type="checkbox"
                 name="agreeTerms"
+                checked={isAgreeTerms}
+                onChange={(e) => setIsAgreeTerms(e.target.checked)}
               />
               I agree to the Terms and Privacy Policy
             </label>
+            {errorMessage && errorMessage.includes("Terms") && (
+                <p className="error-message">{errorMessage}</p>
+              )}
           </div>
 
-          <p className="error-message">{errorMessage}</p>
+          {/* <p className="error-message">{errorMessage}</p> */}
+           <p className="success-message">{successMessage}</p>
+         
+           
+          {isLoading && <p className="loading-message">Please wait...</p>}
           
           <button 
           type="submit" 
           className="auth-button"
           data-testid="register-submit"
+          disabled={isLoading}
           >
             Sign Up
           </button>
