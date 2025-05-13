@@ -89,3 +89,27 @@ function ChildComponent(props) {
 }
 
 export default ChildComponent;
+
+### to implement where a study link becomens inaccessible to pariticipants when a reseacher unpiblishes it:
+
+in backend i need to add this line: 
+// 👇 This is the key check that prevents access to unpublished studies
+    if (!study.published) {
+      return res.status(403).json({ 
+        success: false, 
+        message: "This study is currently unavailable" 
+      });
+    }
+ and also make the route public 
+
+ and in frontend i iwll need to create a public study access compoent that navigates either to marius page if it is publish or to anot found page it is not accessible. 
+
+ also tetsing: 
+ 3. Testing the Implementation
+To ensure this feature works properly, you should test these scenarios:
+
+Access a published study link → Should show the study
+Unpublish the study → The link should become inaccessible
+Publish the study again → The link should become accessible again
+Access a non-existent study → Should show a "not found" error
+Access a study with a malformed ID → Should handle the error gracefully

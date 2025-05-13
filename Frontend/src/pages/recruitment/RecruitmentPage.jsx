@@ -1,10 +1,11 @@
 /* THINGS I NEED TO DO TODAY
-Toggle a study from draft to published
-Generate a shareable link for a published study -> the link need to be connected to marius study and that specifci studyid
-Invite participants via email
-add demograpfics field 
-have it made so that when researtcher unpiblished the link then it is not accessible anymore to pariticpants 
-make the link secure so it cannot be shared by other people and that you can only take it one time*/
+1. Toggle a study from draft to published = DONE
+2. have it made so that when researtcher unpiblished the link then it is not accessible anymore to pariticpants 
+3. Generate a shareable link for a published study -> the link need to be connected to marius study and that specifci studyid
+4. make the link secure so it cannot be shared by other people and that you can only take it one time
+5. Invite participants via email
+6. add demograpfics field 
+*/
 
 import React, {useState, useEffect} from 'react';
 import studyService from '../../services/studyService';
@@ -52,14 +53,15 @@ const RecruitmentPage = () => {
       // Call backend to update status
       await studyService.updateStudyStatus(studyId, newPublishedStatus);
       
-      // Update local state
+      // for teh error handling it is the try/catch, and this line of code only works/runs if the API call is successfull
       setStudy(prevStudy => ({
         ...prevStudy,
         published: newPublishedStatus
       }));
+      // The catch Block: Executes if any error occurs in the try block
     } catch (err) {
       console.error("Error updating study status:", err);
-      // Handle error (show notification, etc.)
+      // Handle error (show notification, etc.) -> need to do proper UI for user error handling as well
     }
   };
 

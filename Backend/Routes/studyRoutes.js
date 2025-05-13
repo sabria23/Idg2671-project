@@ -38,6 +38,8 @@ studyRouter.get('/:studyId/sessions/:sessionid/results', protect, dashController
 studyRouter.patch('/:studyId', protect, validatePublishStatus, dashController.updateStudyStatus);
 studyRouter.get('/:studyId/link', protect, dashController.generateLink);
 studyRouter.post('/:studyId/invitations', protect, dashController.emailInvitaitons);
+// public route for participants
+studyRouter.get('/public/:studyId', dashController.accessStudyByLink);
 
 
 
