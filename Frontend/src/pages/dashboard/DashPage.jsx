@@ -14,10 +14,7 @@ import WelcomeHeader from './components/WelcomeHeader';
  */
 const DashboardPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const newStudyId = location.state?.newStudyId;
 
-  console.log('Newly created study id:', newStudyId);
   
   // Use custom hooks to manage URL parameters and user data
   const { 
