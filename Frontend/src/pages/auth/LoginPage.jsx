@@ -73,11 +73,11 @@ const LoginPage = () => {
                 <span style={{"--i": "95s" }}></span>
             </div>
         <h1>Welcome</h1>
-        <h2>to the study creator</h2>
-        <p>Create, analyze your studies with ease.</p>
-        <p>Whether it's for research, surveys or learning materials</p>
-        <p>Study Creator helps you design in easy way.</p>
-        <p>Start building your study today!</p> 
+        <h2>Join Study Creator</h2>
+        <p>Create and analyze your studies easily.</p>
+        <p>Whether you're working on research, surveys or learning materials</p>
+        <p>we've got you covered.</p>
+        <p>Get started and make the most of your study today!</p>
       </div>
      
       <div className="right-container">
