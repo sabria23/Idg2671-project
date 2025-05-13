@@ -1,36 +1,39 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import styles from '../../styles/Navbar.module.css'; 
+import { Link, useNavigate } from 'react-router-dom';
+import styles from '../../styles/Navbar.module.css'; // Keep your existing styles
 
-// A more flexible Navbar that accepts an array of navigation items
-function Navbar({ title, navItems, onLogout, className }) {
+const Navbar = () => {
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    // Clear token or any user data from localStorage -> this is not secure so fix in it later
+    localStorage.removeItem('token');
+    // Redirect to login page
+    navigate('/login');
+  };
+
   return (
-    <nav className={`${styles.navbar} ${className || ''}`}>
-      <div className={styles.logo}>{title || "StudyPlatform"}</div>
+    <nav className={styles.navbar}>
+      <div className={styles.logo}>StudyPlatform</div>
       <div className={styles.navLinks}>
-        {/* Map through the navigation items provided */}
-        {navItems.map((item, index) => (
-            // react.grament is the same as <>, we need to use key={index} prop which is needed in the map funciton
-          <React.Fragment key={index}>
-            {item.path ? (
-              // If the item has a path, render it as a Link
-              <Link to={item.path}>
-                <button className={styles.navButton}>{item.label}</button>
-              </Link>
-            ) : (
-              // If no path, it's likely an action button like logout
-              <button 
-                className={styles.navButton} 
-                onClick={item.action || onLogout}
-              >
-                {item.label}
-              </button>
-            )}
-          </React.Fragment>
-        ))}
+        <Link to="/dashboard">
+          <button className={styles.navButton}>Dashboard</button>
+        </Link>
+        <Link to="/profile">
+          <button className={styles.navButton}>Profile</button>
+        </Link>
+        <Link to="/create-study">
+          <button className={styles.navButton}>Create study</button>
+        </Link>
+        <button 
+          className={styles.navButton} 
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

@@ -8,12 +8,10 @@ Invite participants via email*/
    import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../../styles/Recruitment.module.css';
-import Navbar from "../../components/common/Navbar";
 import EmailInvitation from './components/Email.Invitation';
 import ProgressIndicator from "./components/ProgressIndicator";
 import TogglePublish from './components/TogglePublish';
 import { getStudyById } from '../../services/studyService';
-import { logoutUser } from '../../services/authService';
 import studyService from '../../services/studyService';
 
 const RecruitmentPage = () => {
@@ -149,18 +147,6 @@ const RecruitmentPage = () => {
     }
   };
   
-  const handleLogout = () => {
-    logoutUser();
-    navigate('/login');
-  };
-
-  // Navigation items for the Recruitment page
-  const recruitmentNavItems = [
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Profile", path: "/profile" },
-    { label: "Logout", action: handleLogout }
-  ];
-
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -187,18 +173,12 @@ const RecruitmentPage = () => {
 
   return (
     <div className={styles.recruitmentContainer}>
-      <Navbar
-        title="StudyPlatform"
-        navItems={recruitmentNavItems}
-        onLogout={handleLogout}
-      />
-*//*
       <main className={styles.mainContent}>
         <h1 className={styles.pageTitle}>Recruit Participants for your study</h1>
         {study && <h2 className={styles.studyTitle}>{study.title}</h2>}
         
         {/* Toggle Publish Component */}
-/*        {study && (
+       {study && (
           <TogglePublish 
             studyId={studyId} 
             onStatusChange={handleStatusChange} 
@@ -236,7 +216,7 @@ const RecruitmentPage = () => {
             </div>
             
             {/* Demographics settings */}
-/*            <div className={styles.formGroup}>
+           <div className={styles.formGroup}>
               <h3>Demographics Collection (Optional)</h3>
               <p>Select what demographic information you want to collect from participants:</p>
               

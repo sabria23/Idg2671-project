@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../styles/createStudy.module.css';
-import Navbar from "../../components/common/Navbar";
 import StudyDetails from './components/StudyDetails';
 import ArtifactsUploader from './components/ArtifactsUploader';
 import QuestionBuilder from './components/QuestionBuilder';
@@ -73,26 +72,11 @@ const CreateStudyPage = () => {
         }
     };
 
-    const handleLogout = () =>{
-        console.log('Loggin out...')
-    };
-
-    // NAVIGATION ITEMS FOR THE CREATY STUDY PAGE - NAVBAR COMPONENT
-    const createStudyNavItems = [
-        { label: "Dashboard", path: "/dashboard" },
-        { label: "Profile", path: "/profile" },
-        { label: "Logout", action: handleLogout }   
-      ];
+   
 
     // RENDERING THE HTML CONTENT OF THE CREATE STUDY PAGE
     return (
         <div className={styles['studyPage-container']}>
-            <Navbar 
-                className={styles.fullWidthNav}
-                title="StudyPlatform" 
-                navItems={createStudyNavItems}
-                //onLogout={handleLogout} // this needs to commented out because it is not working
-            />
 
             <main className={styles['studyPage-content']}>
                 <h1>Create a new study</h1>
