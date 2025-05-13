@@ -450,12 +450,60 @@ const emailInvitaitons = async (req, res, next) => {
     }
 };
 
+// Add this to your controller file (e.g., studyController.js)
+
+/**
+ * Access a study as a participant through a public link
+ * This controller is used when participants click on a study link
+ */
+const accessStudyByLink = async (req, res, next) => {
+  try {
+    const { studyId } = req.params;
+    
+    // Find study by ID (without authorization check since this is public access)
+    const study = await Study.findById(studyId);
+    
+    // Check if study exists
+    if (!study) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Study not found" 
+      });
+    }
+    
+    // Check if study is published
+    if (!study.published) {
+      return res.status(403).json({
+        success: false,
+        message: "This study is currently unavailable or has been unpublished by the researcher"
+      });
+    }
+    
+    // If study is published, return study data for participants
+    // Note: You may want to filter what data is returned here based on what participants should see
+    res.status(200).json({
+      success: true,
+      data: {
+        studyId: study._id,
+        title: study.title,
+        description: study.description,
+        // Add other fields participants need to see
+        // But don't include sensitive researcher data
+      }
+    });
+    
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const dashController = {
     getAllStudies,
     deleteStudy,
     getResponses,
     generateLink,
     emailInvitaitons,
-    updateStudyStatus
+    updateStudyStatus,
+    accessStudyByLink
 };
 

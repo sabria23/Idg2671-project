@@ -67,7 +67,7 @@ export const getResponses = async (studyId) => {
 
 //studyRouter.patch('/:studyId/public', protect, validatePublishStatus, dashController.updateStudyStatus);
 // update study publication status
-export const updateStudyPublicStatus = async (studyId, published) => {
+export const updateStudyStatus = async (studyId, published) => {
     try {
         const response = await axios.patch(`${API_URL}/api/studies/${studyId}`, 
             { published },
@@ -128,7 +128,7 @@ export default {
     getAllStudies,
     deleteStudy,
     getResponses,
-    updateStudyPublicStatus,
+    updateStudyStatus,
     generateStudyLink,
     sendEmailInvitations,
     getStudyById
