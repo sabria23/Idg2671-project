@@ -12,11 +12,10 @@ import SurveyPage from './pages/survey/SurveyPage.jsx';
 import ProfilePage from './pages/profile/ProfilePage.jsx';
 import PortectedRoute from './components/auth/PortectedRoute.jsx';
 import MainLayout from './components/common/MainLayout.jsx';
+import StudyAccess from './pages/public/StudyAccess.jsx'; 
 
 
 const App = () => {
-    //const { user } = useAuth();
-
     return (
       <Router>
         <Routes>
@@ -25,6 +24,7 @@ const App = () => {
             <Route path="/register" element={<SignupPage />} />
             <Route path="/study/:studyId/preview" element={<SurveyPage mode="preview"/>} />
             <Route path="/study/:studyId/live" element={<SurveyPage />} />
+            <Route path="/public/study/:studyId" element={<StudyAccess />} />
 
             {/*Portected routes */}
             <Route element={<PortectedRoute><MainLayout /></PortectedRoute>}>
