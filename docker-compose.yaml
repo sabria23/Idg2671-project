@@ -1,9 +1,9 @@
 
 services:
   backend:
-    build: ./Backend
+    image: modestat/webproject25:latest
     ports:
-      - "8000:8000"
+      - "8284:8000"
     restart: always
     env_file:
       - ./.env
@@ -13,9 +13,12 @@ services:
       - app-network
 
   frontend:
-    build: ./Frontend
+    image: modestat/webproject25-frontend:latest
     ports:
-      - "3030:3030"
+      - "8184:80"
+    env_file:
+      - ./.env
+    command: sh -c "cd /app/Frontend && npm install @rollup/rollup-linux-x64-gnu && npm run build && npx serve -s dist -l 80"
     restart: always
     depends_on:
       - backend

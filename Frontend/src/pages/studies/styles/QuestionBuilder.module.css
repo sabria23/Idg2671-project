@@ -1,161 +1,181 @@
 /* Question Builder */
 .questionBuilder-container {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: white;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    margin-bottom: 1rem;
-  }
-  
-  /* Middle panel (Editor) */
-  .middle-panel {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    padding: 1rem;
-    height: fit-content;
-  }
-  
-  .middle-panel h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .middle-panel h4 {
-    margin-top: 2rem;
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .middle-panel label {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .middle-panel textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
-    font-size: 1rem;
-    background: white;
-  }
-  
-  /* Right panel (Settings) */
-  .question-settings {
-    flex: 1;
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    height: fit-content;
-  }
-  
-  .question-settings h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .question-settings label {
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 0.5rem;
-  }
-  
-  .question-settings input,
-  .question-settings select {
-    padding: 0.5rem;
-    margin-top: 0.5rem;
-    font-size: 1rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background: white;
-  }
-  
-  /* Delete button */
-  .delete-questionBtn {
-    background-color: white;
-    color: red;
-    border: 2px solid red;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    width: fit-content;
-    margin-top: auto;
-  }
-  
-  /* Multiple choice inputs */
-  .question-settings .question-type input {
-    margin-top: 0.5rem;
-  }
-  
-  /* Add Question List (if used somewhere else) */
-  .addQuestion h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .addQuestion li {
-    list-style: none;
-    background-color: #6ef582;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-  }
-  
-  .addQuestion button {
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    background-color: #0d6efd;
-    color: white;
-    border: 1px solid grey;
-    cursor: pointer;
-  }
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
+}
 
-  /* Box Styled question type */
-  .question-type-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .type-option {
-    border: 1px solid #ccc;
-    padding: 0.75rem;
-    text-align: center;
-    border-radius: 4px;
-    font-weight: bold;
-    background-color: white;
-    cursor: pointer;
-  }
-  
-  .type-option.selected {
-    border: 2px solid #0d6efd;
-  }
+/* Middle panel (Editor) */
+.middle-panel {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 1rem;
+  height: fit-content;
+}
 
-  /* Multiple choice option */
-  .multiple-choice-option {
-    margin-bottom: 0.5rem;
-  }
-  
-  .checkbox-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  
-  
+.middle-panel h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.middle-panel h4 {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.middle-panel label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.middle-panel textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  font-size: 1rem;
+  background: white;
+}
+
+/* Right panel (Settings) */
+.question-settings {
+  flex: 1;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: fit-content;
+}
+
+.question-settings h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.question-settings label {
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+}
+
+.question-settings input,
+.question-settings select {
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: white;
+}
+
+/* Delete button */
+.delete-questionBtn {
+  background-color: white;
+  color: red;
+  border: 2px solid red;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  width: fit-content;
+  margin-top: auto;
+}
+
+/* Multiple choice inputs */
+.question-settings .question-type input {
+  margin-top: 0.5rem;
+}
+
+/* Add Question List (if used somewhere else) */
+.addQuestion h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.addQuestion li {
+  list-style: none;
+  background-color: #6ef582;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.addQuestion button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  background-color: #0d6efd;
+  color: white;
+  border: 1px solid grey;
+  cursor: pointer;
+}
+
+/* Box Styled question type */
+.question-type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.type-option {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: center;
+  border-radius: 4px;
+  font-weight: bold;
+  background-color: white;
+  cursor: pointer;
+}
+
+.type-option.selected {
+  border: 2px solid #0d6efd;
+}
+
+/* Multiple choice option */
+.multiple-choice-option {
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Checkbox */
+.checkbox-option{
+  position: relative;
+}
+.checkboxRemove{
+  position: absolute;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  background-color: white;
+  cursor: pointer;
+  color: red;
+}
+.checkboxAdd{
+  margin: 1rem; 
+  padding:0.5rem 1rem;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}

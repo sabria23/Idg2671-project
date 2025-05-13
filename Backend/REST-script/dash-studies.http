@@ -43,7 +43,7 @@ Authorization: Bearer {{token}}
   "questions": [
     {
       "questionText": "What is your favorite color?",
-      "questionType": "single",
+      "questionType": "thumbs-up-down",
       "options": [
         {"value": "red", "label": "Red"},
         {"value": "blue", "label": "Blue"},
@@ -53,7 +53,7 @@ Authorization: Bearer {{token}}
     },
     {
       "questionText": "Please rate your experience",
-      "questionType": "single",
+      "questionType": "numeric-rating",
       "options": [
         {"value": "1", "label": "1 - Poor"},
         {"value": "2", "label": "2 - Fair"},
@@ -72,14 +72,14 @@ Authorization: Bearer {{token}}
 
 ### 6. Store a study ID from the response
 # After getting all studies, copy a study ID and paste it below
-@studyId = 67fe5a81cdfd8b383b497476
+@studyId = 6822fe991e906826e76872c4
 
 ### 7. Get specific study details
 GET {{baseUrl}}/api/studies/{{studyId}}
 Authorization: Bearer {{token}}
 
 ### 8. Update study publish status
-PATCH {{baseUrl}}/api/studies/{{studyId}}/public
+PATCH {{baseUrl}}/api/studies/{{studyId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -88,7 +88,7 @@ Content-Type: application/json
 }
 
 ### 9. Generate link for the study (updated route)
-POST {{baseUrl}}/api/studies/{{studyId}}/links
+GET {{baseUrl}}/api/studies/{{studyId}}/link
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

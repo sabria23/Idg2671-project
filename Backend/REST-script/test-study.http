@@ -43,9 +43,10 @@ Authorization: Bearer {{token}}
    "title": "Test Study - All Question Types",
    "description": "Study to test multiple question types",
    "published": true,
-   "questions": []
+   "questions": "[]"
 }
 
+### Store study ID from response (as a separate command)
 @studyId = {{createStudy.response.body._id}}
 
 ### Create a dummy question to associate artifacts with (will be updated later)
@@ -59,6 +60,7 @@ Content-Type: application/json
   "questionType": "text"
 }
 
+###
 @questionId = {{createDummyQuestion.response.body.question._id}}
 
 ### Upload test image artifacts

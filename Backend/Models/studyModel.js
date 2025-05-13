@@ -39,7 +39,16 @@ const studySchema = new mongoose.Schema({
       questionText: String,
       questionType: {
         type: String,
-        enum: ['single', 'comparison']
+        enum: [
+          'multiple-choice',
+          'checkbox',
+          'open-ended',
+          'numeric-rating',
+          'star-rating',
+          'emoji-rating',
+          'thumbs-up-down',
+          'label-slider'
+        ]
       },
       fileContent: [ {
         fileId: {
@@ -55,6 +64,11 @@ const studySchema = new mongoose.Schema({
           label: String //cusotm text set by the quiz creator, dipalyed to
         }
       ],
+      layout: {
+        type: String,
+        enum: ['row', 'column', 'grid'],
+        default: 'row'
+      }
     }
   ]
 }, {

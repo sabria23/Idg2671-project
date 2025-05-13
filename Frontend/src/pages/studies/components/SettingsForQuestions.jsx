@@ -5,9 +5,17 @@ import ThumbsUpDown from './ThumbsUpDown';
 import StarRating from './StarRating';
 import EmojiRating from './EmojiRating';
 import LabelSlider from './LabelSlider';
+import { FaRegTimesCircle } from "react-icons/fa";
+
+const ratingTypes = [
+  'numeric-rating',
+  'star-rating',
+  'thumbs-up-down',
+  'emoji-rating',
+  'label-slider'
+];
 
 const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setSelectedQuestionIndex}) => {
-    
     if(selectedQuestionIndex === null || !questions[selectedQuestionIndex]){
         return <div className={styles['rightSide-panel']}></div>
     }
@@ -29,33 +37,22 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
         setQuestions(updatedQuestions);
     };
 
-    const handleRatingTypeChange = (index, ratingType) => {
-        const updatedQuestions = [...questions];
-        updatedQuestions[index] = {
-            ...updatedQuestions[index],
-            ratingType: ratingType,
-        };
-        setQuestions(updatedQuestions);
-    };
-
     const renderRatingComponent = () => {
-            const ratingType = currentQuestion.ratingType || 'numeric-rating';
-    
-            switch(ratingType){
-                case 'numeric-rating':
-                    return <NumericRating />;
-                case 'thumbs-up-down':
-                    return <ThumbsUpDown />;
-                case 'star-rating':
-                    return <StarRating />;
-                case 'emoji-rating':
-                    return <EmojiRating />;
-                case 'label-slider':
-                    return <LabelSlider />;
-                default:
-                    return <NumericRating />;
-            }
-        };
+      switch(currentQuestion.questionType){
+        case 'numeric-rating':
+            return <NumericRating />;
+        case 'thumbs-up-down':
+            return <ThumbsUpDown />;
+        case 'star-rating':
+            return <StarRating />;
+        case 'emoji-rating':
+            return <EmojiRating />;
+        case 'label-slider':
+            return <LabelSlider />;
+        default:
+            return null;
+      }
+    };
 
     return(
         <div className={styles['question-settings']}>
@@ -68,14 +65,9 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                     <input
                         className={styles['question-title']}
                         type="text"
-                        value={
-                            questions[selectedQuestionIndex].questionTitle
-                        }
+                        value={currentQuestion.questionTitle}
                         onChange={(e) =>
-                            handleQuestionTitleChange(
-                                selectedQuestionIndex,
-                                e.target.value
-                            )
+                            handleQuestionTitleChange(selectedQuestionIndex, e.target.value)
                         }
                     />
                 </label>
@@ -83,50 +75,33 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
 
             <div className={styles['question-type']}>
                 <label>
-                    Question Type
-                    <div className={styles['question-type-grid']}>
-                        <div
-                            className={`${styles['type-option']} 
-                                        ${questions[selectedQuestionIndex].questionType === 'multiple-choice' ? styles['selected'] : ''}`}
-                            onClick={() => handleQuestionTypeChange(selectedQuestionIndex, 'multiple-choice')}
-                        >
-                            Multiple Choice
-                        </div>
-                        <div
-                            className={`${styles['type-option']} 
-                                        ${questions[selectedQuestionIndex].questionType === 'open-ended' ? styles['selected'] : ''}`}
-                            onClick={() => handleQuestionTypeChange(selectedQuestionIndex, 'open-ended')}
-                        >
-                            Open Ended
-                        </div>
-                        <div
-                            className={`${styles['type-option']}
-                                        ${questions[selectedQuestionIndex].questionType === 'scaling' ? styles['selected'] : ''}`} 
-                            onClick={() => handleQuestionTypeChange(selectedQuestionIndex, 'scaling')}          
-                        >
-                            Scaling
-                        </div>
-                        <div
-                            className={`${styles['type-option']}
-                                        ${questions[selectedQuestionIndex].questionType === 'checkbox' ? styles['checkbox'] : ''}`} 
-                            onClick={() => handleQuestionTypeChange(selectedQuestionIndex, 'checkbox')}
-                        >
-                            Checkbox
-                        </div>
-                    </div>
+                  Question Type
+                  <div className={styles['question-type-grid']}>
+                    {['multiple-choice', 'open-ended', 'checkbox', ...ratingTypes].map((type) => (
+                      <div
+                        key={type}
+                        className={`${styles['type-option']} ${currentQuestion.questionType === type ? styles['selected'] : ''}`}
+                        onClick={() => handleQuestionTypeChange(selectedQuestionIndex, type)}
+                      >
+                        {type.replace('-', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                      </div>
+                    ))}
+                  </div>
 
                     {questions[selectedQuestionIndex].questionType === 'multiple-choice' && (
                         <>
                             <label>Multiple Choice Options</label>
-                            {questions[selectedQuestionIndex].options && questions[selectedQuestionIndex].options.map((option, optIndex) =>(
+                            {currentQuestion.options && currentQuestion.options.map((option, optIndex) =>(
                                 <div key={optIndex}>
                                     <input 
                                         className={styles['multiple-choice-option']}
                                         type='text'
-                                        value={option}
+                                        value={option.label}
+                                        placeholder='Option Label'
                                         onChange={(e) =>{
                                             const updatedQuestions = [...questions];
-                                            updatedQuestions[selectedQuestionIndex].options[optIndex] = e.target.value;
+                                            updatedQuestions[selectedQuestionIndex].options[optIndex].label = e.target.value;
+                                            updatedQuestions[selectedQuestionIndex].options[optIndex].value = e.target.value.toLowerCase().replace(/\s+/g, '-');
                                             setQuestions(updatedQuestions);
                                         }} 
                                     />
@@ -135,43 +110,79 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                         </>
                     )}
 
-                    {questions[selectedQuestionIndex].questionType === 'scaling' && (
+                    {currentQuestion.questionType === 'open-ended' && (
                         <>
-                            <label>Ratings</label>
-                            <div className={styles['rating-type-grid']}>
-                                {['numeric-rating', 'star-rating', 'thumbs-up-down', 'emoji-rating', 'label-slider'].map((type) => (
-                                <div
-                                    key={type}
-                                    className={`${styles['type-option']} ${questions[selectedQuestionIndex].ratingType === type ? styles['selected'] : ''}`}
-                                    onClick={() => handleRatingTypeChange(selectedQuestionIndex, type)}
-                                >
-                                    {type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                </div>
-                                ))}
-                            </div>
-                            <div>
-                                {renderRatingComponent()}
-                            </div>
+                          <label>Open ended</label>
+                            <textarea 
+                              className={styles['open-ended-option']}
+                              value={currentQuestion.answer || ''}
+                              onChange={(e) =>{
+                                  const updatedQuestions = [...questions];
+                                  updatedQuestions[selectedQuestionIndex].answer = e.target.value;
+                                  setQuestions(updatedQuestions);
+                              }} 
+                            />
                         </>
                     )}
 
-                    {questions[selectedQuestionIndex].questionType === 'checkbox' && (
+                    {ratingTypes.includes(currentQuestion.questionType) && (
+                      <>
+                        <label>Ratings</label>
+                        {renderRatingComponent()}
+                      </>
+                    )}
+
+                    {currentQuestion.questionType === 'checkbox' && (
                         <>
                             <label>Checkbox Options</label>
-                            {questions[selectedQuestionIndex].options && questions[selectedQuestionIndex].options.map((option, optIndex) =>(
-                                <div key={optIndex}>
+                            {currentQuestion.options && currentQuestion.options.map((option, optIndex) =>(
+                                <div 
+                                  key={optIndex}
+                                  className={styles['checkbox-option']}
+                                >
                                 <input 
-                                    className={styles['multiple-choice-option']}
-                                    type='text'
-                                    value={option}
+                                    type='checkbox'
+                                    value={option.checked || false}
                                     onChange={(e) =>{
                                         const updatedQuestions = [...questions];
-                                        updatedQuestions[selectedQuestionIndex].options[optIndex] = e.target.value;
+                                        updatedQuestions[selectedQuestionIndex].options[optIndex].checked = e.target.checked;
                                         setQuestions(updatedQuestions);
                                     }}
                                 />
+                                <input 
+                                  type='text'
+                                  value={option.label}
+                                  onChange={(e) =>{
+                                    const updatedQuestions = [...questions];
+                                    updatedQuestions[selectedQuestionIndex].options[optIndex].label = e.target.value;
+                                    updatedQuestions[selectedQuestionIndex].options[optIndex].value = e.target.value.toLowerCase().replace(/\s+/g, '-');
+                                    setQuestions(updatedQuestions);
+                                  }}
+                                />
+                                <button
+                                  className={styles['checkboxRemove']}
+                                  type='button'
+                                  onClick={() =>{
+                                    const updatedQuestions = [...questions];
+                                    updatedQuestions[selectedQuestionIndex].options.splice(optIndex, 1);
+                                    setQuestions(updatedQuestions);
+                                  }}
+                                >
+                                  <FaRegTimesCircle />
+                                </button>
                             </div>
                             ))}
+                            <button
+                              className={styles['checkboxAdd']}
+                              type='button'
+                              onClick={() =>{
+                                const updatedQuestions = [...questions];
+                                updatedQuestions[selectedQuestionIndex].options.push({ label: '', value: '' });
+                                setQuestions(updatedQuestions);
+                              }}
+                            >
+                              +Add option
+                            </button>
                         </>
                     )}
                 </label>
@@ -182,18 +193,15 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
             <label>
                 Layout Template
                 <select
-                    value={
-                        questions[selectedQuestionIndex].layout ||
-                        'row'
-                    }
+                    value={currentQuestion.layout || 'row'}
                     onChange={(e) => {
                         const updatedQuestions = [...questions];
-                        updatedQuestions[selectedQuestionIndex].layout =
-                            e.target.value;
+                        updatedQuestions[selectedQuestionIndex].layout = e.target.value;
                         setQuestions(updatedQuestions);
                     }}
                 >
                     <option value="row">Row Layout</option>
+                    <option value="column">Column Layout</option>
                     <option value="grid">Grid Layout</option>
                 </select>
             </label>
@@ -203,7 +211,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                     <label>Required</label>
                         <input 
                             type='checkbox'
-                            checked={questions[selectedQuestionIndex].isRequired || false}
+                            checked={currentQuestion.isRequired || false}
                             onChange={(e) => {
                                 const updatedQuestions = [...questions];
                                 updatedQuestions[selectedQuestionIndex].isRequired = e.target.checked;

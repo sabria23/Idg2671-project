@@ -64,15 +64,99 @@ console.log('Email Configuration:', {
 // @desc Get all studies
 // @route GET /api/studies
 // @access Private (after auth is added)
-// add paginaiton, sort, filter
+// add paginaiton, sort, filter -> The getAllStudies controller has been upgraded to support:
+/*Pagination: Using skip and limit parameters
+Sorting: Dynamic sort fields with ascending/descending options
+Filtering: By publication status (published/draft/all)
+Metadata: Returns comprehensive pagination data for the frontend
+
+Key best practices implemented:
+
+Parameter Validation: Ensures page and limit are positive numbers
+Default Values: Sensible defaults for all parameters
+Lean Queries: Uses lean() for improved performance
+Consistent Response Format: Structured response with metadata and data separation
+Error Handling: Proper error passing to next middleware*/
 const getAllStudies = async (req, res, next ) => {
-   try {
-    const studies = await Study.find({ creator: req.user._id });
-    res.status(200).json(studies);
-   } catch (error) {
+  try {
+    // Extract query parameters with defaults
+    const { 
+      page = 1, 
+      limit = 10, 
+      sortBy = 'createdAt', 
+      sortOrder = 'desc',
+      status
+    } = req.query;
+
+    // Convert string values to appropriate types
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    
+    // Validate page and limit to prevent negative values
+    if (pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Page and limit must be positive numbers' 
+      });
+    }
+    
+    // Base query - find studies created by the current user
+    const query = { creator: req.user._id };
+    
+    // Add status filter if provided
+    if (status === 'published') {
+      query.published = true;
+    } else if (status === 'draft') {
+      query.published = false;
+    }
+    
+    // Calculate skip value for pagination
+    const skip = (pageNum - 1) * limitNum;
+    
+    // Get total count for pagination metadata
+    const totalStudies = await Study.countDocuments(query);
+    
+    // Create sort object - handle both single field and multiple fields
+    const sortOptions = {};
+    sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
+    
+    // Execute query with pagination, sorting, and filtering
+    const studies = await Study.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limitNum)
+      .lean(); // Use lean() for better performance on read-only data
+    
+    // Calculate pagination metadata
+    const totalPages = Math.ceil(totalStudies / limitNum);
+    const hasNextPage = pageNum < totalPages;
+    const hasPrevPage = pageNum > 1;
+    
+    // Return studies with pagination metadata
+    res.status(200).json({
+      success: true,
+      data: studies,
+      pagination: {
+        totalStudies,
+        totalPages,
+        currentPage: pageNum,
+        limit: limitNum,
+        hasNextPage,
+        hasPrevPage
+      },
+      filters: {
+        status: status || 'all'
+      },
+      sorting: {
+        sortBy,
+        sortOrder
+      }
+    });
+  } catch (error) {
     next(error);
-   }
+  }
 };
+
 
 // @desc Delete a study
 // @route DELETE /api/studies/:studyId

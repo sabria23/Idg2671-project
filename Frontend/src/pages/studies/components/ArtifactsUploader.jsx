@@ -1,14 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/ArtifactUpload.module.css';
+import { FaRegTimesCircle } from "react-icons/fa";
 
 
-const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
-
+const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) => {
     const [fileType, setFileType] = useState('image');
     const [files, setFiles] = useState([]);
     const [uploadStatus, setUploadStatus] = useState('');
     const [uploading, setUploading] = useState(false);
+    const [selectedFiles, setSelectedFiles] = useState([]);
 
     const acceptedArtifactTypes = {
         image: '.jpg, .jpeg, .png, .gif',
@@ -44,16 +45,27 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
 
             const token = localStorage.getItem('token');
 
-            await axios.post('/api/artifacts', formData, {
+            const response = await axios.post('/api/artifacts', formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${token}`,
               },
             });
 
-            setUploadStatus('Upload successful!');
-            setSelectedFiles([...selectedFiles, ...files]);
+            await fetchArtifacts();
+
+            console.log('Upload response:', response.data);
+
+            const uploaded = response.data.files.map((artifact, i) => ({
+              ...artifact,
+              originalFile: files[i],
+              linkedToQuestion: false,
+            }));
+
+           
+            setSelectedFiles(prev => [...prev, ...uploaded]);
             setFiles([]);
+            setUploadStatus('Upload successful!');
         } catch (error) {
             console.error(error);
             setUploadStatus('Error uploading artifacts.');
@@ -62,11 +74,101 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
         }
     };
 
-    const handleRemoveArtifact = (indexToRemove) => {
-        setSelectedFiles(prevFiles =>
-            prevFiles.filter((_, index) => index !== indexToRemove)
-        );
+    const fetchArtifacts = async () => {
+      try{
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/api/artifacts', {
+          headers:{
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const fetched = (response.data || []).map(file => ({
+          ...file,
+          originalFile: null,
+          linkedToQuestion: false
+        }));
+
+        setSelectedFiles(prev => {
+          const all = [...prev, ...fetched];
+          const unique = [];
+          const seen = new Set();
+          for (const item of all){
+            const id = item._id || item.originalFile?.name;
+            if(!seen.has(id)){
+              seen.add(id);
+              unique.push(item);
+            }
+          }
+          return unique;
+        });
+      }catch (err){
+        console.log('Error fetching artifacts:', err);
+      }
     };
+
+    const handleRemoveArtifact = async (artifactId) => {
+        if(!artifactId){
+          console.warn('No artifact id provided');
+          return;
+        }
+        try{
+          const token = localStorage.getItem('token');
+          await axios.delete(`/api/artifacts/${artifactId}`, {
+            headers:{
+              Authorization: `Bearer ${token}`
+            }
+          });
+
+          setSelectedFiles(prev => prev.filter(f => f._id !== artifactId));
+
+        }catch (err){
+          console.error('Failed to delete artifact:', err);
+        }
+    };
+
+    const toggleLinkToQuestion = (artifactId) => {
+      const updated = selectedFiles.map(file =>
+          file._id === artifactId
+              ? { ...file, linkedToQuestion: !file.linkedToQuestion }
+              : file
+      );
+      setSelectedFiles(updated);
+
+      const updatedQuestions = [...questions];
+      const selectedQuestion = updatedQuestions[selectedQuestionIndex];
+      const existingFileContent = selectedQuestion.fileContent || [];
+
+      const artifact = selectedFiles.find(f => f._id === artifactId);
+      if (!artifact) return;
+
+      const isLinked = existingFileContent.some(fc => fc.fileId === artifactId);
+
+      let newFileContent;
+      if(isLinked){
+        newFileContent = existingFileContent.filter(fc => fc.fileId !== artifactId);
+      }else{
+        newFileContent = [
+          ...existingFileContent,
+          {
+            fileId: artifact._id,
+            fileUrl: `/api/artifacts/${artifact._id}/view`,
+            fileType: artifact.fileType || artifact.originalFile?.type || 'unknown'
+          }
+        ];
+      }
+
+      updatedQuestions[selectedQuestionIndex] ={
+        ...selectedQuestion,
+        fileContent: newFileContent
+      };
+
+      setQuestions(updatedQuestions);
+    };
+
+    useEffect(() =>{
+      fetchArtifacts();
+    }, []);
 
     return(
         <div className={styles['uploadArtifact-container']}>
@@ -101,6 +203,8 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
                     + Add
                 </button>
 
+                <p className={styles['fileSize']}>Maximum allowed file size 10 MB</p>
+
                 {uploadStatus && (
                     <p className={styles['upload-status']}>{uploadStatus}</p>
                 )}
@@ -114,27 +218,36 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
                 ) :(
                     
                     <ul className={styles['uploadedFiles-list']}>
-                    {selectedFiles.map((file, index) => {
-                        const fileURL = URL.createObjectURL(file);
-                        const fType = file.type.split('/')[0];
+                    {selectedFiles
+                      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                      .map((file, index) => {
+                        const fileURL = file.originalFile 
+                        ? URL.createObjectURL(file.originalFile) 
+                        : `/api/artifacts/${file._id}/view`;
+                        const fType = (file.originalFile?.type || file.fileType || '').split('/')[0];
 
                         return (
                             <li
-                                key={index}
+                                key={file._id || index}
                                 className={styles['artifact-item']}
                             >
+                              <div className={styles['artifact-wrapper']}>
                                 {fType === 'image' && (
                                     <img
                                         src={fileURL}
-                                        alt={file.name}
-                                        width="150"
+                                        alt={file.fileName || 'Artifact image'}
+                                        width="100"
+                                        onError={(e) =>{
+                                          e.target.style.display = 'none';
+                                          console.warn(`Image failed to load for: ${fileURL}`);
+                                        }}
                                     />
                                 )}
                                 {fType === 'video' && (
                                     <video width="250" controls>
                                         <source
                                             src={fileURL}
-                                            type={file.type}
+                                            type={file.fileType}
                                         />
                                         Your browser does not support
                                         video playback
@@ -144,7 +257,7 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
                                     <audio controls>
                                         <source
                                             src={fileURL}
-                                            type={file.type}
+                                            type={file.fileType}
                                         />
                                         Your browser does not support audio
                                         playback
@@ -152,22 +265,36 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
                                 )}
                                 {(fType === 'text' ||
                                     fType === 'application') && (
-                                    <p>
-                                        <strong>{file.name}</strong>
+                                    <p className={styles['textFile']}>
+                                        <strong>{file.fileName}</strong>
                                     </p>
                                 )}
 
                                 <button
-                                    type="button"
-                                    className={
-                                        styles['removeArtifactBtn']
-                                    }
-                                    onClick={() =>
-                                        handleRemoveArtifact(index)
-                                    }
+                                  type="button"
+                                  className={styles['removeArtifactIcon']}
+                                  onClick={() =>
+                                      handleRemoveArtifact(file._id)
+                                  }
                                 >
-                                    Delete
+                                  <FaRegTimesCircle />
                                 </button>
+                              </div>
+
+                                {/* Link checkbox */}
+                                <div className={styles['artifact-addToQuestion']}>
+                                  <label>
+                                    <input
+                                      type='checkbox'
+                                      checked={
+                                        questions[selectedQuestionIndex]?.fileContent?.some(fc => fc.fileId === file._id) || false
+                                      }
+                                      onChange={() => toggleLinkToQuestion(file._id)}
+                                      disabled={selectedQuestionIndex === null}
+                                    /> 
+                                    Add to selected question
+                                  </label>
+                                </div>
                             </li>
                         );
                     })}
@@ -179,4 +306,3 @@ const ArtifactsUploader = ({ selectedFiles, setSelectedFiles}) => {
 };
 
 export default ArtifactsUploader;
-

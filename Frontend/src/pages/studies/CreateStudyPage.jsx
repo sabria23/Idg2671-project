@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../styles/createStudy.module.css';
-import Navbar from "../../components/common/Navbar";
 import StudyDetails from './components/StudyDetails';
 import ArtifactsUploader from './components/ArtifactsUploader';
 import QuestionBuilder from './components/QuestionBuilder';
 import QuestionList from './components/QuestionList';
 
 const CreateStudyPage = () => {
+    const navigate = useNavigate();
     const [studyTitle, setStudyTitle] = useState('');
     const [studyDescription, setStudyDescription] = useState('');
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -18,8 +18,13 @@ const CreateStudyPage = () => {
             questionTitle: 'Question1',
             questionText: '',
             questionType: 'multiple-choice',
-            options: ['Option 1', 'Option 2'],
-            layout: 'row'
+            options: [
+              { value: 'Option 1', label: 'Option 1' },
+              { value: 'Option 2', label: 'Option 2' }
+            ],
+            layout: 'row',
+            isRequired: false,
+            fileContent: []
         }
     ]);
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
@@ -30,10 +35,14 @@ const CreateStudyPage = () => {
             {
                 questionTitle: `Question ${prev.length + 1}`,
                 questionText: '',
-                questionType: '',
-                fileContent: null,
-                options: [],
-                layout: 'row'
+                questionType: 'multiple-choice',
+                fileContent: [],
+                options: [
+                  { value: 'Option 1', label: 'Option 1' },
+                  { text: 'Option 2', label: 'Option 2' }
+                ],
+                layout: 'row',
+                isRequired: false
             },
         ]);
     };
@@ -47,35 +56,27 @@ const CreateStudyPage = () => {
         formData.append('questions', JSON.stringify(questions));
 
         try {
-            const response = await axios.post('/api/studies', formData);
+            const token = localStorage.getItem('token');
+            const response = await axios.post('/api/studies', formData, {
+              headers:{
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+              }
+            });
             alert('Study successfully created!');
-            setStudyId(response.data.id); // Assuming the study ID is returned in response
+            setStudyId(response.data.id); 
+            navigate(`/dashboard/${response.data.id}`);
         } catch (err) {
             console.error(err);
             alert('Error creating study');
         }
     };
 
-    const handleLogout = () =>{
-        console.log('Loggin out...')
-    };
-
-    // NAVIGATION ITEMS FOR THE CREATY STUDY PAGE - NAVBAR COMPONENT
-    const createStudyNavItems = [
-        { label: "Dashboard", path: "/dashboard" },
-        { label: "Profile", path: "/profile" },
-        { label: "Logout", action: handleLogout }   
-      ];
+   
 
     // RENDERING THE HTML CONTENT OF THE CREATE STUDY PAGE
     return (
         <div className={styles['studyPage-container']}>
-            <Navbar 
-                className={styles.fullWidthNav}
-                title="StudyPlatform" 
-                navItems={createStudyNavItems}
-                //onLogout={handleLogout} // this needs to commented out because it is not working
-            />
 
             <main className={styles['studyPage-content']}>
                 <h1>Create a new study</h1>
@@ -93,6 +94,9 @@ const CreateStudyPage = () => {
                 <ArtifactsUploader
                     selectedFiles={selectedFiles}
                     setSelectedFiles={setSelectedFiles}
+                    questions={questions}
+                    setQuestions={setQuestions}
+                    selectedQuestionIndex={selectedQuestionIndex}
                     studyId={studyId}
                 />
 
@@ -137,7 +141,7 @@ const CreateStudyPage = () => {
 
                     {/* LINK/ BUTTON THE PREVIEW */}
                     <button className={styles['previewBtn']} type="button">
-                            <Link to={`/survey/${studyId}/preview`}>Preview Study</Link>
+                            <Link to={`/study/${studyId}/preview`}>Preview Study</Link>
                     </button>
                 </div>
             </main>
