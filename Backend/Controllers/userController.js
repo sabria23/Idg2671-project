@@ -1,70 +1,81 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../Models/userModel.js";
+
+
 // @route POST /api/auth/register
 // @desc create new user 
 const createUser = async (req, res, next) => {
     try {
-        const { username, email, password} = req.body 
-    if(!username || !email || !password) {
-            return res.status(400).json({message: "Please add all fields" })
-    }
- // check if user exists
-    const userExits = await User.findOne({email});
+        const { username, email, password, confirmPassword } = req.body 
 
-    if(userExits) {
-        return res.status(400).json({message: "Username already exists" })
-    }
+        const userExits = await User.findOne({ username });
+        const emailExits = await User.findOne({ email });
+
+        if (userExits || emailExits ) {
+          return res.status(400).json({message: "Username or email already exists" })
+        }
+
+        if (password !== confirmPassword) {
+          return res.status(400).json({
+            errors: [{ field: "confirmPassword", msg: "Passwords do not match" }],
+          })
+        }
 
     // hash passowrd
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        console.log("hashed password", hashedPassword);
         
         // create user
         const user = await User.create({
             username, 
             email,
             password: hashedPassword,
-        })
+            avatar: null,
+        });
 
-        if(user) {
-            res.status(200).json({
+          res.status(200).json({
                 _id: user.id,
                 username: user.username,
                 email: user.email,
-                token: generateToken(user._id)
-            });
-        } else {
-            return res.status(400).json({message: "invalid user data" })
-        }
+                avatar: user.avatar,
+                token: generateToken(user._id),
+          });
     } catch (error) {
         next(error);
     }
     
 };
 
+
 // @route post /api/auth/login
 // @desc authenticates user creddentials after registers 
 const authenticateLogin = async (req, res, next) => {
-    console.log(req.body);
-
     try {
         const {username, password} = req.body 
-        console.log(req.body);
         
         // checking user email
-        const user = await User.findOne({username})
+        const user = await User.findOne({ username })
+        if (!user) {
+          return res.status(400).json({ message: "Invalid username or password" });
+        }
 
-        if(user && (await bcrypt.compare(password, user.password))) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if(!isMatch){
+          return res.status(400).json({ message: "invalid username or password"});
+        }
+
+        // if(user && (await bcrypt.compare(password, user.password))) {
             res.json({
                 _id: user.id,
                 username: user.username,
+                email: user.email,
+                avatar: user.avatar,
                 token: generateToken(user._id)
             })
-        } else {
-            return res.status(400).json({message: "invalid credentials" })
-        }
+        // } else {
+        //     return res.status(400).json({message: "invalid usrname or password" })
+        // }
     } catch (error) {
         next(error);
     }
@@ -75,19 +86,16 @@ const authenticateLogin = async (req, res, next) => {
 // @desc clear the authentication taken
 const authenticateLogout = async (req, res, next) => {
     try {
-        const {username, password} = req.body 
+        // const {username, password} = req.body 
+        res.json({ message: "Logged out"});
+        // // checking user email
+        // const user = await User.findOne({username})
 
-        // checking user email
-        const user = await User.findOne({username})
-
-        if(user && (await bcrypt.compare(password, user.password))) {
-            res.json({
-                _id: user.id,
-                username: user.username,
-            })
-        } else {
-            return res.status(400).json({message: "invalid credentials" })
-        }
+        // if(user && (await bcrypt.compare(password, user.password))) {
+           
+        // } else {
+        //     return res.status(400).json({message: "invalid credentials" })
+        // }
     } catch (error) {
         next(error);
     }
@@ -99,20 +107,64 @@ const authenticateLogout = async (req, res, next) => {
 const getUser = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id).select("-password");
-        if (!user) {
-            return res.status(404).json({
-                message: "user not found"
-            });
-        }
+        if (!user) return res.status(404).json({ message: "User not found" })
+          
         res.status(200).json({
             data: { 
                 id: user._id,
-                username: user.username
-            }
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+            },
         });
     } catch (error) {
        next(error) ;
     }
+};
+
+
+const updateUserProfile = async(req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+      user.username = req.body.username || user.username;
+      user.email = req.body.email || user.email;
+      
+    // if(req.file) {
+    //     user.avatar = `/uploads/${req.file.filename}`;
+    // }
+
+      if (req.body.password) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(req.body.password, salt);
+      }
+
+      const updatedUser = await user.save();
+
+      res.json({
+        _id:updatedUser._id,
+        username:updatedUser.username,
+        email:updatedUser.email,
+        avatar:updatedUser.avatar,
+        token: generateToken(updatedUser._id),
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndDelete(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "Account deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // @route POST /api/auth/forgot-password
@@ -133,5 +185,7 @@ export const userController = {
     createUser,
     authenticateLogin,
     authenticateLogout,
-    getUser
+    getUser,
+    updateUserProfile,
+    deleteUser,
 };
