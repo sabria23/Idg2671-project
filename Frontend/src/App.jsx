@@ -32,10 +32,11 @@ const App = () => {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/study/:studyId" element={<CreateStudyPage />} />
               <Route path="/create-study" element={<CreateStudyPage />} />
-              <Route path="/recruit/:studyId?" element={<RecruitmentPage />} /> 
-              <Route path="/export-results/:studyId" element={<ExportPage />} />
+              <Route path="/recruit/:studyId" element={<RecruitmentPage />} /> 
+              <Route path="/export/:studyId" element={<ExportPage />} />
               <Route path="/" element={<Navigate to="/dashboard" />} />
              </Route>
+
         </Routes>
       </Router>
     );

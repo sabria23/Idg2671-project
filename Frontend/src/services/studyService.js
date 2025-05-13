@@ -10,13 +10,32 @@ const getToken = () => {
 
 // endpoint from backend to: GET all studies for the dashboard to display
 // studyRouter.get('/', protect,  dashController.getAllStudies);
-export const getAllStudies = async () => {
+export const getAllStudies = async ({ 
+  page = 1, 
+  limit = 10, 
+  sortBy = 'createdAt', 
+  sortOrder = 'desc',
+  status = null
+} = {}) => {
     try {
-        const response = await axios.get(`${API_URL}/api/studies`, {
+        // Build query parameters
+        const params = new URLSearchParams();
+        params.append('page', page);
+        params.append('limit', limit);
+        params.append('sortBy', sortBy);
+        params.append('sortOrder', sortOrder);
+        
+        if (status && status !== 'all') {
+            params.append('status', status);
+        }
+        
+        const response = await axios.get(`${API_URL}/api/studies?${params.toString()}`, {
             headers: { Authorization: `Bearer ${getToken()}` }
         });
+        
         return response.data;
     } catch (error) {
+        console.error('Error fetching studies:', error);
         throw error;
     }
 };
