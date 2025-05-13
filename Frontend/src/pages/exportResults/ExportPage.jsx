@@ -1,11 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Navbar from '../../components/common/Navbar';
 import styles from '../../styles/Export.module.css';
 import studyService from "../../services/studyService";
 import ExportDropdown from './components/ExportDropdown';
 import { getResponseCount } from "../../utils/responseUtils.js";
-import { logoutUser } from '../../services/authService';
 
 // every study is different so different flows and data will be stored, researcher wanst to 
 // to know that participant 1 did this, participant 2 did this etc) because then it is more readble, a fileds, think how will the data ne represneted to the researcher
@@ -51,25 +49,10 @@ const ExportPage = () => {
     fetchResponseCount();
   }, [studyId]);
 
-  const handleLogout = () => {
-    logoutUser();
-    navigate("/login");
-  };
 
-  const exportNavItems = [
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Profile", path: "/profile" },
-    { label: "Logout", action: handleLogout }
-  ];
 
   return (
     <div className={styles.exportContainer}>
-      <Navbar
-        title="StudyPlatform"
-        navItems={exportNavItems}
-        onLogout={handleLogout}
-      />
-      
       <main className={styles.mainContent}>
         <h1>Export Study Results</h1>
        

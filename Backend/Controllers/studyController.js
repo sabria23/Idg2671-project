@@ -30,10 +30,14 @@ const createStudy = async (req, res) => {
         }
 
         let parsedQuestions = [];
-          try{
-            parsedQuestions = req.body.questions ? JSON.parse(req.body.questions) : [];
-          }catch(err){
-            return res.status(400).json({ error: 'Invalid format for questions'});
+          try {
+            if (typeof req.body.questions === 'string') {
+              parsedQuestions = JSON.parse(req.body.questions);
+            } else if (Array.isArray(req.body.questions)) {
+              parsedQuestions = req.body.questions;
+            }
+          } catch(err) {
+            return res.status(400).json({ error: 'Invalid format for questions' });
           }
     
         const study = new Study({

@@ -1,5 +1,5 @@
 import { body, param, validationResult } from 'express-validator';
-
+import User from "../Models/userModel.js";
 
 export const checkValidation = (req, res, next) => {
     const errors = validationResult(req);
@@ -39,6 +39,15 @@ export const validateEmail = [
       }),
     checkValidation
   ];
+
+  export const validatePicture = [
+    body("avatar")
+      .optional()
+      .isString()
+      .isURL()
+      .withMessage("Picture must be a valid URL"),
+      checkValidation
+  ]
 
   export const validateUserRegistration = [
     validateEmail,

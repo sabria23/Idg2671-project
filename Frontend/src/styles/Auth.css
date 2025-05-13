@@ -132,6 +132,11 @@ height: 100vh;
   transition: border-color 0.3s ease;
 }
 
+.input-group input.error-input {
+  border-color: red;
+  box-shadow: 0 0 5px red;
+}
+
 .input-group input:focus {
   outline: none;
   border-color: #4a90e2;
@@ -142,10 +147,10 @@ height: 100vh;
   color: #aaa;
 }
 
+
+
 /* Error styles */
-.input-group input.error {
-  border-color: #e74c3c;
-}
+
 
 .error-message {
   color: #e74c3c;
@@ -172,6 +177,12 @@ height: 100vh;
 
 .checkbox-label input {
   margin-right: 10px;
+}
+
+.checkbox-error-message {
+  color: red;
+  font-size: 12px;
+  margin: 5px;
 }
 
 .forgot-password {
@@ -224,6 +235,17 @@ height: 100vh;
 
 .auth-redirect a:hover {
   text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.error-input {
+  border: 3px solid red;
 }
 
 /* Responsive adjustments */
