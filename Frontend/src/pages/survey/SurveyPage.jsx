@@ -217,6 +217,7 @@ const SurveyPage = ({ mode = 'live' }) => {
           title: res.data.title,
           description: res.data.description
         });
+        setTotalQuestions(res.data.totalQuestions);
       } catch (err) {
         console.error("Failed to fetch study info:", err);
       }
@@ -230,9 +231,14 @@ const SurveyPage = ({ mode = 'live' }) => {
     const fetchQuestion = async () => {
       const page = currentStep - 2;
 
+      const url = isPreview
+        ? `/api/survey/${studyId}?page=${page}&preview=true`
+        : `/api/survey/${studyId}?page=${page}&sessionId=${sessionId}`;
+
       try {
-        const res = await axios.get(`/api/survey/${studyId}?page=${page}&sessionId=${sessionId}`);
+        const res = await axios.get(url);
         const data = res.data;
+
         setCurrentQuestion({
           ...data.question,
           artifacts: shuffleArray(data.question.artifacts || [])
@@ -264,21 +270,21 @@ const SurveyPage = ({ mode = 'live' }) => {
 
   const handleAnswerSubmit = async (responseValue, skipped = false) => {
     if (isPreview) {
-      setCurrentStep(prev => prev + 1);
+  
       return;
     }
     const questionId = currentQuestion._id;
     const answerType = mapQuestionTypeToAnswerType(currentQuestion.questionType);
     try {
       await axios.post(`/api/studies/${studyId}/sessions/${sessionId}/${questionId}`, {
-        answer: skipped ? null : responseValue,
+        participantAnswer: skipped ? null : responseValue,
         skipped,
         answerType
       });
     } catch (err) {
       if (err.response?.status === 409) {
         await axios.patch(`/api/studies/${studyId}/sessions/${sessionId}/${questionId}`, {
-          answer: skipped ? null : responseValue,
+          participantAnswer: skipped ? null : responseValue,
           skipped,
           answerType
         });
@@ -286,7 +292,6 @@ const SurveyPage = ({ mode = 'live' }) => {
         console.error('Failed to submit answer', err);
       }
     }
-    setCurrentStep(prev => prev + 1);
   };
 
   const handlePreviousQuestion = () => setCurrentStep(prev => Math.max(prev - 1, 2));
@@ -316,7 +321,7 @@ const SurveyPage = ({ mode = 'live' }) => {
 
 
   if (currentStep === 0) {
-    return <SurveyIntro studyInfo={studyInfo} totalQuestions={totalQuestions} onStart={() => setCurrentStep(1)} />;
+    return <SurveyIntro studyInfo={studyInfo} totalQuestions={totalQuestions} onStart={() => setCurrentStep(isPreview ? 2 : 1)} />;
   }
 
   if (currentStep === 1) {
