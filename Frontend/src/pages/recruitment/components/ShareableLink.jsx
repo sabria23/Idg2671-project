@@ -6,6 +6,8 @@ const ShareableLink = ({ studyId, published }) => {
   const [shareableUrl, setShareableUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
    // Fetch the shareable link when the component mounts or when published status changes
    useEffect(() => {
@@ -55,6 +57,22 @@ const ShareableLink = ({ studyId, published }) => {
  if (!published) {
   return null;
 }
+
+const handleCopy = async () => {
+  try {
+    //https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText
+    await navigator.clipboard.writeText(shareableUrl);
+    setCopied(true);
+    setShowTooltip(true);
+
+    setTimeout(() => {
+      setCopied(false);
+      setShowTooltip(false);
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to copy:', error)
+  }
+};
 return (
   <>
     <div className={styles.card}>
@@ -84,15 +102,19 @@ return (
                   value={shareableUrl} 
                   className={styles.linkInput}
                 />
-                <button 
-                  className={styles.copyButton}
-                  onClick={() => {
-                    navigator.clipboard.writeText(shareableUrl);
-                    // Optionally: Add visual feedback when copied
-                  }}
-                >
-                  Copy
-                </button>
+                <div className={styles.tooltipContainer}>
+                  <button
+                    className={`${styles.copyButton} ${copied ? styles.copiedButton : ''}`}
+                    onClick={handleCopy}
+                  >
+                    Copy
+                  </button>
+                  {showTooltip && (
+                    <div className={styles.tooltip}>
+                      Link is copied
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
