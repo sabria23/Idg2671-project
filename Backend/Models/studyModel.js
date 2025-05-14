@@ -34,6 +34,29 @@ const studySchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  // Add demographics configuration here
+  demographics: {
+    enabled: {
+      type: Boolean,
+      default: true
+    },
+    fields: [{
+      name: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        enum: ['text', 'number', 'select'],
+        default: 'text'
+      },
+      options: [String],
+      required: {
+        type: Boolean,
+        default: false
+      }
+    }]
+  },
   questions: [
     {
       questionText: String,
@@ -50,16 +73,16 @@ const studySchema = new mongoose.Schema({
           'label-slider'
         ]
       },
-      fileContent: [ {
+      fileContent: [{
         fileId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Artifact'
         },
         fileUrl: String,
         fileType: String
-       }],
+      }],
       options: [
-        { 
+        {
           value: String, //custom message [option A, imaage 1 etc, yes, no]
           label: String //cusotm text set by the quiz creator, dipalyed to
         }
@@ -70,7 +93,7 @@ const studySchema = new mongoose.Schema({
         default: 'row'
       }
     }
-  ]
+  ],
 }, {
   timestamps: true
 });
