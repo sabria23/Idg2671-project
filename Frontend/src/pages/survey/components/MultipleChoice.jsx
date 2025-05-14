@@ -1,6 +1,6 @@
-const MultipleChoice = ({ question, onAnswer }) => {
+const MultipleChoice = ({ question, externalValue, onExternalChange }) => {
   const handleChange = (value) => {
-    onAnswer(value); // send selected value back to SurveyPage
+    onExternalChange(value); // send selected value back to SurveyPage
   };
 
   console.log("[MultipleChoice] fileContent:", question.fileContent);

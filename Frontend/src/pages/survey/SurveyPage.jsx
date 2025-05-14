@@ -287,15 +287,38 @@ const SurveyPage = ({ mode = 'live' }) => {
     }
   };
 
+  useEffect(() => {
+    const storedSessionId = localStorage.getItem(`survey-session-${studyId}`);
+    const storedStep = localStorage.getItem(`survey-step-${studyId}`);
+
+    if (storedSessionId && !isPreview) {
+      setSessionId(storedSessionId);
+
+      const step = parseInt(storedStep, 10);
+      if (!isNaN(step)) {
+        setCurrentStep(step);
+      } else {
+        setCurrentStep(2); // fallback: go to first question
+      }
+    }
+  }, [studyId, isPreview]);
+
+  useEffect(() => {
+    if (!isPreview && currentStep >= 0) {
+      localStorage.setItem(`survey-step-${studyId}`, currentStep.toString());
+    }
+  }, [currentStep, studyId, isPreview]);
+
+
+
   const handleDemographicsSubmit = async (demographicData) => {
     if (isPreview) {
       setCurrentStep(2);
       return;
     }
-    const newSessionId = await submitDemographics(studyId, demographicData);
   
-    if (newSessionId) {
-      setSessionId(newSessionId); // local state
+    const success = await submitDemographics(studyId, sessionId, demographicData);
+    if (success) {
       setCurrentStep(prev => prev + 1);
     } else {
       console.error("Failed to submit demographics");
@@ -311,23 +334,26 @@ const SurveyPage = ({ mode = 'live' }) => {
     }
     const questionId = currentQuestion._id;
     const answerType = mapQuestionTypeToAnswerType(currentQuestion.questionType);
+    const existingResponseId = responseMap[questionId];
     try {
-      await axios.post(`/api/studies/${studyId}/sessions/${sessionId}/${questionId}`, {
-        participantAnswer: skipped ? null : responseValue,
-        skipped,
-        answerType
-      });
-    } catch (err) {
-      if (err.response?.status === 409) {
-        await axios.patch(`/api/studies/${studyId}/sessions/${sessionId}/${questionId}`, {
+      if (existingResponseId) {
+        const res = await axios.patch(`/api/studies/${studyId}/sessions/${sessionId}/responses/${existingResponseId}`, {
+          participantAnswer: skipped ? null : responseValue,
+            skipped,
+            answerType
+        });
+      } else {          
+        const res = await axios.post(`/api/studies/${studyId}/sessions/${sessionId}/responses`, {
+          questionId,
           participantAnswer: skipped ? null : responseValue,
           skipped,
           answerType
         });
-      } else {
-        console.error('Failed to submit answer', err);
       }
+    } catch (err) {
+      console.error('Failed to submit answer', err);
     }
+    
   };
 
   const handlePreviousQuestion = () => setCurrentStep(prev => Math.max(prev - 1, 2));

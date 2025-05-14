@@ -11,7 +11,7 @@ export const submitDemographics = async (studyId, sessionId, demographics) => {
       demographics
     });
 
-    return response.data.sessionId;
+    return response.status === 200;
   } catch (error) {
     console.error("Submission failed:", error);
     return null;
