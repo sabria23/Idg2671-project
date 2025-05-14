@@ -251,6 +251,42 @@ const SurveyPage = ({ mode = 'live' }) => {
     fetchQuestion();
   }, [currentStep, sessionId, studyId]);
 
+  const handleStart = async () => {
+    if (isPreview) {
+      setCurrentStep(2);
+      return;
+    }
+
+    const existingSession = localStorage.getItem(`survey-session-${studyId}`);
+    if (existingSession) {
+      setSessionId(existingSession);
+      setCurrentStep(2);
+      return;
+    }
+
+    try {
+      const parser = new UAParser();
+      const result = parser.getResult();
+      const browser = result.browser.name || 'Unknown browser';
+      const os = result.os.name || 'Unknown os';
+
+      const deviceInfo = `${browser} on ${os}`;
+
+      const res = await axios.post(`/api/survey/${studyId}/sessions`, {
+        deviceInfo,
+        demographics: {}
+      });
+
+      const newSessionId = res.data.sessionId;
+      setSessionId(newSessionId);
+      localStorage.setItem(`survey-session-${studyId}`, newSessionId);
+      setCurrentStep(1);
+    } catch (err) {
+      console.error("Failed to start session:", err);
+      alert("Failed to start session. Please try again.");
+    }
+  };
+
   const handleDemographicsSubmit = async (demographicData) => {
     if (isPreview) {
       setCurrentStep(2);
@@ -321,7 +357,12 @@ const SurveyPage = ({ mode = 'live' }) => {
 
 
   if (currentStep === 0) {
-    return <SurveyIntro studyInfo={studyInfo} totalQuestions={totalQuestions} onStart={() => setCurrentStep(isPreview ? 2 : 1)} />;
+    return (
+      <SurveyIntro 
+      studyInfo={studyInfo} 
+      totalQuestions={totalQuestions} 
+      onStart={handleStart} />
+    );
   }
 
   if (currentStep === 1) {
@@ -351,7 +392,3 @@ const SurveyPage = ({ mode = 'live' }) => {
 };
 
 export default SurveyPage;
-
-
-
-

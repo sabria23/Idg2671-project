@@ -1,31 +1,13 @@
 import axios from 'axios';
-import { UAParser } from 'ua-parser-js';
 
-export const submitDemographics = async (studyId, demographics) => {
-  // Ensure required fields exist
-  console.log("[DEBUG] studyId:", studyId);
-console.log("[DEBUG] demographics:", demographics);
-
-  if (
-    !studyId ||
-    !demographics ||
-    !demographics.age ||
-    isNaN(Number(demographics.age)) ||
-    !demographics.gender
-  ) {
-    console.error("Invalid demographics input");
-    return null;
+export const submitDemographics = async (studyId, sessionId, demographics) => {
+  if (!studyId || !sessionId || !demographics) {
+    console.error("Missing required values for demographics update");
+    return false;
   }
 
   try {
-    const parser = new UAParser();
-    const ua = parser.getResult();
-    const deviceInfo = `${ua.browser.name || 'Unknown Browser'} on ${ua.os.name || 'Unknown OS'}`;
-
-    console.log("Submitting demographics payload:", { deviceInfo, demographics });
-
-    const response = await axios.post(`/api/survey/${studyId}/sessions`, {
-      deviceInfo,
+    const response = await axios.patch(`/api/survey/${studyId}/sessions/${sessionId}`, {
       demographics
     });
 

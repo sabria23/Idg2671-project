@@ -70,7 +70,7 @@ const studySchema = new mongoose.Schema({
         default: 'row'
       }
     }
-  ]
+  ],
 }, {
   timestamps: true
 });

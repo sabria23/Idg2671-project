@@ -36,5 +36,4 @@ const SurveyQuestion = ({ currentQuestion, onAnswer, onSkip, onPrevious, onNext 
   );
 };
   
-export default SurveyQuestion;
-  
+export default SurveyQuestion;  

@@ -124,6 +124,44 @@ export const createSession = async (req, res, next) => {
         next(err);
     }
 };
+// @desc update session data
+// @route PATCH /api/studies/:studyId/sessions/:sessionId
+export const updateSession = async (req, res, next) => {
+  try {
+    const { studyId, sessionId } = req.params;
+    const { demographics } = req.body;
+
+    // Validate input
+    if (!demographics || typeof demographics !== 'object') {
+      return res.status(400).json({ message: 'No demographic data provided' });
+    }
+
+    // Find the session and ensure it belongs to the study
+    const session = await Session.findOne({ _id: sessionId, studyId });
+
+    if (!session) {
+      return res.status(404).json({ message: 'Session not found' });
+    }
+
+    // Optional: block update if session is already completed
+    if (session.isCompleted) {
+      return res.status(403).json({ message: 'Cannot update a completed session' });
+    }
+
+    // Update only the demographics field
+    session.demographics = {
+      ...session.demographics,
+      ...demographics
+    };
+
+    await session.save();
+
+    res.status(200).json({ message: 'Session updated successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 // @desc save participant's answer related to quesitons
 // @route POST /api/studies/:studyid/sessions/:sessionId/:questionId
