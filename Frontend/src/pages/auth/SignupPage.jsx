@@ -15,7 +15,10 @@ const SignupPage = () => {
   const [isAgreeTerms, setIsAgreeTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  
+  // if (password !== confirmPass) {
+  //   alert("Password do not match");
+  //   return;
+  // }
 const navigate = useNavigate();
 
   const handleSubmit = async (e) =>{
@@ -37,7 +40,7 @@ const navigate = useNavigate();
     }
 
     try {
-      const res = await  axios.post("http://localhost:8000/api/auth/register", {
+      const res = await axios.post("http://localhost:8000/api/auth/register", {
         username: userName,
         email,
         password,
@@ -106,9 +109,7 @@ const navigate = useNavigate();
               required
               className={errorMessage && errorMessage.includes("Username") ? "error-input" : ""}
               />
-              {errorMessage && errorMessage.includes("Username") && (
-                <p className="error-message">{errorMessage}</p>
-              )}
+              
             
           </div>
           
@@ -123,9 +124,6 @@ const navigate = useNavigate();
               required
               className={errorMessage && errorMessage.includes("email") ? "error-input" : ""}
             />
-            {errorMessage && errorMessage.includes("email") && (
-                <p className="error-message">{errorMessage}</p>
-              )}
           </div>
           
           <div className="input-group">
@@ -137,7 +135,7 @@ const navigate = useNavigate();
               data-testid="register-password"
               onChange={(e) => setPassword(e.target.value)}
               required
-              className={errorMessage && errorMessage.includes("password") ? "error-input" : ""}
+              className={errorMessage && errorMessage.includes("Password") ? "error-input" : ""}
             />
             {errorMessage && errorMessage.includes("password") && (
                 <p className="error-message">{errorMessage}</p>
@@ -155,9 +153,9 @@ const navigate = useNavigate();
               required
               className={errorMessage && errorMessage.includes("confirmPassword") ? "error-input" : ""}
             />
-            {errorMessage && errorMessage.includes("confirmPassword") && (
+            {/* {errorMessage && errorMessage.includes("confirmPassword") && (
                 <p className="error-message">{errorMessage}</p>
-              )}
+              )} */}
           </div>
           
           <div className="form-options">
@@ -170,15 +168,13 @@ const navigate = useNavigate();
               />
               I agree to the Terms and Privacy Policy
             </label>
-            {errorMessage && errorMessage.includes("Terms") && (
-                <p className="error-message">{errorMessage}</p>
-              )}
+            <p className="error-message">{errorMessage}</p>
           </div>
 
           {/* <p className="error-message">{errorMessage}</p> */}
-           <p className="success-message">{successMessage}</p>
-         
-           
+            <p className="success-message">{successMessage}</p>
+
+
           {isLoading && <p className="loading-message">Please wait...</p>}
           
           <button 
