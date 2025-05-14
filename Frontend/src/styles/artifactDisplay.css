@@ -1,0 +1,23 @@
+.artifact-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.artifact-item {
+  max-width: 220px;
+  flex: 1 1 180px;
+}
+
+.artifact-image,
+.artifact-video,
+.artifact-text {
+  width: 100%;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.artifact-audio {
+  width: 100%;
+}

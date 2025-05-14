@@ -1,13 +1,23 @@
 import { useState } from 'react';
 import '../../../styles/displaySurvey.css';
 const SurveyDemographics = ({ demographics, setDemographics, onSubmit, onBack }) => {
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (demographics.age < 0 || demographics.age > 130) {
+      alert("Please enter a valid age.");
+      return;
+    }
+    onSubmit(demographics);
+  }
+
   return (
     <div className="survey-container">
       <div className="demographics-container">
         <h2>Before we begin</h2>
         <p>Please provide some information about yourself.</p>
 
-        <form onSubmit={onSubmit} className="demographics-form">
+        <form onSubmit={handleSubmit} className="demographics-form">
           <div className="form-group">
             <label htmlFor="age">Age</label>
             <input

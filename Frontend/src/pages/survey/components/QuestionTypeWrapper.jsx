@@ -11,6 +11,7 @@ import MultipleChoice from './MultipleChoice';
 // Main wrapper that dynamically renders based on questionType
 const QuestionTypeWrapper = ({
   questionType,        // e.g. 'emoji-rating', 'star-rating'
+  question,
   onAnswer,            // Callback to submit the selected answer
   defaultValue = null  // Optional prefilled value
 }) => {
@@ -41,6 +42,7 @@ const QuestionTypeWrapper = ({
 
   return (
     <Component
+      question={question}
       externalValue={value}
       onExternalChange={setValue}
     />

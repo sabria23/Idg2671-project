@@ -1,6 +1,6 @@
 // pages/dashboard/DashboardPage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styles from '../../styles/Dash.module.css';
 import FilterControls from './components/FilterControls';
 import StudiesList from './components/StudiesList.jsx';
@@ -14,6 +14,7 @@ import WelcomeHeader from './components/WelcomeHeader';
  */
 const DashboardPage = () => {
   const navigate = useNavigate();
+
   
   // Use custom hooks to manage URL parameters and user data
   const { 

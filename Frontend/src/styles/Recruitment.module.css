@@ -1,399 +1,459 @@
-/* styles/Recruitment.module.css */
-.recruitmentContainer {
-    width: 100%;
-    min-height: 100vh;
-    background-color: #f9fafb;
-  }
-  
-  .mainContent {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1.25rem;
-  }
-  
-  .pageTitle {
-    font-size: 1.875rem;
-    font-weight: bold;
-    color: #1f2937;
-    margin-bottom: 2rem;
-  }
-  
-  .tabNavigation {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-  
-  @media (max-width: 768px) {
-    .tabNavigation {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  .recruitmentOption {
-    background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    position: relative;
-  }
-  
-  .recruitmentOption:hover {
-    transform: translateY(-0.25rem);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Email option accent */
-  .recruitmentOption:nth-child(1)::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 0.25rem;
-    background: linear-gradient(to right, #3b82f6, #2563eb);
-  }
-  
-  /* Link option accent */
-  .recruitmentOption:nth-child(2)::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 0.25rem;
-    background: linear-gradient(to right, #8b5cf6, #7c3aed);
-  }
-  
-  .optionIcon {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 9999px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-  }
-  
-  .iconEmoji {
-    font-size: 1.5rem;
-  }
-  
-  .optionDetails {
-    padding: 1.5rem;
-  }
-  
-  .optionTitle {
-    display: flex;
-    align-items: center;
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #1f2937;
-    margin-bottom: 0.75rem;
-  }
-  
-  .infoTooltip {
-    position: relative;
-    margin-left: 0.5rem;
-    color: #9ca3af;
-    cursor: help;
-  }
-  
-  .tooltipText {
-    visibility: hidden;
-    width: 12rem;
-    background-color: #1f2937;
-    color: white;
-    text-align: center;
-    border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 0.75rem;
-    font-weight: normal;
-    line-height: 1.25;
-  }
-  
-  .infoTooltip:hover .tooltipText {
-    visibility: visible;
-    opacity: 1;
-  }
-  
-  .optionButton {
-    display: flex;
-    align-items: center;
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    margin-top: 1.25rem;
-  }
-  
-  .optionButton:hover {
-    background-color: #2563eb;
-  }
-  
-  .buttonIcon {
-    margin-right: 0.5rem;
-  }
-  
-  /* Step 2 Styles */
-  .configStep {
-    background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-  }
-  
-  .configStep h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #1f2937;
-    margin-bottom: 1.5rem;
-  }
-  
-  .formGroup {
-    margin-bottom: 1.5rem;
-  }
-  
-  .formGroup label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #4b5563;
-    margin-bottom: 0.5rem;
-  }
-  
-  .formInput {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-  }
-  
-  .buttonContainer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
-  }
-  
-  .backButton {
-    padding: 0.5rem 1rem;
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    color: #4b5563;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  
-  .nextButton {
-    padding: 0.5rem 1rem;
-    background-color: #3b82f6;
-    border: none;
-    border-radius: 0.375rem;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-  
-  /* Step 3 Styles */
-  .reviewStep {
-    background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-  }
-  
-  .reviewStep h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #1f2937;
-    margin-bottom: 1.5rem;
-  }
-  
-  .reviewItem {
-    padding: 1rem;
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.375rem;
-    margin-bottom: 1rem;
-  }
-  
-  .reviewItem h3 {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #4b5563;
-    margin-bottom: 0.5rem;
-  }
-  
-  .launchButton {
-    padding: 0.5rem 1rem;
-    background-color: #10b981;
-    border: none;
-    border-radius: 0.375rem;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-  }
-
-/* Study Status Container -> MOVE THIS TO ISTS OWN CONTAINER*/
-.studyStatusContainer {
-  background-color: white;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f7fa;
+  min-height: 100vh;
 }
 
-/* Header with title and badge */
-.studyStatusHeader {
+.contentWrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Card Styles */
+.card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.cardContent {
+  padding: 24px;
+}
+
+/* Header Card */
+.headerCard {
+  border-left: 4px solid #0066cc;
+}
+
+.headerFlex {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
 }
 
-.studyStatusHeader h3 {
-  margin: 0;
-  font-size: 1.125rem;
+.title {
+  font-size: 24px;
   font-weight: 600;
-  color: #374151;
+  color: #333333;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Status Styles */
+.statusContainer {
+  display: flex;
+  align-items: center;
 }
 
 .statusBadge {
-  font-size: 0.875rem;
-  font-weight: 500;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1.5rem;
   display: inline-block;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 16px;
 }
 
 .statusPublished {
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .statusDraft {
-  background-color: #e5e7eb;
-  color: #4b5563;
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
-/* Status message content */
-.studyStatusContent {
-  margin-bottom: 1.25rem;
+.statusActive {
+  background-color: #d4edda;
+  color: #155724;
 }
 
-.statusMessage {
+/* Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btnIcon {
+  margin-right: 8px;
   display: flex;
-  padding: 1rem;
-  border-radius: 0.375rem;
-  border-left: 4px solid;
-  background-color: #f9fafb;
-  margin-bottom: 1rem;
+  align-items: center;
 }
 
-.publishedMessage {
-  border-left-color: #10b981;
+.btnPrimary {
+  background-color: #0066cc;
+  color: #ffffff;
 }
 
-.draftMessage {
-  border-left-color: #f59e0b;
+.btnPrimary:hover {
+  background-color: #0055aa;
 }
 
-.statusIcon {
-  margin-right: 1rem;
-  flex-shrink: 0;
-  width: 1.5rem;
-  height: 1.5rem;
+.btnPrimary:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.btnSecondary {
+  background-color: #e9ecef;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+.btnSecondary:hover {
+  background-color: #dee2e6;
+}
+
+.btnSuccess {
+  background-color: #28a745;
+  color: #ffffff;
+}
+
+.btnSuccess:hover {
+  background-color: #218838;
+}
+
+.btnDanger {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+.btnDanger:hover {
+  background-color: #c82333;
+}
+
+/* Section Headings */
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+  margin: 0 0 20px 0;
+}
+
+/* Link Sharing Section */
+.linkSection {
+  margin-top: 12px;
+}
+
+.linkHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.linkLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.linkContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.linkInput {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: 8px;
+  border-radius: 4px;
+  color: #6c757d;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.iconButton:hover {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.icon {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.checkIcon {
-  color: #10b981;
+/* Form Styles */
+.formGroup {
+  margin-bottom: 20px;
 }
 
-.infoIcon {
-  width: 0.5rem;
-  height: 0.5rem;
-  background-color: #f59e0b;
-  border-radius: 50%;
-}
-
-.statusText {
-  flex: 1;
-}
-
-.statusMainText {
+.formLabel {
+  display: block;
+  font-size: 14px;
   font-weight: 500;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
+  color: #495057;
+  margin-bottom: 8px;
 }
 
-.statusSubText {
-  color: #6b7280;
-  margin: 0;
-  font-size: 0.875rem;
-}
-
-/* Error message */
-.errorMessage {
-  color: #ef4444;
-  background-color: #fee2e2;
-  padding: 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-}
-
-/* Action button */
-.actionButton {
+.formInput {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  font-size: 0.875rem;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+  transition: border-color 0.2s ease;
+}
+
+.formInput:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.formTextarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.2s ease;
+}
+
+.formTextarea:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.helperText {
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 6px;
+}
+
+/* Button Group */
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* Checkbox Styles */
+.checkboxGroup {
+  margin-bottom: 16px;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+}
+
+.checkboxInput {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.checkboxLabel {
+  font-size: 14px;
+  color: #495057;
+}
+
+/* Right-aligned button container */
+.buttonContainerRight {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+/* Demographics Settings Styles */
+.demographicsContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-.publishButton {
-  background-color: #10b981;
+.toggleInput {
+  margin-right: 10px;
+}
+
+.fieldsContainer {
+  margin-top: 1rem;
+}
+
+.fieldsList {
+  list-style: none;
+  padding: 0;
+}
+
+.fieldItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+}
+
+.fieldInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.fieldType {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+.requiredBadge {
+  display: inline-block;
+  background-color: #dc3545;
   color: white;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  margin-top: 0.25rem;
 }
 
-.publishButton:hover {
-  background-color: #059669;
-}
-
-.unpublishButton {
-  background-color: #f59e0b;
+.removeButton {
+  background-color: #dc3545;
   color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
 }
 
-.unpublishButton:hover {
-  background-color: #d97706;
+.addFieldContainer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
 }
 
-.actionButton:disabled {
-  opacity: 0.7;
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.formControl {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.checkboxGroup input {
+  margin-right: 0.5rem;
+}
+
+.addButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.saveButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+}
+
+.saveButton:disabled {
+  background-color: #6c757d;
   cursor: not-allowed;
 }
 
+.errorMessage {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.successMessage {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+/* Participant demographics form styles */
+.demographicsForm {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.submitButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+}

@@ -38,6 +38,11 @@ studyRouter.get('/:studyId/sessions/:sessionid/results', protect, dashController
 studyRouter.patch('/:studyId', protect, validatePublishStatus, dashController.updateStudyStatus);
 studyRouter.get('/:studyId/link', protect, dashController.generateLink);
 studyRouter.post('/:studyId/invitations', protect, dashController.emailInvitaitons);
+// Demographics configuration routes
+studyRouter.get('/:studyId/demographics', protect, studyController.getDemographics);
+studyRouter.post('/:studyId/demographics', protect, studyController.updateDemographicsConfig);
+// public route for participants
+studyRouter.get('/public/:studyId', dashController.accessStudyByLink);
 
 
 
