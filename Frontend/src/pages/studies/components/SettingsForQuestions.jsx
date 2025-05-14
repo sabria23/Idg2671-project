@@ -218,6 +218,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                                 setQuestions(updatedQuestions);
                             }} 
                         />
+                        <p>Select this box if the question is required to be answered</p>
             </div>
 
             {/* Delete question */}
