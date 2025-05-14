@@ -32,3 +32,16 @@ It depends on your implementation:
 If you're sending the same link to everyone: You don't strictly need individual tokens
 If you want to track who clicked the link: You need tokens to identify each recipient
 If you want one-time use links: You need tokens to make each link unique
+
+studymodel.js updates: An outer object demographicsConfig containing:
+
+enabled: A boolean to toggle all demographics on/off
+fields: An array of field configurations
+
+
+Each field in the fields array has:
+
+name: The field name (required)
+type: The field type (must be 'text', 'number', or 'select')
+options: An array of strings for select-type fields
+required: Whether the field is required for participants
