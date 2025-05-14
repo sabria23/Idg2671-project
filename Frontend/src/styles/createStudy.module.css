@@ -44,12 +44,19 @@
 
 .saveBtns{
     display: flex;
-    justify-content: end;    
+    flex-direction: column;
+    gap: 1rem;   
+}
+
+.btnGroup{
+  display: flex;
+  flex-direction: column;
+  align-items: end;
 }
 
 .saveBtns button{
     padding: 1rem 1.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -58,8 +65,6 @@
 .saveStudyBtn{
   background-color: #0d6efd;
   color: white;
-  margin-right: 2rem;
-  
 }
 .saveStudyBtn:hover{
     background-color: #51b861;
@@ -72,6 +77,16 @@
 }
 .previewBtn{
     background-color: rgba(176, 192, 246, 0.692);
+}
+
+.saveStudy-para,
+.previewStudy-para{
+  margin-top: 0;
+  color: #00000079;
+}
+
+.previewStudy-para{
+  padding-bottom: 1rem;
 }
 
 

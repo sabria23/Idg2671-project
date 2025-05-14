@@ -6,11 +6,6 @@ import { app } from '../server.js';
 //----------------POST(CREATE)----------------------------
 // Create a new study
 const createStudy = async (req, res) => {
-  console.log('----- Incoming Request -----');
-  console.log('Headers:', req.headers);
-  console.log('BODY:', req.body);
-  console.log('FILES:', req.files);  // if using multer for files
-  console.log('User ID:', req.userId);
 
     try {
         const { creator, title, description, published } = req.body;

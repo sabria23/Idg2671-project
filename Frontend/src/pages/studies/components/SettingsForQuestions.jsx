@@ -61,7 +61,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
             {/* Question Text */}
             <div className={styles['question-text']}>
                 <label>
-                    Question Title
+                    Question Text
                     <input
                         className={styles['question-title']}
                         type="text"

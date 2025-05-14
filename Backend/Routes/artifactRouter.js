@@ -8,7 +8,7 @@ const artifactRouter = express.Router();
 
 //-------------POST(CREATE)--------------------------
 // Upload general artifacts
-artifactRouter.post('/', upload.array('files'), artifactController.uploadGeneralArtifacts);
+artifactRouter.post('/', protect, upload.array('files'), artifactController.uploadGeneralArtifacts);
 
 // Upload artifacts
 artifactRouter.post('/:studyId/questions/:questionId/artifacts', protect, upload.array('files'), artifactController.uploadArtifact);
@@ -18,7 +18,7 @@ artifactRouter.post('/:studyId/questions/:questionId/artifacts', protect, upload
 artifactRouter.get('/', protect, artifactController.getArtifacts);
 
 // Get artifacts for viewing 
-artifactRouter.get('/:id/view', artifactController.getArtifactView);
+artifactRouter.get('/:id/view', protect, artifactController.getArtifactView);
 
 //artifactRouter.get('/user/artifacts', protect, artifactController.getUserArtifacts);
 
