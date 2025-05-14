@@ -1,7 +1,7 @@
 /* THINGS I NEED TO DO TODAY
 1. Toggle a study from draft to published = DONE
 2. have it made so that when researtcher unpiblished the link then it is not accessible anymore to pariticpants, the link need to be connected to marius study and that specifci studyid = DONE
-3. Generate a shareable link for a published study 
+3. Generate a shareable link for a published study = DONE
 4. make the link secure so it cannot be shared by other people and that you can only take it one time
 5. Invite participants via email
 6. add demograpfics field 

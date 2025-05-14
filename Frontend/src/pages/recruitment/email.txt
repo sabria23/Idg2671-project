@@ -1,0 +1,14 @@
+Theoretical Foundation
+Email System Architecture with SendGrid
+The email invitation system you're building will rely on a client-server architecture with SendGrid as the delivery provider:
+
+Your Application: The interface researchers use to compose emails and manage invitations
+Backend API: Processes requests, manages queues, and interacts with SendGrid
+SendGrid API: Handles the actual email delivery, tracking, and reporting
+Recipient Mailboxes: Where your emails ultimately need to arrive (and not in spam)
+
+This architecture separates concerns:
+
+Your app focuses on the user experience
+SendGrid handles the complex delivery infrastructure
+
