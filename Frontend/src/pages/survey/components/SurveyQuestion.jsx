@@ -1,4 +1,5 @@
 import QuestionTypeWrapper from './QuestionTypeWrapper';
+import ArtifactDisplay from './ArtifactDisplay';
 
 import '../../../styles/displaySurvey.css';
   
@@ -9,11 +10,14 @@ const SurveyQuestion = ({ currentQuestion, onAnswer, onSkip, onPrevious, onNext 
     <div className="survey-container">
       <div className="question-container">
         <div className="question-header">
-          <h2>{currentQuestion.questionText}</h2>
+          <h2>{currentQuestion.questionText?.trim() || 'missing question text'}</h2>
         </div>
   
+        <ArtifactDisplay fileContent={currentQuestion.fileContent}/>
+
         <QuestionTypeWrapper
           questionType={currentQuestion.questionType}
+          question={currentQuestion}
           onAnswer={onAnswer}/>
 
         <div className="question-navigation">
