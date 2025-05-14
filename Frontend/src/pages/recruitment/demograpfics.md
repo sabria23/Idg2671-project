@@ -123,3 +123,20 @@ Dynamically render form fields based on that configuration
 Skip demographics entirely if disabled in the study config
 
 Here's how to update your teammate's code:
+
+
+I dont understand why parent needs function to add fields if it is child that adds fieldsEditThat's an excellent question that gets to the heart of React's data flow!
+Why the Parent Needs a Function to Add Fields (When the Child Collects the Data)
+In React, there's a fundamental principle: a component can only modify its own state, not another component's state.
+
+The React Way: Data Flows Down, Actions Flow Up
+React enforces a unidirectional data flow:
+
+Data flows down from parent to child via props
+Actions flow up from child to parent via callback functions
+
+This creates a predictable pattern where:
+
+Parents pass data and functions to children
+Children call those functions to request changes
+Parents update their own state

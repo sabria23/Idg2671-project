@@ -4,7 +4,7 @@
 3. Generate a shareable link for a published study = DONE
 5. Invite participants via email = DONE
 9. copy needs tilabek melding = DONE
-6. add demograpfics field and whatever fields you want to have, these will be displayed as part of the survey once participant takes the link
+6. add demograpfics field and whatever fields you want to have, these will be displayed as part of the survey once participant takes the link = ALMOST DONE
 4. make the link secure so it cannot be shared by other people and that you can only take it one time
 7. expiration time 1 hour, ask about this. 
 8. only take it once
@@ -102,7 +102,6 @@ const RecruitmentPage = () => {
         <DemographSettings
           studyId={studyId}
           isPublished={studyId.published}
-          //onSave={handleSaveDemographics}
         />
       </div>
     </div>
