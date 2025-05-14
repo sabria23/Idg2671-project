@@ -1,14 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const Checkbox = ({ question, onAnswer }) => {
-  const [selected, setSelected] = useState([]);
+const Checkbox = ({ question, externalValue, onExternalChange }) => {
+  const [selected, setSelected] = useState(externalValue || []);
+
+  useEffect(() => {
+    setSelected(externalValue || []);
+  }, [externalValue]);
 
   const handleToggle = (value) => {
     const updated = selected.includes(value)
       ? selected.filter((v) => v !== value)
       : [...selected, value];
+
     setSelected(updated);
-    onAnswer(updated); // send updated array to SurveyPage
+    if (onExternalChange) onExternalChange(updated);
   };
 
   return (

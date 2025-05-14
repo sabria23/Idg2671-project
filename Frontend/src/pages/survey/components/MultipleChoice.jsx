@@ -3,6 +3,7 @@ const MultipleChoice = ({ question, onAnswer }) => {
     onAnswer(value); // send selected value back to SurveyPage
   };
 
+  console.log("[MultipleChoice] fileContent:", question.fileContent);
   return (
     <div className="question-options">
       {question.options.map((option, index) => (

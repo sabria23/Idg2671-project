@@ -49,7 +49,7 @@ export const getSurvey = async (req, res, next) => {
        res.status(200).json({
         id: study._id,
         title: study.title,
-        descirption: study.description,
+        description: study.description,
         question,
         currentIndex: page,
         totalQuestions,
