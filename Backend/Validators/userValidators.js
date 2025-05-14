@@ -26,6 +26,19 @@ export const validateEmail = [
     checkValidation
   ];
 
+   // Validator for password
+  //  export const validateConfirmPassword = [
+  //   body('confirmPassword')
+  //     .custom((value, { req }) => {
+  //       if (value !== req.body.password) {
+  //         throw new Error("Password do not match")
+  //       }
+  //         return true;
+  //     }),
+  //    checkValidation
+  // ];
+
+
   // Validator for username
   export const validateUsername = [
     body('username')
