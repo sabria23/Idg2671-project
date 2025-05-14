@@ -23,7 +23,7 @@ const StudiesList = ({
   
   // Handle study action
   const handleExport = (studyId) => {
-    navigate(`/export-results/${studyId}`);
+    navigate(`/export/${studyId}`);
   };
   
   const handleEdit = (studyId) => {

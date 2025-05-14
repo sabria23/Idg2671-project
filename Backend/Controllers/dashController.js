@@ -5,10 +5,11 @@ import Session from '../Models/participantModel.js';
 import StudyInvitation from '../Models/invitationModel.js';
 import crypto from "crypto";
 import checkStudyAuthorization from "../Utils/authHelperFunction.js";
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { sendStudyInvitation } from "../Utils/emailService.js";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -427,7 +428,7 @@ const generateRandomToken = (bytes = 20) => {
     
 };*/
 // BETTER APPROACH 
-const emailInvitaitons = async (req, res, next) => {
+/*const emailInvitaitons = async (req, res, next) => {
     try {
         const { studyId } = req.params;
         const { emails } = req.body;
@@ -527,7 +528,142 @@ const emailInvitaitons = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+};*/
+
+/*
+This approach:
+
+Uses a much simpler data model
+Still tracks essential information
+Provides success/failure counts
+Maintains a record of sent invitations*/
+export const emailInvitaitons = async (req, res) => {
+  // Add these debug logs at the very beginning
+  console.log("------- Email Invitations Debug -------");
+  console.log("User from auth middleware:", req.user ? req.user._id : "No user");
+  
+  try {
+    const { studyId } = req.params;
+    // Add this debug log
+    console.log("Study ID from params:", studyId);
+    
+    const { emails, subject, message } = req.body;
+    
+    // Add this code to check if the study exists at all
+    const anyStudy = await Study.findById(studyId);
+    console.log("Study exists in DB:", anyStudy ? "Yes" : "No");
+    
+    if (anyStudy) {
+      console.log("Study published status:", anyStudy.published);
+      console.log("Study creator:", anyStudy.creator);
+      console.log("Current user:", req.user._id);
+      console.log("Creator matches current user:", 
+        anyStudy.creator.toString() === req.user._id.toString());
+    }
+    
+    // Your original validation
+    const study = await Study.findOne({
+      _id: studyId,
+      published: true
+    });
+    
+    // Add this debug log
+    console.log("Study found with all criteria:", study ? "Yes" : "No");
+    
+    if (!study) {
+      // Add this debug log
+      console.log("Study validation failed");
+      return res.status(404).json({
+        success: false,
+        message: 'Study not found or not published'
+      });
+    }
+    
+    // Rest of your controller code remains the same
+    // Process email list (handle comma or line separated)
+    const emailList = emails
+      .split(/[\n,]/)
+      .map(email => email.trim())
+      .filter(email => email.includes('@') && email.length > 5);
+      
+    if (emailList.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No valid emails provided'
+      });
+    }
+    
+    // Get the study link
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3030';
+    const studyUrl = `${baseUrl}/public/study/${studyId}`;
+    
+    // Limit to prevent abuse (stay under rate limits)
+    const MAX_EMAILS = 50;
+    const limitedList = emailList.slice(0, MAX_EMAILS);
+    // Generate a unique batch token for this invitation
+    const invitationToken = `batch-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+
+    // Create invitation record
+    const invitation = new StudyInvitation({
+      studyId,
+      subject,
+      message,
+      sentBy: req.user._id,
+      emails: limitedList,
+      status: 'pending',
+      invitationToken: invitationToken
+    });
+    
+    await invitation.save();
+    
+    // Send emails
+    let successCount = 0;
+    let failCount = 0;
+    
+    for (const email of limitedList) {
+      try {
+        const result = await sendStudyInvitation(
+          email,
+          subject,
+          message,
+          studyUrl + `?token=${invitationToken}` 
+        );
+        
+        if (result.success) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch (err) {
+        failCount++;
+      }
+    }
+    
+    // Update invitation record
+    invitation.successCount = successCount;
+    invitation.failCount = failCount;
+    invitation.status = successCount > 0 ? 'completed' : 'failed';
+    invitation.sentAt = new Date();
+    
+    await invitation.save();
+    
+    res.status(200).json({
+      success: true,
+      message: `Invitations sent to ${successCount} recipients. ${failCount} failed.`
+    });
+  } catch (error) {
+    console.error('Error sending invitations:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send invitations',
+      error: error.message
+    });
+  }
 };
+
+
+
+
 
 // Add this to your controller file (e.g., studyController.js)
 
