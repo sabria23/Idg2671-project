@@ -2,8 +2,8 @@
 1. Toggle a study from draft to published = DONE
 2. have it made so that when researtcher unpiblished the link then it is not accessible anymore to pariticpants, the link need to be connected to marius study and that specifci studyid = DONE
 3. Generate a shareable link for a published study = DONE
+5. Invite participants via email = DONE
 4. make the link secure so it cannot be shared by other people and that you can only take it one time
-5. Invite participants via email
 6. add demograpfics field and what fields you want to have
 7. expiration time 1 hour, ask about this. 
 8. only take it once
