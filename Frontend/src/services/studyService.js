@@ -124,6 +124,59 @@ export const getStudyById = async (studyId) => {
     }
 };
 
+
+export const getDemographicsSettings = async (studyId) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+    
+    const response = await axios.get(
+      `http://localhost:8000/api/studies/${studyId}/demographics`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    
+    return response.data.demographics;
+  } catch (error) {
+    console.error('Error fetching demographics settings:', error);
+    throw error;
+  }
+};
+
+// Update demographics settings for a study
+export const updateDemographicsSettings = async (studyId, demographicsConfig) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+    
+    const response = await axios.post(
+      `http://localhost:8000/api/studies/${studyId}/demographics`,
+      demographicsConfig,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error updating demographics settings:', error);
+    throw error;
+  }
+};
+
+
+
 export default {
     getAllStudies,
     deleteStudy,
@@ -131,7 +184,9 @@ export default {
     updateStudyStatus,
     generateStudyLink,
     sendEmailInvitations,
-    getStudyById
+    getStudyById,
+    getDemographicsSettings,
+    updateDemographicsSettings
 };
 
 
