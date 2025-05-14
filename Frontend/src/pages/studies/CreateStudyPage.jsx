@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../styles/createStudy.module.css';
 import StudyDetails from './components/StudyDetails';
@@ -8,7 +8,6 @@ import QuestionBuilder from './components/QuestionBuilder';
 import QuestionList from './components/QuestionList';
 
 const CreateStudyPage = () => {
-    const navigate = useNavigate();
     const [studyTitle, setStudyTitle] = useState('');
     const [studyDescription, setStudyDescription] = useState('');
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -65,7 +64,6 @@ const CreateStudyPage = () => {
             });
             alert('Study successfully created!');
             setStudyId(response.data.id); 
-            navigate(`/dashboard`, { state: { newStudyId: response.data.id }});
         } catch (err) {
             console.error(err);
             alert('Error creating study');
@@ -131,6 +129,7 @@ const CreateStudyPage = () => {
                 
                 {/* SAVE STUDY BUTTON */}
                 <div className={styles['saveBtns']}>
+                  <div className={styles['btnGroup']}>
                     <button
                         className={styles['saveStudyBtn']}
                         type="button"
@@ -138,12 +137,15 @@ const CreateStudyPage = () => {
                     >
                         Save Study
                     </button>
+                    <p className={styles['saveStudy-para']}>Click on the save button to save this study.</p>
 
                     {/* LINK/ BUTTON THE PREVIEW */}
                     <button className={styles['previewBtn']} type="button">
-                            <Link to={`/study/${studyId}/preview`}>Preview Study</Link>
+                      <Link to={`/api/study/${studyId}/preview`}>Preview Study</Link>
                     </button>
+                    <p className={styles['previewStudy-para']}>If you want to preview your saved study, click the preview button after saving</p>
                 </div>
+              </div>
             </main>
         </div>
     );
