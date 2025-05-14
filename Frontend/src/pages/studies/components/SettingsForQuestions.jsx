@@ -15,7 +15,8 @@ const ratingTypes = [
   'label-slider'
 ];
 
-const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setSelectedQuestionIndex}) => {
+const QuestionSettings = ({  questions, setQuestions, selectedQuestionIndex, setSelectedQuestionIndex}) => {
+
     if(selectedQuestionIndex === null || !questions[selectedQuestionIndex]){
         return <div className={styles['rightSide-panel']}></div>
     }
@@ -65,7 +66,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                     <input
                         className={styles['question-title']}
                         type="text"
-                        value={currentQuestion.questionTitle}
+                        value={currentQuestion.questionTitle || ''}
                         onChange={(e) =>
                             handleQuestionTitleChange(selectedQuestionIndex, e.target.value)
                         }
@@ -96,7 +97,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                                     <input 
                                         className={styles['multiple-choice-option']}
                                         type='text'
-                                        value={option.label}
+                                        value={option.label || ''}
                                         placeholder='Option Label'
                                         onChange={(e) =>{
                                             const updatedQuestions = [...questions];
@@ -142,7 +143,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                                 >
                                 <input 
                                     type='checkbox'
-                                    value={option.checked || false}
+                                    checked={!!option.checked}
                                     onChange={(e) =>{
                                         const updatedQuestions = [...questions];
                                         updatedQuestions[selectedQuestionIndex].options[optIndex].checked = e.target.checked;
@@ -151,7 +152,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                                 />
                                 <input 
                                   type='text'
-                                  value={option.label}
+                                  value={option.label || ''}
                                   onChange={(e) =>{
                                     const updatedQuestions = [...questions];
                                     updatedQuestions[selectedQuestionIndex].options[optIndex].label = e.target.value;
@@ -211,7 +212,7 @@ const QuestionSettings = ({ questions, setQuestions, selectedQuestionIndex, setS
                     <label>Required</label>
                         <input 
                             type='checkbox'
-                            checked={currentQuestion.isRequired || false}
+                            checked={!!currentQuestion.isRequired}
                             onChange={(e) => {
                                 const updatedQuestions = [...questions];
                                 updatedQuestions[selectedQuestionIndex].isRequired = e.target.checked;

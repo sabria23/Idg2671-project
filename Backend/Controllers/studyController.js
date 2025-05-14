@@ -105,13 +105,23 @@ const getStudyById = async (req, res) => {
 // Reuses code from @emilirol's oblig2 in full-stack
 const patchStudyById = async (req, res) => {
     try{
-        const updateStudy = await Study.findByIdAndUpdate(req.params.studyId, req.body, {new: true});
-        if (!updateStudy) return res.status(404).json({ message: 'Could not find study'});
+      let updateData = { ...req.body };
 
-        res.json(updateStudy);
-    } catch(err){
+      if(req.body.questions && typeof req.body.questions === 'string'){
+        try{
+          updateData.questions = JSON.parse(req.body.questions);
+        }catch (err){
+          return res.status(400).json({ error: 'Invalid JSON in questions field'});
+        }
+      }
+
+      const updateStudy = await Study.findByIdAndUpdate(req.params.studyId, updateData, { new: true });
+      if (!updateStudy) return res.status(404).json({ message: 'Could not find study'});
+
+      res.json(updateStudy);
+      } catch(err){
         res.status(400).json({error: err.message });
-    }
+      }
 };
 
 // Update a question
