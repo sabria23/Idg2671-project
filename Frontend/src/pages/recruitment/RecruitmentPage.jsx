@@ -4,7 +4,10 @@
 3. Generate a shareable link for a published study = DONE
 4. make the link secure so it cannot be shared by other people and that you can only take it one time
 5. Invite participants via email
-6. add demograpfics field 
+6. add demograpfics field and what fields you want to have
+7. expiration time 1 hour, ask about this. 
+8. only take it once
+9. copy needs tilabek melding 
 */
 
 import React, {useState, useEffect} from 'react';
@@ -94,10 +97,7 @@ const RecruitmentPage = () => {
           />
         )}
         
-        <EmailInvitation 
-          studyId={studyId}
-          //onSendInvitations={handleSendInvitations}
-        />
+        {study.published && <EmailInvitation studyId={study._id} />}
         
         <DemographSettings
           studyId={studyId}

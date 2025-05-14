@@ -1,7 +1,7 @@
 // emailService.js
 import { Resend } from 'resend';
 
-const resend = new Resend('re_WN1CbMzo_CfH4z7W8cVvgqDDWH4GJ5d12'); 
+const resend = new Resend('re_WN1CbMzo_CfH4z7W8cVvgqDDWH4GJ5d12'); // need to move this to .env as API_KEY
 
 export const sendStudyInvitation = async (to, subject, message, studyUrl) => {
   try {
