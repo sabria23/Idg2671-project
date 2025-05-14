@@ -17,7 +17,7 @@ const sessionSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  demographics: { // either have this approach or have type: Map, of: string 
+  demographics: { 
     age: {
       type: Number,
       min: 0,
@@ -26,7 +26,8 @@ const sessionSchema = new mongoose.Schema({
     gender: {
       type: String,
       enum: ['female', 'male', 'prefer_not_to_say']
-    }
+    },
+    additional: mongoose.Schema.Types.Mixed // Allow additional demographic fields
   },
   isCompleted: {
     type: Boolean,
