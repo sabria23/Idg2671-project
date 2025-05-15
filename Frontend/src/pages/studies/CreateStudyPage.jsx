@@ -58,7 +58,7 @@ const CreateStudyPage = () => {
 
         try {
           const token = localStorage.getItem('token');
-          const url = isEditMode ? `/api/studies/${studyId}` : '/api/studies';
+          const url = isEditMode ? `/api/study/${studyId}` : '/api/study';
     
           const response = isEditMode
           ? await axios.patch(url, formData, {
@@ -108,7 +108,7 @@ const CreateStudyPage = () => {
 
    const handlePreviewClick = () => {
     if(savedStudyId){
-      navigate(`/api/studies/${savedStudyId}/preview`);
+      navigate(`/api/study/${savedStudyId}/preview`);
     }
    };
 
