@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../styles/createStudy.module.css';
 import StudyDetails from './components/StudyDetails';
@@ -8,6 +8,7 @@ import QuestionBuilder from './components/QuestionBuilder';
 import QuestionList from './components/QuestionList';
 
 const CreateStudyPage = () => {
+    const navigate = useNavigate();
     const [studyTitle, setStudyTitle] = useState('');
     const [studyDescription, setStudyDescription] = useState('');
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -57,7 +58,7 @@ const CreateStudyPage = () => {
 
         try {
           const token = localStorage.getItem('token');
-          const url = isEditMode ? `/api/study/${studyId}` : '/api/studies';
+          const url = isEditMode ? `/api/studies/${studyId}` : '/api/studies';
     
           const response = isEditMode
           ? await axios.patch(url, formData, {
@@ -86,7 +87,7 @@ const CreateStudyPage = () => {
 
       try{
         const token = localStorage.getItem('token');
-        const response = await axios.get(`/api/study/${studyId}`,{
+        const response = await axios.get(`/api/studies/${studyId}`,{
           headers:{
             'Authorization': `Bearer ${token}`
           }
@@ -104,6 +105,12 @@ const CreateStudyPage = () => {
 
     fetchStudy();
    }, [isEditMode, studyId]);
+
+   const handlePreviewClick = () => {
+    if(savedStudyId){
+      navigate(`/api/studies/${savedStudyId}/preview`);
+    }
+   };
 
     // RENDERING THE HTML CONTENT OF THE CREATE STUDY PAGE
     return (
@@ -176,15 +183,14 @@ const CreateStudyPage = () => {
                     <p className={styles['saveStudy-para']}>Click on the save button to save this study.</p>
 
                     {/* LINK/ BUTTON THE PREVIEW */}
-                    <button 
+                    <button
                       className={styles['previewBtn']} 
                       type='button'
+                      onClick={handlePreviewClick}
                       disabled={!savedStudyId}
                     >
-                      <Link to={savedStudyId ? `/api/study/${savedStudyId}/preview` : ''}>
-                        Preview Study
-                      </Link>
-                    </button>
+                      Preview Study
+                    </button>     
                     <p className={styles['previewStudy-para']}>If you want to preview your saved study, click the preview button after saving</p>
                 </div>
               </div>

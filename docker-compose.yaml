@@ -8,7 +8,9 @@ services:
     env_file:
       - ./.env
     environment:
+      - PORT=8000
       - NODE_ENV=production
+      - FRONTEND_URL=https://group4.sustainability.it.ntnu.no
     networks:
       - app-network
 

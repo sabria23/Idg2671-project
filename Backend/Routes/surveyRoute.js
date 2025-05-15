@@ -1,5 +1,5 @@
 import express from "express";
-import { getSurvey, createSession, submitAnswer, updateAnswer, completeSession } from "../Controllers/surveyController.js"; // Controllers
+import { getSurvey, createSession, updateSession, submitAnswer, updateAnswer, completeSession } from "../Controllers/surveyController.js"; // Controllers
 //import {  validateSessionId } from "../Validators/surveyValidators.js";
 
 const surveyRouter = express.Router();
@@ -10,6 +10,10 @@ surveyRouter.get('/:studyId',  getSurvey);
 // Sessions resource
 // Create a new session
 surveyRouter.post('/:studyId/sessions', createSession);
+// update session
+surveyRouter.patch('/:studyId/sessions/:sessionId', 
+    //validateSessionId, 
+    updateSession);
 
 // Complete a session
 surveyRouter.patch('/:studyId/sessions/:sessionId/complete', 
