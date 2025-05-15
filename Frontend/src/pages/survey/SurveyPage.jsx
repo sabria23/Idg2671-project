@@ -16,11 +16,12 @@ export default function SurveyPage({ mode = 'live' }) {
   // Steps: 0=Intro, 1=Demographics, 2..Q+1=Questions, Q+2=Thanks
   const [currentStep, setCurrentStep] = useState(0);
   const [studyInfo, setStudyInfo] = useState(null);
+  const [meta, setMeta] = useState(null);
 
   const [totalQuestions, setTotalQuestions] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [demographicsConfig, setDemographicsConfig] = useState(null);  // New state for demographics
+  const [demographicsConfig, setDemographicsConfig] = useState({ enabled: false, fields: [] });
 
 
   const responseMap = useRef({});
@@ -30,15 +31,13 @@ export default function SurveyPage({ mode = 'live' }) {
     const fetchMeta = async () => {
       try {
         const res = await axios.get(
-          `/api/survey/${studyId}?page=0&preview=${isPreview}`
+          `/api/survey/${studyId}`, 
+          { params: { page: 0, preview: isPreview } }
         );
-        const { title, description, totalQuestions: tq } = res.data;
+        const { title, description, totalQuestions: tq, demographics } = res.data;
         setStudyInfo({ title, description });
         setTotalQuestions(tq);
-
-        // Store demographics configuration
-        setDemographicsConfig(res.data.demographics || { enabled: false, fields: [] });
-
+        setDemographicsConfig(demographics || { enabled: false, fields: [] });
       } catch (err) {
         console.error('Failed to load study metadata', err);
       }
@@ -126,7 +125,12 @@ export default function SurveyPage({ mode = 'live' }) {
       setCurrentStep(2);
       return;
     }
-    
+          // Check if demographics are enabled - if not, skip directly to questions
+      if (!demographicsConfig || !demographicsConfig.enabled) {
+        setCurrentStep(2); // Skip to questions
+      } else {
+        setCurrentStep(1); // Show demographics
+      }
     if (sessionId) return; // already started
   
     try {
@@ -136,12 +140,7 @@ export default function SurveyPage({ mode = 'live' }) {
       const res = await axios.post(`/api/survey/${studyId}/sessions`, { deviceInfo });
       setSessionId(res.data.sessionId);
       
-      // Check if demographics are enabled - if not, skip directly to questions
-      if (!demographicsConfig || !demographicsConfig.enabled) {
-        setCurrentStep(2); // Skip to questions
-      } else {
-        setCurrentStep(1); // Show demographics
-      }
+
     } catch (err) {
       console.error('Failed to start session', err);
       alert('Could not start session. Please try again.');
@@ -156,12 +155,13 @@ export default function SurveyPage({ mode = 'live' }) {
     try {
       await axios.post(
         `/api/survey/${studyId}/sessions/${sessionId}/demographics`,
-        demo
+        answers
       );
-      setDemographics(demo);
+      setDemographics(answers);
       setCurrentStep(2);
     } catch (err) {
       console.error('Failed to submit demographics', err);
+      alert('Could not save demographics. Please try again.');
     }
   };
 
@@ -215,9 +215,9 @@ export default function SurveyPage({ mode = 'live' }) {
       <SurveyDemographics 
         studyId={studyId}
         sessionId={sessionId}
+        demographicsConfig={demographicsConfig}
         onSubmit={handleDemographics} 
         onBack={() => setCurrentStep(0)}
-        demographicsConfig={demographicsConfig}
       />
     );
   }

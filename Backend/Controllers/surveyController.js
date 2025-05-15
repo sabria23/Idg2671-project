@@ -5,104 +5,71 @@ import Session from "../Models/participantModel.js";
 //@desc retrieve and return study's data fro paritipants
 // @route GET /api/studies//:studyId/survey
 export const getSurvey = async (req, res, next) => {
-  // === DEBUG LOGGING ===
-  console.log('getSurvey called with:', {
-    params:  req.params,
-    query:   req.query,
-  });
-
   try {
     const { studyId } = req.params;
-    const { sessionId, page = '0', preview } = req.query;
+    const { sessionId, page = 0, preview } = req.query;
     const pg = parseInt(page, 10);
 
-    // 1) Load the study
+    // 1) fetch study
     const study = await Study.findById(studyId);
-    if (!study) {
-      const err = new Error('Study not found');
-      err.statusCode = 404;
-      throw err;
-    }
+    if (!study) throw Object.assign(new Error("Study not found"), { statusCode: 404 });
+    if (!study.published && preview !== "true") throw Object.assign(new Error("Not available"), { statusCode: 403 });
 
-    // 2) Enforce published unless preview=true
-    if (!study.published && preview !== 'true') {
-      const err = new Error('This study is not available');
-      err.statusCode = 403;
-      throw err;
-    }
+    // 2) page bounds
+    const totalQuestions = study.questions.length;
+    if (pg < 0 || pg >= totalQuestions) throw Object.assign(new Error("Invalid page"), { statusCode: 400 });
 
-    // 3) Validate page index
-    const totalQuestions = Array.isArray(study.questions)
-      ? study.questions.length
-      : 0;
-    if (isNaN(pg) || pg < 0 || pg >= totalQuestions) {
-      const err = new Error('Invalid page number');
-      err.statusCode = 400;
-      throw err;
-    }
-
-    // 4) Pull out the raw question
+    // 3) build question + artifacts
     const raw = study.questions[pg];
-    if (!raw) {
-      const err = new Error('Question data missing');
-      err.statusCode = 500;
-      throw err;
-    }
+    const artifacts = (raw.fileContent || []).map(fc => {
+      const publicUrl = fc.fileUrl.replace(
+        "/view",
+        `/public-view?studyId=${study._id}`
+      );
+      return { fileUrl: publicUrl, fileType: fc.fileType, fileId: fc.fileId };
+    });
 
-    // 5) Build your public-view artifact URLs
-    const artifacts = Array.isArray(raw.fileContent)
-      ? raw.fileContent.map(fc => {
-          const originalUrl = fc.fileUrl || '';
-          // if it ends in "/view", swap to "/public-view?studyId=…"
-          const publicUrl = originalUrl.includes('/view')
-            ? originalUrl.replace(
-                '/view',
-                `/public-view?studyId=${study._id}`
-              )
-            : originalUrl;
-          return {
-            fileId:   fc.fileId,
-            fileUrl:  publicUrl,
-            fileType: fc.fileType,
-          };
-        })
-      : [];
-
-    // 6) Find any previous answer in this session
+    // 4) previous response
     let previousResponse = null;
     if (sessionId) {
       const session = await Session.findById(sessionId);
-      if (session && Array.isArray(session.responses)) {
-        previousResponse = session.responses.find(
-          r => r.questionId?.toString() === raw._id?.toString()
+      if (session) {
+        previousResponse = session.responses.find(r =>
+          r.questionId.toString() === raw._id.toString()
         );
       }
     }
 
-    // 7) Send it all back
+    // 5) demographics: have they already filled it in?
+    let demographicsCollected = false;
+    if (sessionId) {
+      const session = await Session.findById(sessionId);
+      demographicsCollected = Array.isArray(session.demographicsResponses)
+        && session.demographicsResponses.length > 0;
+    }
+
+    // 6) return meta + question
     return res.status(200).json({
-      id:                study._id,
-      title:             study.title,
-      description:       study.description,
+      id: study._id,
+      title: study.title,
+      description: study.description,
+      demographics: study.demographics,            // your configuration
+      demographicsCollected,
       question: {
-        _id:             raw._id,
-        questionText:    raw.questionText,
-        questionType:    raw.questionType,
-        layout:          raw.layout,
-        options:         raw.options,
-        artifacts,      // <— array of { fileUrl, fileType }
+        _id: raw._id,
+        questionText: raw.questionText,
+        questionType: raw.questionType,
+        layout: raw.layout,
+        options: raw.options,
+        artifacts,
       },
-      currentIndex:      pg,
+      currentIndex: pg,
       totalQuestions,
-      previousAnswer:    previousResponse?.participantAnswer  || null,
-      previousResponseId: previousResponse?._id              || null,
-      skipped:           previousResponse?.skipped           || false,
-
-      demographics: study.demographics // Include demographics configuration
-
+      previousAnswer:    previousResponse?.participantAnswer || null,
+      previousResponseId: previousResponse?._id             || null,
+      skipped:           previousResponse?.skipped          || false,
     });
   } catch (err) {
-    console.error('getSurvey error:', err);
     next(err);
   }
 };
@@ -208,6 +175,23 @@ export const updateSession = async (req, res, next) => {
   }
 };
 
+// Controllers/surveyController.js
+export const submitDemographics = async (req, res, next) => {
+  try {
+    const { sessionId } = req.params;
+    const { responses } = req.body; // e.g. { age: 32, gender: 'female', ... }
+
+    const session = await Session.findById(sessionId);
+    if (!session) throw Object.assign(new Error("Session not found"), { statusCode: 404 });
+
+    session.demographicsResponses = responses;
+    await session.save();
+
+    res.status(201).json({ message: "Demographics saved" });
+  } catch (err) {
+    next(err);
+  }
+};
 
 // @desc save participant's answer related to quesitons
 // @route POST /api/studies/:studyid/sessions/:sessionId/:questionId
