@@ -1,53 +1,168 @@
-.exportContainer {
-    background-color: #f8f9fa;
-    min-height: 100vh;
+.exportPage {
+  padding: 24px;
+  max-width: 100%;
+}
+
+.exportHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.exportHeader h1 {
+  font-size: 24px;
+  margin: 0;
+  color: #333;
+}
+
+.exportActions {
+  display: flex;
+  gap: 10px;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.statCard {
+  background-color: #d2e6fb;
+  border-radius: 6px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  font-size: 22px;
+  font-weight: 600;
+  color: #212529;
+}
+
+
+.previewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #235384;
+  background-color: #f8f9fa;
+}
+
+.previewHeader h2 {
+  margin: 0;
+  font-size: 16px;
+  color: #145290;
+}
+
+.toggleButton {
+  background-color: #e9ecef;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.toggleButton:hover {
+  background-color: #dee2e6;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dataTable th,
+.dataTable td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
+}
+
+.dataTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.statusBadge.completed {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.statusBadge.inProgress {
+  background-color: #fff3cd;
+  color: #664d03;
+}
+
+.tableFooter {
+  padding: 10px 12px;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  font-size: 13px;
+  text-align: center;
+  border-top: 1px solid #dee2e6;
+}
+
+.noData {
+  background-color: #f0f8ff;
+  padding: 30px;
+  text-align: center;
+  border-radius: 6px;
+  color: #6c757d;
+}
+
+.loadingIndicator {
+  text-align: center;
+  padding: 30px;
+  color: #6c757d;
+}
+
+.errorMessage {
+  background-color: #f8d7da;
+  color: #842029;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .statGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
   
-  .mainContent {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px;
+  .exportHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
   }
   
-  .summaryCards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-bottom: 32px;
+  .exportActions {
+    width: 100%;
   }
-  
-  .card {
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 480px) {
+  .statGrid {
+    grid-template-columns: 1fr;
   }
-  
-  .card h3 {
-    font-size: 14px;
-    color: #718096;
-    margin-bottom: 8px;
-  }
-  
-  .cardValue {
-    font-size: 32px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  
-  .cardDescription {
-    font-size: 14px;
-    color: #718096;
-  }
-  
- 
-  
-  .studySelector {
-    padding: 10px 16px;
-    border-radius: 4px;
-    border: 1px solid #e2e8f0;
-    width: 250px;
-  }
+}
   
 
 
