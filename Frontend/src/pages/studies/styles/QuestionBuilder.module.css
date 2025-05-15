@@ -179,3 +179,8 @@
   border: none;
   border-radius: 4px;
 }
+
+/* required checkbox */
+.required-checkbox p{
+  color: #00000079;
+}

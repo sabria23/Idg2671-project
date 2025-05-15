@@ -1,6 +1,6 @@
 import Artifact from '../Models/artifactModel.js';
 import mongoose from 'mongoose';
-import checkStudyAuthorization from '../Utils/authHelperFunction.js';
+import protect from '../Middleware/authMiddleware.js';
 
 //------------------POST(CREATE)-------------------------
 // Upload general artifacts
@@ -24,10 +24,11 @@ const uploadGeneralArtifacts = async (req, res, next) =>{
         else if (file.mimetype.startsWith('text/') || file.mimetype === 'application/pdf') fileType = 'text';
 
         const artifact = new Artifact({
-          uploadedBy: req.userId || null,
+          uploadedBy: req.user?._id || null,
           fileName: file.originalname,
           fileType: fileType,
-          fileData: file.buffer
+          fileData: file.buffer,
+          createdAt: new Date()
         });
     
         await artifact.save();
@@ -40,7 +41,9 @@ const uploadGeneralArtifacts = async (req, res, next) =>{
       data: artifacts.map(a => ({
         id: a._id,
         fileName: a.fileName,
-        fileType: a.fileType
+        fileType: a.fileType,
+        createdAt: a.createdAt
+
       })),
     });
   }catch(err){
@@ -82,19 +85,19 @@ const uploadArtifact = async (req, res, next) => {
         // Determine fileType from MIME type
         for (const file of req.files){
         let fileType = 'other';
-        if (req.file.mimetype.startsWith('image/')) fileType = 'image';
-        else if (req.file.mimetype.startsWith('video/')) fileType = 'video';
-        else if (req.file.mimetype.startsWith('audio/')) fileType = 'audio';
-        else if (req.file.mimetype.startsWith('text/') || req.file.mimetype === 'application/pdf') fileType = 'text';
+        if (file.mimetype.startsWith('image/')) fileType = 'image';
+        else if (file.mimetype.startsWith('video/')) fileType = 'video';
+        else if (file.mimetype.startsWith('audio/')) fileType = 'audio';
+        else if (file.mimetype.startsWith('text/') || req.file.mimetype === 'application/pdf') fileType = 'text';
         
         // Create and save a new artifact
         const artifact = new Artifact({
-            uploadedBy: req.userId || null, // Use req.userId for consistency
+            uploadedBy: req.user?._id || null, // Use req.userId for consistency
             fileName: file.originalname,
             fileType: fileType, // Use the determined fileType, not the MIME type
             fileData: file.buffer, // Path from multer
             usedInStudies: [studyId],
-            createdAt: createdAt
+            createdAt: new Date()
         });
         
         await artifact.save();
@@ -123,7 +126,7 @@ const uploadArtifact = async (req, res, next) => {
 const getArtifacts = async (req, res) => {
     const { page = 1, limit = 10, sortBy = 'fileName', order = 'desc'} = req.query;
     try{
-        const artifacts = await Artifact.find()
+        const artifacts = await Artifact.find({ uploadedBy: req.user._id })
             .sort({[sortBy]: order === 'asc' ? 1 : -1})
             .limit(Number(limit))
             .skip((Number(page) -1) * Number(limit))
@@ -148,14 +151,21 @@ const getArtifacts = async (req, res) => {
 // Displays the artifacts on the create-study page
 const getArtifactView = async (req, res) =>{
   try{
-    const artifact = await Artifact.findById(req.params.id);
+    const userId = req.user?._id;
+    const artifactId = req.params.id;
 
-    if(!artifact || !artifact.fileData?.buffer){
-      return res.status(404).send('Artifact not found or has no file data');
+    if(!userId){
+      return res.status(401).json({ error: 'Not authorized '});
     }
 
-    res.set('Content-Type', artifact.fileType || 'application/octet-stream');
-    return res.send(artifact.fileData);
+    const artifact = await Artifact.findOne({ _id: artifactId, uploadedBy: userId });
+
+    if(!artifact){
+      return res.status(404).json({ error: 'Artifact not found or not owned by user' });
+    }
+
+    res.setHeader('Content-Type', artifact.fileType || 'application/octet-stream');
+    res.send(artifact.fileData);
   }catch (err){
     console.error('Error in getArtifactView:', err);
     return res.status(500).send('Internal server Error');

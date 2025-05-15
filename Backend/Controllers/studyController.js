@@ -6,11 +6,6 @@ import { app } from '../server.js';
 //----------------POST(CREATE)----------------------------
 // Create a new study
 const createStudy = async (req, res) => {
-  console.log('----- Incoming Request -----');
-  console.log('Headers:', req.headers);
-  console.log('BODY:', req.body);
-  console.log('FILES:', req.files);  // if using multer for files
-  console.log('User ID:', req.userId);
 
     try {
         const { creator, title, description, published } = req.body;
@@ -110,13 +105,23 @@ const getStudyById = async (req, res) => {
 // Reuses code from @emilirol's oblig2 in full-stack
 const patchStudyById = async (req, res) => {
     try{
-        const updateStudy = await Study.findByIdAndUpdate(req.params.studyId, req.body, {new: true});
-        if (!updateStudy) return res.status(404).json({ message: 'Could not find study'});
+      let updateData = { ...req.body };
 
-        res.json(updateStudy);
-    } catch(err){
+      if(req.body.questions && typeof req.body.questions === 'string'){
+        try{
+          updateData.questions = JSON.parse(req.body.questions);
+        }catch (err){
+          return res.status(400).json({ error: 'Invalid JSON in questions field'});
+        }
+      }
+
+      const updateStudy = await Study.findByIdAndUpdate(req.params.studyId, updateData, { new: true });
+      if (!updateStudy) return res.status(404).json({ message: 'Could not find study'});
+
+      res.json(updateStudy);
+      } catch(err){
         res.status(400).json({error: err.message });
-    }
+      }
 };
 
 // Update a question
@@ -166,6 +171,113 @@ const deleteQuestionById = async (req, res) => {
     }
 };
 
+// for demographics 
+//
+export const getDemographics = async (req, res) => {
+  try {
+    const { studyId } = req.params;
+    
+    // Check if user is authorized to access this study
+    const study = await Study.findOne({
+      _id: studyId,
+      creator: req.user._id
+    });
+    
+    if (!study) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Study not found or you do not have permission' 
+      });
+    }
+    
+    // If no dmeographics exists yet, initialize with defaults
+    if (!study.demographics) {
+      const defaultConfig = {
+        enabled: true,
+        fields: [
+          {
+            name: 'age',
+            type: 'number',
+            required: false
+          },
+          {
+            name: 'gender',
+            type: 'select',
+            options: ['female', 'male', 'prefer_not_to_say'],
+            required: false
+          }
+        ]
+      };
+      
+      // Save default config to study
+      study.demographics = defaultConfig;
+      await study.save();
+      
+      res.status(200).json({
+        success: true,
+        demographics: defaultConfig
+      });
+    } else {
+      // Return the existing config
+      res.status(200).json({
+        success: true,
+        demographics: study.demographics
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching demographics config:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to fetch demographics configuration' 
+    });
+  }
+};
+
+// Update demographics configuration
+export const updateDemographicsConfig = async (req, res) => {
+  try {
+    const { studyId } = req.params;
+    const { enabled, fields } = req.body;
+    
+    // Check if user is authorized to update this study
+    const study = await Study.findOne({
+      _id: studyId,
+      creator: req.user._id
+    });
+    
+    if (!study) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Study not found or you do not have permission' 
+      });
+    }
+    
+    // Update demographics config
+    study.demographics = {
+      enabled: enabled !== undefined ? enabled : true,
+      fields: Array.isArray(fields) ? fields.map(field => ({
+        name: field.name,
+        type: field.type || 'text',
+        options: field.options || [],
+        required: field.required || false
+      })) : []
+    };
+    
+    await study.save();
+    
+    res.status(200).json({
+      success: true,
+      message: 'Demographics configuration updated successfully',
+      demographics: study.demographics
+    });
+  } catch (error) {
+    console.error('Error updating demographics config:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to update demographics configuration' 
+    });
+  }
+};
 
 export const studyController ={
     createStudy,
@@ -173,5 +285,7 @@ export const studyController ={
     getStudyById,
     patchStudyById,
     patchQuestionById,
-    deleteQuestionById
+    deleteQuestionById,
+    getDemographics,
+    updateDemographicsConfig
 };

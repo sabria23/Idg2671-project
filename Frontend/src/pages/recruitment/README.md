@@ -121,3 +121,31 @@ The shareable link feature consists of three main parts:
 1. Backend API to generate (and optionally track) study links
 2. rontend component to display and copy the link
 3. Access control logic to ensure only published studies are accessible
+
+current implementaiton: 
+Current Implementation:
+
+Frontend Component (ShareableLink.jsx):
+
+Renders a UI for displaying a shareable link
+On mount (or when published changes), it attempts to fetch a shareable link from the backend via fetchShareableLink()
+Makes a GET request to http://localhost:8000/api/studies/${studyId}/link
+Displays the URL received from the backend, with a visible error if the request fails
+
+
+Backend Controller (generateLink function):
+
+Receives a request for a specific study ID
+Checks authorization (verifies the user has permission to access the study)
+Verifies the study exists and is published
+Constructs a URL by concatenating a base URL with the study ID: ${baseUrl}/public/study/${studyId}
+Returns this URL in the response
+
+
+Authentication Middleware:
+
+Protects the API endpoint to ensure only authenticated users can generate links
+Extracts and verifies the JWT token from the request headers
+Attaches user information to the request object
+
+It's more of a "here's the URL format for accessing a published study" rather than "here's a special link that gives access to this specific study."

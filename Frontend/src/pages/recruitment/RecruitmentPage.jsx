@@ -1,10 +1,11 @@
 /* THINGS I NEED TO DO TODAY
 1. Toggle a study from draft to published = DONE
 2. have it made so that when researtcher unpiblished the link then it is not accessible anymore to pariticpants, the link need to be connected to marius study and that specifci studyid = DONE
-3. Generate a shareable link for a published study 
-4. make the link secure so it cannot be shared by other people and that you can only take it one time
-5. Invite participants via email
-6. add demograpfics field 
+3. Generate a shareable link for a published study = DONE
+5. Invite participants via email = DONE
+9. copy needs tilabek melding = DONE
+6. add demograpfics field and whatever fields you want to have, these will be displayed as part of the survey once participant takes the link =  DONE
+9. I found out it is because I need ot  click on save demogrpahcis settings again
 */
 
 import React, {useState, useEffect} from 'react';
@@ -94,15 +95,11 @@ const RecruitmentPage = () => {
           />
         )}
         
-        <EmailInvitation 
-          studyId={studyId}
-          //onSendInvitations={handleSendInvitations}
-        />
+        {study.published && <EmailInvitation studyId={study._id} />}
         
         <DemographSettings
           studyId={studyId}
           isPublished={studyId.published}
-          //onSave={handleSaveDemographics}
         />
       </div>
     </div>

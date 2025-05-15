@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-
 import Study from "../Models/studyModel.js"
 import Session from "../Models/participantModel.js";
 
@@ -336,3 +335,4 @@ export const completeSession = async (req, res, next) => {
         next(err);
     }
 };
+

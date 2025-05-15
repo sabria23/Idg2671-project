@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../styles/createStudy.module.css';
 import StudyDetails from './components/StudyDetails';
@@ -12,11 +12,10 @@ const CreateStudyPage = () => {
     const [studyTitle, setStudyTitle] = useState('');
     const [studyDescription, setStudyDescription] = useState('');
     const [selectedFiles, setSelectedFiles] = useState([]);
-    const [studyId, setStudyId] = useState(null);
+    const [savedStudyId, setSavedStudyId] = useState(null);
     const [questions, setQuestions] = useState([
         {
-            questionTitle: 'Question1',
-            questionText: '',
+            questionText: 'Question 1',
             questionType: 'multiple-choice',
             options: [
               { value: 'Option 1', label: 'Option 1' },
@@ -29,12 +28,14 @@ const CreateStudyPage = () => {
     ]);
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
 
+    const { studyId } = useParams();
+    const isEditMode = !!studyId;
+
     const addQuestion = () => {
         setQuestions(prev => [
             ...prev,
             {
-                questionTitle: `Question ${prev.length + 1}`,
-                questionText: '',
+                questionText: `Question ${prev.length + 1}`,
                 questionType: 'multiple-choice',
                 fileContent: [],
                 options: [
@@ -56,31 +57,71 @@ const CreateStudyPage = () => {
         formData.append('questions', JSON.stringify(questions));
 
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.post('/api/studies', formData, {
-              headers:{
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-            alert('Study successfully created!');
-            setStudyId(response.data.id); 
-            navigate(`/dashboard`, { state: { newStudyId: response.data.id }});
+          const token = localStorage.getItem('token');
+          const url = isEditMode ? `/api/studies/${studyId}` : '/api/studies';
+    
+          const response = isEditMode
+          ? await axios.patch(url, formData, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data'
+          }
+        })
+          : await axios.post(url, formData, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data'
+          }
+        });
+            alert(`Study successfully ${isEditMode ? 'updated' : 'created'}!`);
+            setSavedStudyId(response.data._id || studyId); 
         } catch (err) {
             console.error(err);
             alert('Error creating study');
         }
     };
 
-   
+   useEffect(() =>{
+    const fetchStudy = async () =>{
+      if(!isEditMode) return;
+
+      try{
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`/api/studies/${studyId}`,{
+          headers:{
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = response.data;
+        setStudyTitle(data.title);
+        setStudyDescription(data.description);
+        setQuestions(data.questions || []);
+        setSavedStudyId(data._id);
+      }catch (err){
+        console.error('Got error fetching study:', err);
+        alert('Could not fetch the study from the database');
+      }
+    };
+
+    fetchStudy();
+   }, [isEditMode, studyId]);
+
+   const handlePreviewClick = () => {
+    if(savedStudyId){
+      navigate(`/api/studies/${savedStudyId}/preview`);
+    }
+   };
 
     // RENDERING THE HTML CONTENT OF THE CREATE STUDY PAGE
     return (
         <div className={styles['studyPage-container']}>
 
             <main className={styles['studyPage-content']}>
-                <h1>Create a new study</h1>
-                <p>Fill out the details below and save to see the created study on dashboard</p>
+                <h1>{isEditMode ? 'Edit Study' : 'Create a new study'}</h1>
+                <p>{isEditMode 
+                  ? 'Make changed to your study and save to update it'
+                  : 'Fill out the details below and save to see the created study on dashboard'}
+                </p>
 
                 {/* STUDY DETAILS */}
                 <StudyDetails
@@ -97,7 +138,7 @@ const CreateStudyPage = () => {
                     questions={questions}
                     setQuestions={setQuestions}
                     selectedQuestionIndex={selectedQuestionIndex}
-                    studyId={studyId}
+                    savedStudyId={savedStudyId}
                 />
 
                 <form onSubmit={(e) => e.preventDefault()}>
@@ -131,19 +172,28 @@ const CreateStudyPage = () => {
                 
                 {/* SAVE STUDY BUTTON */}
                 <div className={styles['saveBtns']}>
+                  <div className={styles['btnGroup']}>
                     <button
                         className={styles['saveStudyBtn']}
                         type="button"
                         onClick={handleSave}
                     >
-                        Save Study
+                      {isEditMode ? 'Update Study' : 'Save Study'}
                     </button>
+                    <p className={styles['saveStudy-para']}>Click on the save button to save this study.</p>
 
                     {/* LINK/ BUTTON THE PREVIEW */}
-                    <button className={styles['previewBtn']} type="button">
-                            <Link to={`/study/${studyId}/preview`}>Preview Study</Link>
-                    </button>
+                    <button
+                      className={styles['previewBtn']} 
+                      type='button'
+                      onClick={handlePreviewClick}
+                      disabled={!savedStudyId}
+                    >
+                      Preview Study
+                    </button>     
+                    <p className={styles['previewStudy-para']}>If you want to preview your saved study, click the preview button after saving</p>
                 </div>
+              </div>
             </main>
         </div>
     );

@@ -9,10 +9,10 @@ const createUser = async (req, res, next) => {
     try {
         const { username, email, password, confirmPassword } = req.body 
 
-        const userExits = await User.findOne({ username });
-        const emailExits = await User.findOne({ email });
+        const userExists = await User.findOne({ username });
+        const emailExists = await User.findOne({ email });
 
-        if (userExits || emailExits ) {
+        if (userExists || emailExists ) {
           return res.status(400).json({message: "Username or email already exists" })
         }
 
@@ -132,10 +132,12 @@ const updateUserProfile = async(req, res) => {
       user.username = req.body.username || user.username;
       user.email = req.body.email || user.email;
       
-    // if(req.file) {
-    //     user.avatar = `/uploads/${req.file.filename}`;
-    // }
+      // handling avatar file
+    if(req.file) {
+        user.avatar = `/uploads/${req.file.filename}`;
+    }
 
+    // if password is provided, hash and update
       if (req.body.password) {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(req.body.password, salt);
