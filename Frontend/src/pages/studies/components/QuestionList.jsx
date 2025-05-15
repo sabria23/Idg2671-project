@@ -17,7 +17,7 @@ const QuestionList = ({ questions, selectedQuestionIndex, setSelectedQuestionInd
                                 : ''
                         }
                     >
-                        {question.questionTitle || `Question ${index + 1}`}
+                        {question.questionText || `Question ${index + 1}`}
                     </li>
                 ))}
             </ul>
