@@ -44,7 +44,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
       files.forEach(file => formData.append('files', file));
       const token = localStorage.getItem('token');
 
-      const response = await axios.post('/api/artifacts', formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/artifacts`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
   const fetchArtifacts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/api/artifacts', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/artifacts`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
