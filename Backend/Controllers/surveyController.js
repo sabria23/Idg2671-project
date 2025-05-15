@@ -86,7 +86,8 @@ export const getSurvey = async (req, res, next) => {
       totalQuestions,
       previousAnswer,
       previousResponseId,
-      skipped
+      skipped,
+      demographics: study.demographics // Include demographics configuration
     });
   } catch (err) {
     next(err);
