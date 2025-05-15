@@ -10,7 +10,6 @@ const ProfilePage = () => {
     // const [avatar, setAvatar] = useState(null);
     const [editProfile, setEditProfile] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
     const navigate = useNavigate();
 
     const handleDeleteAccount = async () => {
@@ -88,7 +87,7 @@ const ProfilePage = () => {
     <div className={styles.infoContainer}>
       
     <div className={styles.headerSection}>
-      <h1>Your profile</h1>
+      <h1> profile</h1>
       <div>
         {!editProfile ? (
           <button className={styles.editBtn} onClick={() => setEditProfile(true)}>
@@ -96,13 +95,15 @@ const ProfilePage = () => {
         </button>
         ) : (
           <button className={styles.cancelBtn} onClick={() => setEditProfile(false)}>
-            Cancel
+            CancelYour
           </button>
         )}
       </div>
     </div>
       <div className={styles.profileDetails}>
-        <div className={styles.profileImg}>{username}</div>
+        <div className={styles.profileImg}>
+          {username}
+        </div>
         <p className={styles.usernameProfile}> { username }</p>
       </div>
     
