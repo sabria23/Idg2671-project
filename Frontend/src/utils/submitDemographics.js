@@ -1,19 +1,19 @@
 import axios from 'axios';
 
-export const submitDemographics = async (studyId, sessionId, demographics) => {
-  if (!studyId || !sessionId || !demographics) {
-    console.error("Missing required values for demographics update");
-    return false;
-  }
-
+export const submitDemographics = async (studyId, sessionId, demographicsData) => {
   try {
-    const response = await axios.patch(`/api/survey/${studyId}/sessions/${sessionId}`, {
-      demographics
-    });
-
-    return response.status === 200;
+    console.log('Submitting demographics:', { studyId, sessionId, demographicsData });
+    
+    // Make a POST request to the demographics endpoint
+    const response = await axios.post(
+      `/api/survey/${studyId}/sessions/${sessionId}/demographics`, 
+      demographicsData
+    );
+    
+    console.log('Demographics submission successful:', response.data);
+    return true;
   } catch (error) {
-    console.error("Submission failed:", error);
-    return null;
+    console.error('Submission failed:', error);
+    return false;
   }
 };
