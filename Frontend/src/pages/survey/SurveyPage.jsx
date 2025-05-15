@@ -10,6 +10,25 @@ import { submitDemographics } from '../../utils/submitDemographics';
 import { shuffleArray } from '../../utils/shuffleArray';
 import '../../styles/displaySurvey.css';
 
+// Map question types to answerType values expected by the server
+const getAnswerType = (questionType) => {
+  // Map each question type to the appropriate answerType
+  switch (questionType) {
+    case 'open-ended':
+      return 'text';
+    case 'numeric-rating':
+    case 'star-rating':
+    case 'emoji-rating':
+    case 'label-slider':
+    case 'thumbs-up-down':
+      return 'numeric';
+    case 'multiple-choice':
+    case 'checkbox':
+    default:
+      return 'selection';
+  }
+};
+
 const SurveyPage = ({ mode = 'live' }) => {
   const { studyId } = useParams();
   const isPreview = mode === 'preview';
@@ -159,23 +178,46 @@ const SurveyPage = ({ mode = 'live' }) => {
 
   const handleAnswerSubmit = async (answer, skipped = false) => {
     if (isPreview) return;
+    if (!currentQuestion) {
+      console.error('No current question available');
+      return;
+    }
+
     const qid = currentQuestion._id;
     const existing = responseMap.current[qid];
+
+    // Determine the answer type based on the question type
+    const answerType = getAnswerType(currentQuestion.questionType);
+    
     try {
       if (existing) {
         await axios.patch(
           `/api/survey/${studyId}/sessions/${sessionId}/responses/${existing}`,
-          { participantAnswer: skipped ? null : answer, skipped }
+          { 
+            participantAnswer: skipped ? null : answer, 
+            skipped,
+            answerType // Add the required answerType field
+          }
         );
       } else {
         const res = await axios.post(
           `/api/survey/${studyId}/sessions/${sessionId}/responses`,
-          { questionId: qid, participantAnswer: skipped ? null : answer, skipped }
+          { 
+            questionId: qid, 
+            participantAnswer: skipped ? null : answer, 
+            skipped,
+            answerType // Add the required answerType field
+          }
         );
         responseMap.current[qid] = res.data.responseId;
       }
     } catch (err) {
       console.error('Failed to submit answer', err);
+      // Log more detailed error information
+      if (err.response) {
+        console.error('Error response:', err.response.data);
+        console.error('Status code:', err.response.status);
+      }
     }
   };
 
