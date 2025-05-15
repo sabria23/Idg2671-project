@@ -58,7 +58,7 @@ const CreateStudyPage = () => {
 
         try {
           const token = localStorage.getItem('token');
-          const url = isEditMode ? `/api/study/${studyId}` : '/api/study';
+          const url = isEditMode ? `/api/studies/${studyId}` : '/api/studies';
     
           const response = isEditMode
           ? await axios.patch(url, formData, {
