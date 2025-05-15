@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 /* Main container */
-=======
-
-
->>>>>>> 828a69a582ad5b995d7e2eb6f27b7c6e6aa191c8
 .survey-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -430,7 +425,6 @@
   .thankyou-container {
     max-width: 600px;
     margin: 2rem auto;
-<<<<<<< HEAD
     padding: 3rem 2rem;
     background-color: white;
     border-radius: 8px;
@@ -553,6 +547,3 @@
       justify-content: space-between;
     }
   }
-=======
-}
->>>>>>> 828a69a582ad5b995d7e2eb6f27b7c6e6aa191c8

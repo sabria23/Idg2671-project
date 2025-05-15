@@ -26,7 +26,7 @@ const sessionSchema = new mongoose.Schema({
     gender: {
       type: String,
       enum: ['female', 'male', 'prefer_not_to_say']
-    }
+    },
   },
   isCompleted: {
     type: Boolean,
