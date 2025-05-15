@@ -5,90 +5,101 @@ import Session from "../Models/participantModel.js";
 //@desc retrieve and return study's data fro paritipants
 // @route GET /api/studies//:studyId/survey
 export const getSurvey = async (req, res, next) => {
+  // === DEBUG LOGGING ===
+  console.log('getSurvey called with:', {
+    params:  req.params,
+    query:   req.query,
+  });
+
   try {
     const { studyId } = req.params;
-    const { sessionId, resume, page: pageStr = '0' } = req.query;
+    const { sessionId, page = '0', preview } = req.query;
+    const pg = parseInt(page, 10);
 
-    // 1) Load study & populate artifact refs
-    const study = await Study
-      .findById(studyId)
-      .populate('questions.fileContent.fileId', 'fileUrl fileType');
+    // 1) Load the study
+    const study = await Study.findById(studyId);
     if (!study) {
       const err = new Error('Study not found');
       err.statusCode = 404;
       throw err;
     }
-    if (!study.published) {
+
+    // 2) Enforce published unless preview=true
+    if (!study.published && preview !== 'true') {
       const err = new Error('This study is not available');
       err.statusCode = 403;
       throw err;
     }
 
-    const totalQuestions = study.questions.length;
-
-    // 2) Determine which page to serve (resume or explicit)
-    let page;
-    if (resume === 'true' && sessionId) {
-      const session = await Session.findById(sessionId);
-      const answered = session?.responses.length || 0;
-      page = Math.min(answered, totalQuestions - 1);
-    } else {
-      page = parseInt(pageStr, 10);
-    }
-
-    if (page < 0 || page >= totalQuestions) {
+    // 3) Validate page index
+    const totalQuestions = Array.isArray(study.questions)
+      ? study.questions.length
+      : 0;
+    if (isNaN(pg) || pg < 0 || pg >= totalQuestions) {
       const err = new Error('Invalid page number');
       err.statusCode = 400;
       throw err;
     }
 
-    // 3) Extract and reshape the question
-    const raw = study.questions[page];
-    // Map fileContent → artifacts array of Artifact docs
-    const artifacts = raw.fileContent.map(fc => fc.fileId);
+    // 4) Pull out the raw question
+    const raw = study.questions[pg];
+    if (!raw) {
+      const err = new Error('Question data missing');
+      err.statusCode = 500;
+      throw err;
+    }
 
-    const question = {
-      _id: raw._id,
-      questionText: raw.questionText,
-      questionType: raw.questionType,
-      layout: raw.layout,
-      options: raw.options,
-      fileContent: raw.fileContent,
-      artifacts
-    };
+    // 5) Build your public-view artifact URLs
+    const artifacts = Array.isArray(raw.fileContent)
+      ? raw.fileContent.map(fc => {
+          const originalUrl = fc.fileUrl || '';
+          // if it ends in "/view", swap to "/public-view?studyId=…"
+          const publicUrl = originalUrl.includes('/view')
+            ? originalUrl.replace(
+                '/view',
+                `/public-view?studyId=${study._id}`
+              )
+            : originalUrl;
+          return {
+            fileId:   fc.fileId,
+            fileUrl:  publicUrl,
+            fileType: fc.fileType,
+          };
+        })
+      : [];
 
-    // 4) Find the last response for this question (if any)
-    let previousAnswer = null;
-    let previousResponseId = null;
-    let skipped = false;
+    // 6) Find any previous answer in this session
+    let previousResponse = null;
     if (sessionId) {
       const session = await Session.findById(sessionId);
-      if (session) {
-        const matches = session.responses.filter(r =>
-          r.questionId.toString() === question._id.toString()
+      if (session && Array.isArray(session.responses)) {
+        previousResponse = session.responses.find(
+          r => r.questionId?.toString() === raw._id?.toString()
         );
-        if (matches.length) {
-          const last = matches[matches.length - 1];
-          previousAnswer     = last.participantAnswer;
-          previousResponseId = last._id;
-          skipped            = last.skipped;
-        }
       }
     }
 
-    // 5) Send everything the front-end needs
-    res.status(200).json({
-      id: study._id,
-      title: study.title,
-      description: study.description,
-      question,
-      currentIndex: page,
+    // 7) Send it all back
+    return res.status(200).json({
+      id:                study._id,
+      title:             study.title,
+      description:       study.description,
+      question: {
+        _id:             raw._id,
+        questionText:    raw.questionText,
+        questionType:    raw.questionType,
+        layout:          raw.layout,
+        options:         raw.options,
+        artifacts,      // <— array of { fileUrl, fileType }
+      },
+      currentIndex:      pg,
       totalQuestions,
-      previousAnswer,
-      previousResponseId,
-      skipped
+      previousAnswer:    previousResponse?.participantAnswer  || null,
+      previousResponseId: previousResponse?._id              || null,
+      skipped:           previousResponse?.skipped           || false,
     });
   } catch (err) {
+    console.error('getSurvey error:', err);
     next(err);
   }
 };

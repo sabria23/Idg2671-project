@@ -19,13 +19,11 @@ const SurveyQuestion = ({
           <h2>{currentQuestion.questionText?.trim() || 'Missing question text'}</h2>
         </div>
 
-        <ArtifactDisplay fileContent={currentQuestion.fileContent} />
-
         <QuestionTypeWrapper
           key={currentQuestion._id}                         // ← force a fresh mount per question
           questionType={currentQuestion.questionType}
           question={currentQuestion}
-          defaultValue={currentQuestion.previousAnswer}     // ← prefill with whatever you saved
+          defaultValue={currentQuestion.previousAnswer || null}     // ← prefill with whatever you saved
           onAnswer={onAnswer}
         />
 

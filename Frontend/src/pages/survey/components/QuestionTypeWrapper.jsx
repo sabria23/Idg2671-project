@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import ArtifactDisplay from './ArtifactDisplay';
-import MultipleChoice from './MultipleChoice';
-import Checkbox from './Checkbox';
+import StarRating from '../../studies/components/StarRating';
+import EmojiRating from '../../studies/components/EmojiRating';
+import ThumbsUpDown from '../../studies/components/ThumbsUpDown';
+import NumericRating from '../../studies/components/NumericRating';
+import LabelSlider from '../../studies/components/LabelSlider';
 import OpenEnded from './OpenEnded';
-import NumericRating from './../../studies/components/NumericRating';
-import StarRating from './../../studies/components/StarRating';
-import EmojiRating from './../../studies/components/EmojiRating';
-import LabelSlider from './../../studies/components/LabelSlider';
-import ThumbsUpDown from './../../studies/components/ThumbsUpDown';
+import Checkbox from './Checkbox';
+import MultipleChoice from './MultipleChoice';
+import ArtifactDisplay from './ArtifactDisplay';
 
-// Map of questionType to component
+// Map question types to their UI components
 const componentsMap = {
   'multiple-choice': MultipleChoice,
-  checkbox: Checkbox,
-  'open-ended': OpenEnded,
-  'numeric-rating': NumericRating,
-  'star-rating': StarRating,
-  'emoji-rating': EmojiRating,
-  'label-slider': LabelSlider,
-  'thumbs-up-down': ThumbsUpDown
+  'checkbox':        Checkbox,
+  'open-ended':      OpenEnded,
+  'emoji-rating':    EmojiRating,
+  'star-rating':     StarRating,
+  'thumbs-up-down':  ThumbsUpDown,
+  'numeric-rating':  NumericRating,
+  'label-slider':    LabelSlider
 };
 
-// Question types that should be split across artifacts
-const ratingTypes = new Set([
+// Types that get one control per artifact
+const multiRatingTypes = new Set([
   'numeric-rating',
   'star-rating',
   'emoji-rating',
@@ -34,93 +34,87 @@ export default function QuestionTypeWrapper({
   questionType,
   question,
   defaultValue = null,
-  onAnswer          // callback(value) to submit
+  onAnswer
 }) {
   const Component = componentsMap[questionType];
-  if (!Component) return <p>Unsupported question type: {questionType}</p>;
+  if (!Component) {
+    return <p>Unsupported question type: {questionType}</p>;
+  }
 
-  // Safely extract non-null artifacts
+  // Now use question.artifacts (what getSurvey returns)
   const artifacts = Array.isArray(question.artifacts)
-    ? question.artifacts.filter((a) => a != null)
+    ? question.artifacts.map((a, idx) => ({
+        fileId:   a.fileId,
+        fileUrl:  a.fileUrl,
+        fileType: a.fileType,
+        label:    `Artifact ${idx + 1}`    // ← human-readable label
+      }))
     : [];
-  const isMulti = ratingTypes.has(questionType) && artifacts.length > 1;
 
-  // Initialize value: use defaultValue or map for multi, scalar for single
+  const isMulti = multiRatingTypes.has(questionType) && artifacts.length > 1;
+
+  // Local answer state
   const [value, setValue] = useState(
     defaultValue != null
       ? defaultValue
       : isMulti
-      ? {}
-      : null
-  );
-
-  // Compute artifact IDs list
-  const artifactIds = artifacts
-    .map((a) => a._id && a._id.toString())
-    .filter((id) => id);
-
-  // Track which artifact is currently selected
-  const [selectedArt, setSelectedArt] = useState(
-    isMulti && artifactIds.length > 0
-      ? artifactIds[0]
-      : undefined
-  );
-
-  // Reset when question ID or defaultValue changes
-  useEffect(() => {
-    setValue(
-      defaultValue != null
-        ? defaultValue
-        : isMulti
         ? {}
         : null
-    );
-    if (isMulti && artifactIds.length > 0) {
-      setSelectedArt(artifactIds[0]);
+  );
+
+  // If the question or defaultValue changes, reset
+  useEffect(() => {
+    setValue(defaultValue != null ? defaultValue : isMulti ? {} : null);
+    if (isMulti && artifacts.length) {
+      setSelectedArt(artifacts[0].fileId);
     }
   }, [question._id, defaultValue]);
 
-  // Auto-submit on change
+  // Whenever our local value updates, push it upstream
   useEffect(() => {
     if (value !== null) onAnswer(value);
-  }, [value]);
+  }, [value, onAnswer]);
 
-  // Multi-artifact UI: thumbnails and single rating control
+  // Multi-artifact: grid of thumbs + one big preview + rating control
+  const [selectedArt, setSelectedArt] = useState(
+    isMulti && artifacts.length ? artifacts[0].fileId : undefined
+  );
+
   if (isMulti) {
     return (
       <>
+        {/* 1) Thumbnail strip */}
         <div className="artifact-grid">
-          {artifacts.map((art) => {
-            const id = art._id && art._id.toString();
-            return (
-              <div
-                key={id}
-                className={`artifact-item${id === selectedArt ? ' selected' : ''}`}
-                onClick={() => id && setSelectedArt(id)}
-              >
-                <ArtifactDisplay fileContent={[art]} />
-              </div>
-            );
-          })}
+          {artifacts.map(art => (
+            <div
+              key={art.fileId}   // ← unique key
+              className={`artifact-item${art.fileId === selectedArt ? ' selected' : ''}`}
+              onClick={() => setSelectedArt(art.fileId)}
+            >
+              <div className="artifact-label">{art.label}</div>
+              <ArtifactDisplay fileContent={[art]} />
+            </div>
+          ))}
         </div>
+
+        {/* 2) Big preview + control */}
         <div className="rating-container">
           {selectedArt && (
-            <div className="rating-item">
+            <div className="rating-item" key={`rating-${selectedArt}`}>
+              <div className="artifact-label">
+                {artifacts.find(a => a.fileId === selectedArt)?.label}
+              </div>
               <ArtifactDisplay
-                fileContent={artifacts.filter(
-                  (a) => a._id && a._id.toString() === selectedArt
-                )}
+                fileContent={artifacts.filter(a => a.fileId === selectedArt)}
               />
               <Component
                 question={{
                   ...question,
-                  artifacts: artifacts.filter(
-                    (a) => a._id && a._id.toString() === selectedArt
-                  )
+                  fileContent: artifacts.filter(a => a.fileId === selectedArt)
                 }}
                 externalValue={value[selectedArt] ?? null}
-                onExternalChange={(ans) =>
-                  setValue((v) => ({ ...v, [selectedArt]: ans }))
+                onExternalChange={ans =>
+                  setValue(v => ({ ...v, [selectedArt]: ans }))
                 }
               />
             </div>
@@ -130,7 +124,7 @@ export default function QuestionTypeWrapper({
     );
   }
 
-  // Single-element fallback
+  // Single-artifact or non-rating fallback:
   return (
     <Component
       question={question}

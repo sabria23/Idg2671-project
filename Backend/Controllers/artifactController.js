@@ -1,6 +1,8 @@
 import Artifact from '../Models/artifactModel.js';
-import mongoose from 'mongoose';
+import mongoose, { get } from 'mongoose';
 import protect from '../Middleware/authMiddleware.js';
+import Study from '../Models/studyModel.js';
+import Path2D from 'path';
 
 //------------------POST(CREATE)-------------------------
 // Upload general artifacts
@@ -172,6 +174,37 @@ const getArtifactView = async (req, res) =>{
   }
 };
 
+// gets artifact for survey spesific elements
+const getArtifactPublicView = async (req, res) => {
+  const { id: artifactId } = req.params;
+  const { studyId } = req.query;
+
+  // 1) Validate IDs
+  if (!mongoose.Types.ObjectId.isValid(artifactId) ||
+      !mongoose.Types.ObjectId.isValid(studyId)) {
+    return res.status(400).json({ error: 'Invalid artifact or study ID' });
+  }
+
+  // 2) Ensure the study actually references this artifact
+  const study = await Study.findOne({
+    _id: studyId,
+    'questions.fileContent.fileId': artifactId
+  });
+  if (!study) {
+    return res.status(404).json({ error: 'Study not found or artifact not attached' });
+  }
+
+  // 3) Load the artifact from Mongo
+  const artifact = await Artifact.findById(artifactId);
+  if (!artifact) {
+    return res.status(404).json({ error: 'Artifact not found' });
+  }
+
+  // 4) Stream the buffer straight back
+  res.setHeader('Content-Type', artifact.fileType || 'application/octet-stream');
+  res.send(artifact.fileData);
+};
+
 //--------------DELETE----------------------------
 // Remove a artifact from a question
 // The code is reused from @modestat's oblig2 in full-stack
@@ -247,6 +280,7 @@ export const artifactController ={
   uploadArtifact,
   getArtifacts,
   getArtifactView,
+  getArtifactPublicView,
   deleteArtifactFromCollection
 };
 

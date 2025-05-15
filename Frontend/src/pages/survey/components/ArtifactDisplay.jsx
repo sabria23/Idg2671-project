@@ -1,39 +1,49 @@
-import React, { useState } from 'react';
-import '../../../styles/artifactDisplay.css';
+import React from 'react';
+import '../../../styles/artifactDisplay.css'; // optional CSS file
 
-// Subcomponent to handle image loading errors
-const ArtifactImage = ({ src }) => {
-  const [errored, setErrored] = useState(false);
-
-  if (errored) {
-    // Fallback UI when image fails
-    return <div className="artifact-error">Image unavailable</div>;
+const ArtifactDisplay = ({ fileContent = [] }) => {
+  if (!Array.isArray(fileContent) || fileContent.length === 0) {
+    return null; // no artifacts to show
   }
 
   return (
-    <img
-      src={src}
-      alt="Artifact"
-      onError={() => setErrored(true)}
-      className="artifact-image"
-    />
-  );
-};
-
-// Main ArtifactDisplay component
-const ArtifactDisplay = ({ fileContent = [], small = false }) => {
-  if (!fileContent.length) {
-    // No artifacts to show, but still render a placeholder to show question
-    return <div className="artifact-placeholder">No preview available</div>;
-  }
-
-  return (
-    <div className={`artifact-grid${small ? ' small' : ''}`}>  
-      {fileContent.map((item, idx) => (
-        <div key={idx} className="artifact-item">
-          <ArtifactImage src={item.fileUrl} />
-        </div>
-      ))}
+    <div className="artifact-grid">
+      {fileContent.map((file, idx) => {
+        switch (file.fileType) {
+          case 'image':
+            return (
+              <div key={file._id || idx} className="artifact-item">
+                <img src={file.fileUrl} alt={`Artifact ${idx + 1}`} className="artifact-image" />
+              </div>
+            );
+          case 'video':
+            return (
+              <div key={file._id || idx} className="artifact-item">
+                <video controls src={file.fileUrl} className="artifact-video" />
+              </div>
+            );
+          case 'audio':
+            return (
+              <div key={file._id || idx} className="artifact-item">
+                <audio controls src={file.fileUrl} className="artifact-audio">
+                  Your browser does not support the audio tag.
+                </audio>
+              </div>
+            );
+          case 'text':
+            return (
+              <div key={file._id || idx} className="artifact-item">
+                <iframe src={file.fileUrl} className="artifact-text" title={`Text ${idx + 1}`} />
+              </div>
+            );
+          default:
+            return (
+              <div key={file._id || idx} className="artifact-item">
+                <a href={file.fileUrl} target="_blank" rel="noopener noreferrer">Download File</a>
+              </div>
+            );
+        }
+      })}
     </div>
   );
 };

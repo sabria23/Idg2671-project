@@ -190,83 +190,77 @@ import { UAParser } from 'ua-parser-js';
 import SurveyIntro from './components/SurveyIntro';
 import SurveyDemographics from './components/SurveyDemographics';
 import SurveyQuestion from './components/SurveyQuestion';
-import SurveyThankYou from './components/SurveyThanks';
-import { submitDemographics } from '../../utils/submitDemographics';
+import SurveyThanks from './components/SurveyThanks';
 import { shuffleArray } from '../../utils/shuffleArray';
 import '../../styles/displaySurvey.css';
 
-const SurveyPage = ({ mode = 'live' }) => {
+export default function SurveyPage({ mode = 'live' }) {
   const { studyId } = useParams();
   const isPreview = mode === 'preview';
 
+  // Steps: 0=Intro, 1=Demographics, 2..Q+1=Questions, Q+2=Thanks
   const [currentStep, setCurrentStep] = useState(0);
   const [studyInfo, setStudyInfo] = useState(null);
-  const [demographics, setDemographics] = useState({ age: '', gender: '' });
+  const [totalQuestions, setTotalQuestions] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [demographics, setDemographics] = useState({ age: '', gender: '' });
 
   const responseMap = useRef({});
 
-  // 1. Fetch study metadata (title, desc, totalQuestions)
+  // 1. Fetch study metadata
   useEffect(() => {
     const fetchMeta = async () => {
       try {
-        const res = await axios.get(`/api/survey/${studyId}?page=0&preview=${isPreview}`);
-        setStudyInfo({ title: res.data.title, description: res.data.description });
-        setTotalQuestions(res.data.totalQuestions);
+        const res = await axios.get(
+          `/api/survey/${studyId}?page=0&preview=${isPreview}`
+        );
+        const { title, description, totalQuestions: tq } = res.data;
+        setStudyInfo({ title, description });
+        setTotalQuestions(tq);
       } catch (err) {
-        console.error('Failed to load study meta', err);
+        console.error('Failed to load study metadata', err);
       }
     };
     fetchMeta();
   }, [studyId, isPreview]);
 
-  // 2. Resume or completed logic
+  // 2. Initialize or resume
   useEffect(() => {
-    if (isPreview || totalQuestions === 0) return;
+    if (totalQuestions == null) return;
 
-    // If completed, jump to thank you
+    if (isPreview) {
+      setCurrentStep(2);
+      return;
+    }
+
+    // Completed?
     if (localStorage.getItem(`survey-completed-${studyId}`) === 'true') {
       setCurrentStep(totalQuestions + 2);
       return;
     }
 
+    // Resume existing session
     const storedSid = localStorage.getItem(`survey-session-${studyId}`);
-    if (!storedSid) return;
-
-    setSessionId(storedSid);
-    (async () => {
-      try {
-        const { data } = await axios.get(
-          `/api/survey/${studyId}?resume=true&sessionId=${storedSid}`
-        );
-        const { question, currentIndex, previousResponseId, previousAnswer } = data;
-
-        // If they've answered all questions, mark completed
-        if (currentIndex + 1 >= totalQuestions) {
-          localStorage.setItem(`survey-completed-${studyId}`, 'true');
-          setCurrentStep(totalQuestions + 2);
-          return;
-        }
-
-        // Otherwise resume at that question
-        setCurrentStep(currentIndex + 2);
-        setCurrentQuestion({
-          ...question,
-          artifacts: shuffleArray(question.artifacts || []),
-          previousAnswer
-        });
-        if (previousResponseId) responseMap.current[question._id] = previousResponseId;
-      } catch (err) {
-        console.error('Failed to resume survey', err);
+    const storedStep = localStorage.getItem(`survey-step-${studyId}`);
+    if (storedSid) {
+      setSessionId(storedSid);
+      const stepNum = parseInt(storedStep, 10);
+      if (!isNaN(stepNum) && stepNum >= 2 && stepNum <= totalQuestions + 1) {
+        setCurrentStep(stepNum);
+        return;
       }
-    })();
-  }, [studyId, isPreview, totalQuestions]);
+    }
 
-  // 3. Fetch current question when step changes
+    setCurrentStep(0);
+  }, [isPreview, studyId, totalQuestions]);
+
+  // 3. Fetch question when on question step
   useEffect(() => {
-    if (isPreview || sessionId == null || currentStep < 2) return;
+    if (currentStep < 2) return;
+    if (!isPreview && !sessionId) return;
+    if (totalQuestions == null) return;
+
     const page = currentStep - 2;
     if (page < 0 || page >= totalQuestions) return;
 
@@ -282,14 +276,16 @@ const SurveyPage = ({ mode = 'live' }) => {
           artifacts: shuffleArray(question.artifacts || []),
           previousAnswer
         });
-        if (previousResponseId) responseMap.current[question._id] = previousResponseId;
+        if (previousResponseId) {
+          responseMap.current[question._id] = previousResponseId;
+        }
       } catch (err) {
         console.error('Failed to fetch question', err);
       }
     })();
   }, [currentStep, sessionId, studyId, isPreview, totalQuestions]);
 
-  // 4. Persist sessionId & step to localStorage
+  // 4. Persist session and step
   useEffect(() => {
     if (!isPreview && sessionId) {
       localStorage.setItem(`survey-session-${studyId}`, sessionId);
@@ -297,34 +293,49 @@ const SurveyPage = ({ mode = 'live' }) => {
   }, [sessionId, studyId, isPreview]);
 
   useEffect(() => {
-    if (!isPreview) {
+    if (!isPreview && totalQuestions != null) {
       localStorage.setItem(`survey-step-${studyId}`, currentStep);
     }
-  }, [currentStep, studyId, isPreview]);
+  }, [currentStep, studyId, isPreview, totalQuestions]);
 
   // Handlers
   const handleStart = async () => {
-    if (isPreview) return setCurrentStep(2);
-    if (sessionId) return; // already started
-
+    if (isPreview) {
+      setCurrentStep(2);
+      return;
+    }
+    if (sessionId) {
+      setCurrentStep(1);
+      return;
+    }
     try {
       const parser = new UAParser();
       const info = parser.getResult();
-      const res = await axios.post(`/api/survey/${studyId}/sessions`, {
-        deviceInfo: `${info.browser.name || 'Browser'} on ${info.os.name || 'OS'}`
-      });
+      const deviceInfo = `${info.browser.name || 'Browser'} on ${info.os.name || 'OS'}`;
+      const res = await axios.post(`/api/survey/${studyId}/sessions`, { deviceInfo });
       setSessionId(res.data.sessionId);
       setCurrentStep(1);
     } catch (err) {
       console.error('Failed to start session', err);
-      alert('Could not start. Try again.');
+      alert('Could not start session. Please try again.');
     }
   };
 
   const handleDemographics = async (demo) => {
-    if (isPreview) return setCurrentStep(2);
-    const ok = await submitDemographics(studyId, sessionId, demo);
-    if (ok) setCurrentStep(2);
+    if (isPreview) {
+      setCurrentStep(2);
+      return;
+    }
+    try {
+      await axios.post(
+        `/api/survey/${studyId}/sessions/${sessionId}/demographics`,
+        demo
+      );
+      setDemographics(demo);
+      setCurrentStep(2);
+    } catch (err) {
+      console.error('Failed to submit demographics', err);
+    }
   };
 
   const handleAnswerSubmit = async (answer, skipped = false) => {
@@ -349,10 +360,11 @@ const SurveyPage = ({ mode = 'live' }) => {
     }
   };
 
-  const handlePrevious = () => setCurrentStep((s) => Math.max(s - 1, 2));
+  const handlePrevious = () => {
+    if (currentStep > 2) setCurrentStep((s) => s - 1);
+  };
 
   const handleNext = () => {
-    // if last question, mark complete
     if (currentStep === totalQuestions + 1) {
       localStorage.setItem(`survey-completed-${studyId}`, 'true');
     }
@@ -361,11 +373,25 @@ const SurveyPage = ({ mode = 'live' }) => {
 
   // Render
   if (currentStep === 0) {
-    return <SurveyIntro studyInfo={studyInfo} totalQuestions={totalQuestions} onStart={handleStart} />;
+    return (
+      <SurveyIntro
+        studyInfo={studyInfo}
+        totalQuestions={totalQuestions}
+        onStart={handleStart}
+      />
+    );
   }
-  if (currentStep === 1) {
-    return <SurveyDemographics demographics={demographics} onSubmit={handleDemographics} onBack={() => setCurrentStep(0)} />;
+
+  if (currentStep === 1 && !isPreview) {
+    return (
+      <SurveyDemographics
+        demographics={demographics}
+        onSubmit={handleDemographics}
+        onBack={() => setCurrentStep(0)}
+      />
+    );
   }
+
   if (currentStep >= 2 && currentStep <= totalQuestions + 1) {
     return (
       <SurveyQuestion
@@ -378,7 +404,6 @@ const SurveyPage = ({ mode = 'live' }) => {
       />
     );
   }
-  return <SurveyThankYou />;
-};
 
-export default SurveyPage;
+  return <SurveyThanks />;
+}
