@@ -72,7 +72,10 @@ export default function QuestionTypeWrapper({
 
   // Whenever our local value updates, push it upstream
   useEffect(() => {
-    if (value !== null) onAnswer(value);
+    const meaningful =
+      value !== null &&
+      (typeof value !== 'object' || Object.keys(value).length > 0);
+    if (meaningful) onAnswer(value);
   }, [value, onAnswer]);
 
   // Multi-artifact: grid of thumbs + one big preview + rating control
