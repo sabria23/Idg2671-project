@@ -40,7 +40,7 @@ const LoginPage = () => {
           setLoading(false);
       }
   };
-       /* axios.post("http://localhost:8000/api/auth/login", {username: userName, password})
+      /* axios.post("http://localhost:8000/api/auth/login", {username: userName, password})
         .then(result => {
             console.log(result);
 
