@@ -97,6 +97,9 @@ export const getSurvey = async (req, res, next) => {
       previousAnswer:    previousResponse?.participantAnswer  || null,
       previousResponseId: previousResponse?._id              || null,
       skipped:           previousResponse?.skipped           || false,
+
+      demographics: study.demographics // Include demographics configuration
+
     });
   } catch (err) {
     console.error('getSurvey error:', err);
@@ -347,3 +350,37 @@ export const completeSession = async (req, res, next) => {
     }
 };
 
+// Controller to handle saving demographics data to a session
+// surveyRouter.post('/:studyId/sessions/:sessionId/demographics', saveDemographicsData);
+export const saveDemographicsData = async (req, res) => {
+  try {
+    const { studyId, sessionId } = req.params;
+    const demographicsData = req.body;
+    
+    // Find the session
+    const session = await Session.findOne({ 
+      _id: sessionId,
+      studyId
+    });
+    
+    if (!session) {
+      return res.status(404).json({ message: 'Session not found' });
+    }
+    
+    // Convert demographics data to Map
+    const demographicsMap = new Map();
+    
+    for (const [key, value] of Object.entries(demographicsData)) {
+      demographicsMap.set(key, value);
+    }
+    
+    // Update session with demographics data
+    session.demographics = demographicsMap;
+    await session.save();
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error saving demographics data:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

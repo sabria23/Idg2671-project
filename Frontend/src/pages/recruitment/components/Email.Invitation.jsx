@@ -9,15 +9,13 @@ const EmailInvitation = ({studyId}) => {
 
 We invite you to participate in our research study. Your input is valuable to our research.
 
-Please click the link below to begin the survey:
-[Survey Link will be automatically inserted here]
-
 Thank you,
 Research Team`);
 
 const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -126,8 +124,7 @@ const [loading, setLoading] = useState(false);
                 className={styles.formTextarea}
                 placeholder="Hello,
 We invite you to participate in our research study. Your input is valuable to our research.
-Please click the link below to begin the survey:
-[Survey Link will be automatically inserted here]
+
 Thank you,
 Research Team"
                 value={message}

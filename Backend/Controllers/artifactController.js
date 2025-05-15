@@ -52,7 +52,7 @@ const uploadGeneralArtifacts = async (req, res, next) =>{
     next(err);
   }
 }
- 
+
 // The code is reused from @modestat's oblig2 in full-stack
 // Uploads files from users computer
 const uploadArtifact = async (req, res, next) => {

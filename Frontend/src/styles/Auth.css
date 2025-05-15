@@ -43,7 +43,7 @@ body {
     transform: translateY(60vh) scale(0);
   } 
   100% {
-    tranform: translateY(10vh) scale(1);
+    transform: translateY(10vh) scale(1);
   }
 }
 
