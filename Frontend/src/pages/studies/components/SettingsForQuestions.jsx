@@ -23,9 +23,9 @@ const QuestionSettings = ({  questions, setQuestions, selectedQuestionIndex, set
 
     const currentQuestion = questions[selectedQuestionIndex];
 
-    const handleQuestionTitleChange = (index, value) =>{
+    const handleQuestionTextChange = (index, value) =>{
         const updatedQuestions = [...questions];
-        updatedQuestions[index].questionTitle = value;
+        updatedQuestions[index].questionText = value;
         setQuestions(updatedQuestions);
     };
 
@@ -66,9 +66,9 @@ const QuestionSettings = ({  questions, setQuestions, selectedQuestionIndex, set
                     <input
                         className={styles['question-title']}
                         type="text"
-                        value={currentQuestion.questionTitle || ''}
+                        value={currentQuestion.questionText || ''}
                         onChange={(e) =>
-                            handleQuestionTitleChange(selectedQuestionIndex, e.target.value)
+                            handleQuestionTextChange(selectedQuestionIndex, e.target.value)
                         }
                     />
                 </label>

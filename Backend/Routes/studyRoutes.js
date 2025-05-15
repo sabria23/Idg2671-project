@@ -22,7 +22,7 @@ studyRouter.get('/:studyId', protect, studyController.getStudyById);
 
 //----------------PATCH(UPDATE)-----------------------
 // Update a study (title, answer options etc)
-studyRouter.patch('/:studyId', protect, studyController.patchStudyById);
+studyRouter.patch('/:studyId', protect, upload.none(), studyController.patchStudyById);
 
 // Update question
 studyRouter.patch('/:studyId/questions/:questionId', protect, studyController.patchQuestionById);
@@ -31,7 +31,7 @@ studyRouter.patch('/:studyId/questions/:questionId', protect, studyController.pa
 // Delete question from study 
 studyRouter.delete('/:studyId/questions/:questionId', studyController.deleteQuestionById);
 
-// routers for DASHBOARD, found out that when i rmeoved the protect from my route then i suddlenly coud not dleete studies anymore, so i need to have authenticaiton
+// routers for DASHBOARD, found out that when i removed the protect from my route then i suddlenly coud not dleete studies anymore, so i need to have authenticaiton
 studyRouter.get('/', protect,  dashController.getAllStudies);
 studyRouter.delete('/:studyId', protect, dashController.deleteStudy);
 studyRouter.get('/:studyId/sessions/:sessionid/results', protect, dashController.getResponses);
