@@ -84,6 +84,8 @@ const CreateStudyPage = () => {
    useEffect(() =>{
     const fetchStudy = async () =>{
       if(!isEditMode) return;
+      console.log('Fetching study with ID:', studyId);
+     console.log('Using API URL:', `${import.meta.env.VITE_API_URL}/api/studies/${studyId}`);
 
       try{
         const token = localStorage.getItem('token');
@@ -92,11 +94,16 @@ const CreateStudyPage = () => {
             'Authorization': `Bearer ${token}`
           }
         });
+
+        console.log('API response status:', response.status);
+        console.log('Received study data:', response.data);
+
         const data = response.data;
         setStudyTitle(data.title);
         setStudyDescription(data.description);
         setQuestions(data.questions || []);
         setSavedStudyId(data._id);
+        console.log('Study data loaded successfully, ID:', data._id);
       }catch (err){
         console.error('Got error fetching study:', err);
         alert('Could not fetch the study from the database');
