@@ -1,24 +1,32 @@
 import QuestionTypeWrapper from './QuestionTypeWrapper';
 import ArtifactDisplay from './ArtifactDisplay';
-
 import '../../../styles/displaySurvey.css';
-  
-const SurveyQuestion = ({ currentQuestion, onAnswer, onSkip, onPrevious, onNext }) => {
-  if (!currentQuestion) return <div>Loading question...</div>;
-  
+
+const SurveyQuestion = ({
+  currentQuestion,
+  onAnswer,
+  onSkip,
+  onPrevious,
+  onNext
+}) => {
+  if (!currentQuestion) return <div>Loading question…</div>;
+
   return (
     <div className="survey-container">
       <div className="question-container">
         <div className="question-header">
-          <h2>{currentQuestion.questionText?.trim() || 'missing question text'}</h2>
+          <h2>{currentQuestion.questionText?.trim() || 'Missing question text'}</h2>
         </div>
-  
-        <ArtifactDisplay fileContent={currentQuestion.fileContent}/>
+
+        <ArtifactDisplay fileContent={currentQuestion.fileContent} />
 
         <QuestionTypeWrapper
+          key={currentQuestion._id}                         // ← force a fresh mount per question
           questionType={currentQuestion.questionType}
           question={currentQuestion}
-          onAnswer={onAnswer}/>
+          defaultValue={currentQuestion.previousAnswer}     // ← prefill with whatever you saved
+          onAnswer={onAnswer}
+        />
 
         <div className="question-navigation">
           <button className="secondary-button" onClick={onPrevious}>
@@ -35,5 +43,5 @@ const SurveyQuestion = ({ currentQuestion, onAnswer, onSkip, onPrevious, onNext 
     </div>
   );
 };
-  
-export default SurveyQuestion;  
+
+export default SurveyQuestion;

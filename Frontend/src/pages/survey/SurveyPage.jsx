@@ -183,7 +183,7 @@ if (step >= 2 && currentQuestion) {
     )
 }*/
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import {UAParser} from 'ua-parser-js';
@@ -205,9 +205,55 @@ const SurveyPage = ({ mode = 'live' }) => {
   const [studyInfo, setStudyInfo] = useState(null);
   const [demographics, setDemographics] = useState({ age: '', gender: '' });
   const [sessionId, setSessionId] = useState(null);
+  const responseMap = useRef({});
+
 
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [totalQuestions, setTotalQuestions] = useState(0);
+
+  useEffect(() => {
+    // Don’t attempt to resume in preview mode
+    if (isPreview) return;
+
+    // Look for an existing session in localStorage
+    const stored = localStorage.getItem(`survey-session-${studyId}`);
+    if (!stored) return;
+
+    setSessionId(stored);
+
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          `/api/survey/${studyId}?resume=true&sessionId=${stored}`
+        );
+        const {
+          question,
+          currentIndex,
+          totalQuestions,
+          previousResponseId,
+          previousAnswer
+        } = data;
+
+        // Update state from the resume response
+        setTotalQuestions(totalQuestions);
+        setCurrentQuestion({
+          ...question,
+          artifacts: shuffleArray(question.artifacts || []),
+          previousAnswer        // <-- make sure this is here!
+        });
+        // Map to your UI step (0=intro,1=demographics, 2+ = question pages)
+        setCurrentStep(currentIndex + 2);
+
+        // Store the responseId so future edits PATCH instead of POST
+        if (previousResponseId) {
+          responseMap.current[question._id] = previousResponseId;
+        }
+      } catch (err) {
+        console.error('Failed to resume survey:', err);
+      }
+    })();
+  }, [studyId, isPreview]);
+
 
   useEffect(() => {
     const fetchStudyInfo = async () => {
@@ -226,11 +272,15 @@ const SurveyPage = ({ mode = 'live' }) => {
   }, [studyId]);
 
   useEffect(() => {
+    // don’t fetch until we’re on a question step
     if (currentStep < 2) return;
 
-    const fetchQuestion = async () => {
-      const page = currentStep - 2;
+    const page = currentStep - 2;
 
+    // guard against asking for a page outside [0 … totalQuestions-1]
+    if (page < 0 || page >= totalQuestions) return;
+
+    const fetchQuestion = async () => {
       const url = isPreview
         ? `/api/survey/${studyId}?page=${page}&preview=true`
         : `/api/survey/${studyId}?page=${page}&sessionId=${sessionId}`;
@@ -241,26 +291,38 @@ const SurveyPage = ({ mode = 'live' }) => {
 
         setCurrentQuestion({
           ...data.question,
-          artifacts: shuffleArray(data.question.artifacts || [])
+          artifacts: shuffleArray(data.question.artifacts || []),
+          previousAnswer: data.previousAnswer ?? null
         });
+
+        // keep our question‐count state up to date
         setTotalQuestions(data.totalQuestions);
+
+        if (data.previousResponseId && data.question?._id) {
+          responseMap.current[data.question._id] = data.previousResponseId;
+        }
       } catch (err) {
         console.error('Failed to fetch question:', err);
       }
     };
+
     fetchQuestion();
-  }, [currentStep, sessionId, studyId]);
+  }, [
+    currentStep,
+    sessionId,
+    studyId,
+    totalQuestions,   // <-- use the existing state here
+    isPreview
+  ]);
 
   const handleStart = async () => {
     if (isPreview) {
       setCurrentStep(2);
       return;
     }
-
-    const existingSession = localStorage.getItem(`survey-session-${studyId}`);
-    if (existingSession) {
-      setSessionId(existingSession);
-      setCurrentStep(2);
+    const existing = localStorage.getItem(`survey-session-${studyId}`);
+    if (existing) {
+      // resume‐effect will pick it up
       return;
     }
 
@@ -332,18 +394,21 @@ const SurveyPage = ({ mode = 'live' }) => {
   
       return;
     }
+
+
     const questionId = currentQuestion._id;
     const answerType = mapQuestionTypeToAnswerType(currentQuestion.questionType);
-    const existingResponseId = responseMap[questionId];
+    const existingResponseId = responseMap.current[questionId];    
+
     try {
       if (existingResponseId) {
-        const res = await axios.patch(`/api/studies/${studyId}/sessions/${sessionId}/responses/${existingResponseId}`, {
+        const res = await axios.patch(`/api/survey/${studyId}/sessions/${sessionId}/responses/${existingResponseId}`, {
           participantAnswer: skipped ? null : responseValue,
             skipped,
             answerType
         });
       } else {          
-        const res = await axios.post(`/api/studies/${studyId}/sessions/${sessionId}/responses`, {
+        const res = await axios.post(`/api/survey/${studyId}/sessions/${sessionId}/responses`, {
           questionId,
           participantAnswer: skipped ? null : responseValue,
           skipped,
@@ -405,7 +470,10 @@ const SurveyPage = ({ mode = 'live' }) => {
   if (currentStep >= 2 && currentStep < totalQuestions + 2) {
     return (
       <SurveyQuestion
-        currentQuestion={currentQuestion}
+        currentQuestion={{
+          ...currentQuestion,
+          participantAnswer: currentQuestion?.previousAnswer ?? ''
+        }}
         onAnswer={handleAnswerSubmit}
         onSkip={() => handleAnswerSubmit(null, true)}
         onPrevious={handlePreviousQuestion}

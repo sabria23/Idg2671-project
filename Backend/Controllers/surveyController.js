@@ -6,59 +6,92 @@ import Session from "../Models/participantModel.js";
 //@desc retrieve and return study's data fro paritipants
 // @route GET /api/studies//:studyId/survey
 export const getSurvey = async (req, res, next) => {
-    try {
-        const {studyId} = req.params;
-        const {sessionId} = req.query; //get session id in case the user already has a session
-        const page = parseInt(req.query.page) || 0;
+  try {
+    const { studyId } = req.params;
+    const { sessionId, resume, page: pageStr = '0' } = req.query;
 
-       const study = await Study.findById(studyId);
-       if (!study) {
-        const error = new Error('Study not found');
-        error.statusCode = 404;
-        throw error;
-       }
+    // 1) Load study & populate artifact refs
+    const study = await Study
+      .findById(studyId)
+      .populate('questions.fileContent.fileId', 'fileUrl fileType');
+    if (!study) {
+      const err = new Error('Study not found');
+      err.statusCode = 404;
+      throw err;
+    }
+    if (!study.published) {
+      const err = new Error('This study is not available');
+      err.statusCode = 403;
+      throw err;
+    }
 
-       // Only return published studies to participants
-       if (!study.published) {
-        const error = new Error('This study is not available');
-        error.statusCode = 403;
-        return next(error);
+    const totalQuestions = study.questions.length;
+
+    // 2) Determine which page to serve (resume or explicit)
+    let page;
+    if (resume === 'true' && sessionId) {
+      const session = await Session.findById(sessionId);
+      const answered = session?.responses.length || 0;
+      page = Math.min(answered, totalQuestions - 1);
+    } else {
+      page = parseInt(pageStr, 10);
+    }
+
+    if (page < 0 || page >= totalQuestions) {
+      const err = new Error('Invalid page number');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    // 3) Extract and reshape the question
+    const raw = study.questions[page];
+    // Map fileContent → artifacts array of Artifact docs
+    const artifacts = raw.fileContent.map(fc => fc.fileId);
+
+    const question = {
+      _id: raw._id,
+      questionText: raw.questionText,
+      questionType: raw.questionType,
+      layout: raw.layout,
+      options: raw.options,
+      fileContent: raw.fileContent,
+      artifacts
+    };
+
+    // 4) Find the last response for this question (if any)
+    let previousAnswer = null;
+    let previousResponseId = null;
+    let skipped = false;
+    if (sessionId) {
+      const session = await Session.findById(sessionId);
+      if (session) {
+        const matches = session.responses.filter(r =>
+          r.questionId.toString() === question._id.toString()
+        );
+        if (matches.length) {
+          const last = matches[matches.length - 1];
+          previousAnswer     = last.participantAnswer;
+          previousResponseId = last._id;
+          skipped            = last.skipped;
         }
-
-       const totalQuestions = study.questions.length;
-
-       if (page < 0 || page >= totalQuestions) {
-        const error = new Error('Invalid page number');
-        error.statusCode = 400;
-        throw error;
-       }
-
-       const question = study.questions[page]
-
-       let previousResponse = null;
-        if (sessionId) {
-            const session = await Session.findById(sessionId);
-        if (session) {
-            previousResponse = session.responses.find(
-            r => r.questionId.toString() === question._id.toString()
-            );
       }
     }
 
-       // Send the survey data INCOMPLETE
-       res.status(200).json({
-        id: study._id,
-        title: study.title,
-        description: study.description,
-        question,
-        currentIndex: page,
-        totalQuestions,
-        previousAnswer: previousResponse?.participantAnswer || null,
-        skipped: previousResponse?.skipped || false
-       });
-    } catch (err) {
-        next(err)
-    }
+    // 5) Send everything the front-end needs
+    res.status(200).json({
+      id: study._id,
+      title: study.title,
+      description: study.description,
+      question,
+      currentIndex: page,
+      totalQuestions,
+      previousAnswer,
+      previousResponseId,
+      skipped
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 // Creates the Session for the participant
@@ -166,99 +199,120 @@ export const updateSession = async (req, res, next) => {
 // @desc save participant's answer related to quesitons
 // @route POST /api/studies/:studyid/sessions/:sessionId/:questionId
 export const submitAnswer = async (req, res, next) => {
-    try {
-        const {studyId, sessionId, questionId} = req.params;
-        const {answer, skipped, answerType} = req.body;
+  console.log('submitAnswer req.body:', req.body);
+  try {
+    const { studyId, sessionId } = req.params;
+    const {
+      responseId,                    // ← may be undefined on first save
+      questionId,
+      participantAnswer: answer,
+      skipped = false,
+      answerType
+    } = req.body;
 
-        const session = await Session.findById(sessionId);
-        if (!session) {
-            const error = new Error('Session not found');
-            error.statusCode = 404;
-            throw error;
-        }
-        console.log('studyId:', studyId)
-        const study = await Study.findById(studyId);
-        if (!study) {
-            const error = new Error('Study not found');
-            error.statusCode = 404;
-            throw error;
-            
-        }
-
-        const questionExists = study.questions.find(
-            q => q._id.toString() === questionId
-        );
-        if (!questionExists) {
-            const error = new Error('Question not found in this study');
-            error.statusCode = 400;
-            throw error;
-        }
-
-        const existingResponse = session.responses.find(
-            r => r.questionId.toString() === questionId
-        );
-        if (existingResponse) {
-            const error = new Error('Answer already submitted. Use update instead.');
-            error.statusCode = 409;
-            throw error;
-        }
-
-        // after you chekced that only then you can add the responses (as done below)
-        session.responses.push({
-            questionId,
-            participantAnswer: skipped ? null : answer,
-            answerType: answerType,
-            skipped: !!skipped
-        });
-
-        await session.save();
-
-        res.status(201).json({
-            message: 'Answer submitted',
-            sessionId: session._id
-        });
-    } catch (err) {
-        next(err);
+    if (!questionId) {
+      const err = new Error('Missing questionId');
+      err.statusCode = 400;
+      throw err;
     }
+
+    const session = await Session.findById(sessionId);
+    if (!session) {
+      const err = new Error('Session not found');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const study = await Study.findById(studyId);
+    if (!study) {
+      const err = new Error('Study not found');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const exists = Array.isArray(study.questions) &&
+      study.questions.some(q => q._id.toString() === questionId.toString());
+    if (!exists) {
+      const err = new Error('Question not in study');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    // ————— If they sent an existing responseId, UPDATE that entry —————
+    if (responseId) {
+      await Session.updateOne(
+        { _id: sessionId, 'responses._id': responseId },
+        {
+          $set: {
+            'responses.$.participantAnswer': skipped ? null : answer,
+            'responses.$.skipped': Boolean(skipped),
+            'responses.$.answerType': answerType
+          }
+        }
+      );
+      return res.json({ message: 'Answer updated', responseId });
+    }
+
+    // ————— Otherwise, PUSH a new response and return its _id —————
+    session.responses.push({
+      questionId,
+      participantAnswer: skipped ? null : answer,
+      answerType,
+      skipped: Boolean(skipped)
+    });
+    await session.save();
+    const created = session.responses[session.responses.length - 1];
+    res.status(201).json({
+      message: 'Answer submitted',
+      responseId: created._id
+    });
+
+  } catch (err) {
+    next(err);
+  }
 };
 
 // @desc Change answer to user, if they what to update their answer
 //@route PATCH /api/studies/:studyid/sessions/:sessionId/:questionId
 export const updateAnswer = async (req, res, next) => {
-    try {
-        const {sessionId, questionId} = req.params;
-        const {answer, answerType, skipped} = req.body;
+  try {
+    const { sessionId, responseId } = req.params;             // ← use responseId
+    const {
+      participantAnswer: answer,
+      skipped = false,
+      answerType
+    } = req.body;
 
-        const session = await Session.findById(sessionId);
-        if (!session) {
-            const error = new Error('Session not found');
-            error.statusCode = 404;
-            throw error;
-        }
-
-        const response = session.responses.find(
-            r => r.questionId.toString() === questionId
-        );
-
-        if (!response) {
-            const error = new Error('Answer not found');
-            error.statusCode = 404;
-            throw error; 
-        }
-        
-        response.participantAnswer = skipped ? null : answer;
-        response.answerType = answerType;
-        response.skipped = !!skipped;
-
-        await session.save();
-
-        res.status(201).json({
-            message: 'Answer updated',
-            responses: session.responses
-        });        
-    } catch (err) {
-        next(err);
+    // Load the session
+    const session = await Session.findById(sessionId);
+    if (!session) {
+      const err = new Error('Session not found');
+      err.statusCode = 404;
+      throw err;
     }
+
+    // Find the specific response subdoc by its _id
+    const resp = session.responses.id(responseId);
+    if (!resp) {
+      const err = new Error('Answer not found');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    // Update it in‐place
+    resp.participantAnswer = skipped ? null : answer;
+    resp.skipped           = Boolean(skipped);
+    resp.answerType        = answerType;
+
+    await session.save();
+
+    res.status(200).json({
+      message: 'Answer updated',
+      responseId: resp._id
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 
