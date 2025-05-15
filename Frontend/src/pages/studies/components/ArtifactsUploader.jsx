@@ -80,7 +80,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
 
       for (const artifact of artifacts) {
         try {
-          const res = await fetch(`/api/artifacts/${artifact._id}/view`, {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/artifacts/${artifact._id}/view`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const blob = await res.blob();
@@ -123,7 +123,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
     }
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`/api/artifacts/${artifactId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/artifacts/${artifactId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
