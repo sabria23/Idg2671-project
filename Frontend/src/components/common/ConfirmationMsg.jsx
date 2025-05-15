@@ -22,4 +22,4 @@ const ConfirmationMsg = ({ isOpen, message, onConfirm, onCancel}) => {
   );
 };
 
-export default ConfirmationMsg
+export default ConfirmationMsg;
