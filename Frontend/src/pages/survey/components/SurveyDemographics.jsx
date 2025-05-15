@@ -1,67 +1,43 @@
-import { useState } from 'react';
-import '../../../styles/displaySurvey.css';
-const SurveyDemographics = ({ demographics, setDemographics, onSubmit, onBack }) => {
+/*For the participant-facing survey, you'll need new components that:
+1. Read the demographics settings from the Study model
+2. Display the appropriate demographics form to participants
+3. Collect and save responses to the Session model
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (demographics.age < 0 || demographics.age > 130) {
-      alert("Please enter a valid age.");
-      return;
-    }
-    onSubmit(demographics);
-  }
+Yes, that's exactly right! Here's a summary of the changes you need to make:
 
-  return (
-    <div className="survey-container">
-      <div className="demographics-container">
-        <h2>Before we begin</h2>
-        <p>Please provide some information about yourself.</p>
+1. **Add a new route in surveyRoute.js**:
+   ```javascript
+   router.post('/:studyId/sessions/:sessionId/demographics', saveDemographicsData);
+   ```
 
-        <form onSubmit={handleSubmit} className="demographics-form">
-          <div className="form-group">
-            <label htmlFor="age">Age</label>
-            <input
-              type="number"
-              id="age"
-              min="0"
-              max="130"
-              value={demographics.age}
-              onChange={(e) => setDemographics({ ...demographics, age: e.target.value })}
-              required
-            />
-          </div>
+2. **Create a controller function called `saveDemographicsData`**:
+   This function will:
+   - Get the session by ID
+   - Convert the incoming demographics data to a Map
+   - Save it to the session's demographics field
+   - Return success
 
-          <div className="form-group">
-            <label htmlFor="gender">Gender</label>
-            <select
-              id="gender"
-              value={demographics.gender}
-              onChange={(e) => setDemographics({ ...demographics, gender: e.target.value })}
-              required
-            >
-              <option value="">Select your gender</option>
-              <option value="female">Female</option>
-              <option value="male">Male</option>
-              <option value="prefer_not_to_say">Prefer not to say</option>
-            </select>
-          </div>
+3. **Update the `getStudy` controller**:
+   Modify it to include demographics configuration in its response:
+   ```javascript
+   res.json({
+     title: study.title,
+     description: study.description,
+     totalQuestions: study.questions.length,
+     demographics: study.demographics // Include demographics configuration
+   });
+   ```
 
-          <div className="form-actions">
-            <button type="button" className="secondary-button" onClick={onBack}>
-              Back
-            </button>
-            <button
-              type="submit"
-              className="primary-button"
-              disabled={!demographics.age || !demographics.gender}
-            >
-              Continue
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
+4. **In the SurveyDemographics component**:
+   - Fetch the study data which now includes demographics configuration
+   - Check if demographics.enabled is true
+   - If true, render the demographics form based on demographics.fields
+   - If false, skip directly to questions
 
-export default SurveyDemographics;
+These changes will allow:
+- The SurveyDemographics component to dynamically render form fields based on the researcher's configuration
+- Participants to submit their demographics data
+- The system to store that data in the Session model using a Map structure
+
+You already have routes for researchers to configure demographics, so this completes the implementation by adding the participant-facing functionality.
+*/
