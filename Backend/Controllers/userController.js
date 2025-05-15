@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../Models/userModel.js";
+import Study from "../Models/studyModel.js";
+import Artifact from "../Models/artifactModel.js";
 
 
 // @route POST /api/auth/register
@@ -135,35 +137,59 @@ const updateUserProfile = async(req, res) => {
       // handling avatar file
     if(req.file) {
         user.avatar = `/uploads/${req.file.filename}`;
+    } else if (req.body.avatar) {
+      user.avatar = req.body.avatar;
     }
 
+    await user.save();
+    res.status(200).json({ message: "Profile updated", data: user });
+
     // if password is provided, hash and update
-      if (req.body.password) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(req.body.password, salt);
-      }
+      // if (req.body.password) {
+      //   const salt = await bcrypt.genSalt(10);
+      //   user.password = await bcrypt.hash(req.body.password, salt);
+      // }
 
-      const updatedUser = await user.save();
+      // const updatedUser = await user.save();
 
-      res.json({
-        _id:updatedUser._id,
-        username:updatedUser.username,
-        email:updatedUser.email,
-        avatar:updatedUser.avatar,
-        token: generateToken(updatedUser._id),
-      });
-  } catch (error) {
-    next(error);
+      // res.json({
+      //   _id:updatedUser._id,
+      //   username:updatedUser.username,
+      //   email:updatedUser.email,
+      //   avatar:updatedUser.avatar,
+      //   token: generateToken(updatedUser._id),
+      // });
+
+  } catch (err) {
+    console.error(err);
+    
+    res.status(500).json({ message: "something went wrong with avatar"});
+
   }
 };
 
+
+// https://www.youtube.com/watch?v=ZxRnbNDUVGo&ab_channel=CodingCleverly
 const deleteUser = async (req, res, next) => {
   try {
-    const user = await User.findByIdAndDelete(req.user._id);
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json({ message: "Account deleted successfully" });
+
+    //  epost 
+    user.email = `deleted_${userId}@example.com`;
+    await user.save();
+
+    await Promise.all([
+      Study.deleteMany({ creator: userId }),
+      Artifact.deleteMany({ uploadedBy: userId }),
+      User.findByIdAndDelete(userId)
+    ]);
+
+    res.status(200).json({ message: "User and all related data (including email) deleted successfully" });
   } catch (error) {
     next(error);
   }
