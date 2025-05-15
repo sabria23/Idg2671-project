@@ -8,7 +8,7 @@ RUN npm install --no-optional
 COPY . .
 
 # Set the environment variable for Vite build
-ENV VITE_API_URL=https://group4-api.sustainability.it.ntnu.no
+ENV VITE_API_URL=${VITE_API_URL}
 
 EXPOSE 80
 

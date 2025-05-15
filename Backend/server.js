@@ -18,17 +18,20 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 const port = process.env.PORT || 3000;
-console.log('Allowed origin:', process.env.FRONTEND_URL);
 
 connectToDB();
 
-const allowedOrigins = [process.env.FRONTEND_URL];
+const allowedOrigins = [
+  'http://localhost:3030',
+  'https://group4.sustainability.it.ntnu.no'
+];
 app.use(cors({
   origin: (origin, callback) => {
+    console.log('CORS request from origin:', origin);
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error(`Not allowed by CORS: ${origin}`));
     }
   },
   credentials: true
