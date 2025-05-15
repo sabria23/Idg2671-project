@@ -44,7 +44,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
       files.forEach(file => formData.append('files', file));
       const token = localStorage.getItem('token');
 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/artifacts`, formData, {
+      const response = await axios.post('/api/artifacts', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
   const fetchArtifacts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/artifacts`, {
+      const response = await axios.get('/api/artifacts', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -80,7 +80,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
 
       for (const artifact of artifacts) {
         try {
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/artifacts/${artifact._id}/view`, {
+          const res = await fetch(`/api/artifacts/${artifact._id}/view`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const blob = await res.blob();
@@ -123,7 +123,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
     }
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/artifacts/${artifactId}`, {
+      await axios.delete(`/api/artifacts/${artifactId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

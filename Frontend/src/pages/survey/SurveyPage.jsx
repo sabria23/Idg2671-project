@@ -160,9 +160,9 @@ const SurveyPage = ({ mode = 'live' }) => {
       
       // Check if demographics are enabled - if not, skip directly to questions
       if (!demographicsConfig || !demographicsConfig.enabled) {
-        setCurrentStep(2); // Skip to questions
+        setCurrentStep(1); // Skip to questions
       } else {
-        setCurrentStep(1); // Show demographics
+        setCurrentStep(2); // Show demographics
       }
     } catch (err) {
       console.error('Failed to start session', err);
