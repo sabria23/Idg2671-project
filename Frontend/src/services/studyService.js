@@ -153,6 +153,7 @@ export const getDemographicsSettings = async (studyId) => {
 export const updateDemographicsSettings = async (studyId, demographicsConfig) => {
   try {
     const token = localStorage.getItem('token');
+    console.log('Auth token:', token ? 'Token exists' : 'No token found');
     
     if (!token) {
       throw new Error('Authentication required');

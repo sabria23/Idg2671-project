@@ -1,43 +1,172 @@
-/*For the participant-facing survey, you'll need new components that:
-1. Read the demographics settings from the Study model
-2. Display the appropriate demographics form to participants
-3. Collect and save responses to the Session model
+import React, { useState, useEffect } from 'react';
+import '../../../styles/SurveyDemographics.css';
 
-Yes, that's exactly right! Here's a summary of the changes you need to make:
+const SurveyDemographics = ({ studyId, sessionId, onSubmit, onBack, demographicsConfig}) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [formErrors, setFormErrors] = useState({});
 
-1. **Add a new route in surveyRoute.js**:
-   ```javascript
-   router.post('/:studyId/sessions/:sessionId/demographics', saveDemographicsData);
-   ```
+  useEffect(() => {
+    // If demographics are disabled, immediately proceed to the next step
+    if (!demographicsConfig.enabled && !loading) {
+      onSubmit({});
+    }
+  }, [demographicsConfig.enabled, loading, onSubmit]);
 
-2. **Create a controller function called `saveDemographicsData`**:
-   This function will:
-   - Get the session by ID
-   - Convert the incoming demographics data to a Map
-   - Save it to the session's demographics field
-   - Return success
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
 
-3. **Update the `getStudy` controller**:
-   Modify it to include demographics configuration in its response:
-   ```javascript
-   res.json({
-     title: study.title,
-     description: study.description,
-     totalQuestions: study.questions.length,
-     demographics: study.demographics // Include demographics configuration
-   });
-   ```
+    // Clear error for this field when user types
+    if (formErrors[name]) {
+      setFormErrors({
+        ...formErrors,
+        [name]: null
+      });
+    }
+  };
 
-4. **In the SurveyDemographics component**:
-   - Fetch the study data which now includes demographics configuration
-   - Check if demographics.enabled is true
-   - If true, render the demographics form based on demographics.fields
-   - If false, skip directly to questions
+  // Validate form before submission
+  const validateForm = () => {
+    const errors = {};
+    let isValid = true;
 
-These changes will allow:
-- The SurveyDemographics component to dynamically render form fields based on the researcher's configuration
-- Participants to submit their demographics data
-- The system to store that data in the Session model using a Map structure
+    demographicsConfig.fields.forEach(field => {
+      if (field.required && !formData[field.name]) {
+        errors[field.name] = `${field.name} is required`;
+        isValid = false;
+      }
+    });
 
-You already have routes for researchers to configure demographics, so this completes the implementation by adding the participant-facing functionality.
-*/
+    setFormErrors(errors);
+    return isValid;
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      try {
+        onSubmit(formData);
+      } catch (err) {
+        setError('Failed to submit demographics information. Please try again.');
+      }
+    }
+  };
+
+  // Render input field based on field type
+  const renderField = (field) => {
+    switch (field.type) {
+      case 'text':
+        return (
+          <input
+            type="text"
+            id={field.name}
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        );
+
+      case 'number':
+        return (
+          <input
+            type="number"
+            id={field.name}
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        );
+
+      case 'select':
+        return (
+          <select
+            id={field.name}
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          >
+            <option value="">Select an option</option>
+            {field.options && field.options.map((option, idx) => (
+              <option key={idx} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        );
+
+      default:
+        return (
+          <input
+            type="text"
+            id={field.name}
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleInputChange}
+            className="form-control"
+          />
+        );
+    }
+  };
+
+  // If demographics are disabled, don't render anything
+  if (demographicsConfig && !demographicsConfig.enabled && !loading) {
+    return null;
+  }
+
+  return (
+    <div className="survey-container">
+      <div className="survey-content">
+        <h2>Demographic Information</h2>
+        <p className="survey-instruction">
+          Please provide the following information to help with our research. 
+          This information will be kept confidential.
+        </p>
+        
+        {error && <div className="error-message">{error}</div>}
+        
+        <form onSubmit={handleSubmit}>
+          {demographicsConfig.fields && demographicsConfig.fields.map((field, index) => (
+            <div key={index} className="form-group">
+              <label htmlFor={field.name} className="form-label">
+                {field.name} {field.required && <span className="required-mark">*</span>}
+              </label>
+              {renderField(field)}
+              {formErrors[field.name] && (
+                <div className="error-message">{formErrors[field.name]}</div>
+              )}
+            </div>
+          ))}
+          
+          <div className="button-group">
+            <button 
+              type="button" 
+              onClick={onBack} 
+              className="btn-secondary"
+            >
+              Back
+            </button>
+            <button 
+              type="submit" 
+              className="btn-primary"
+            >
+              Continue
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default SurveyDemographics;
