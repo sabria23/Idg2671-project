@@ -292,3 +292,24 @@
   margin-top: 24px;
 }
 
+/* stylign for copy link*/
+.copyButton {
+  background-color: #f5f7fa;
+  border: 1px solid #dbe1e8;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 3px;
+}
+
+.copyButton:hover {
+  background-color: #edf0f5;
+}
+
+.copiedButton {
+  background-color: #ffffff;
+  margin: 3px;
+}

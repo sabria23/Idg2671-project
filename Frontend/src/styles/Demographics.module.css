@@ -52,6 +52,10 @@
   margin-top: 0.25rem;
 }
 
+.fieldName {
+  font-size: 16px;
+  margin-right: 10px;
+}
 .requiredBadge {
   display: inline-block;
   background-color: #dc3545;

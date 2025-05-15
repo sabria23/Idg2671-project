@@ -1,13 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import styles from '../../styles/Export.module.css';
 import studyService from "../../services/studyService";
 import ExportDropdown from './components/ExportDropdown';
 import { getResponseCount } from "../../utils/responseUtils.js";
 
-// every study is different so different flows and data will be stored, researcher wanst to 
-// to know that participant 1 did this, participant 2 did this etc) because then it is more readble, a fileds, think how will the data ne represneted to the researcher
-// export more options, basic analytics
 const ExportPage = () => {
   const { studyId } = useParams();
   const [loading, setLoading] = useState(true);
@@ -15,14 +12,15 @@ const ExportPage = () => {
   const [error, setError] = useState(null);
   const [responseCount, setResponseCount] = useState(0);
   const [studyDetails, setStudyDetails] = useState(null);
-  const navigate = useNavigate();
-
-    // Fetch response data for export
+  const [showPreview, setShowPreview] = useState(false);
+  
+  // Fetch response data for export
   useEffect(() => {
     const fetchResponses = async () => {
       try {
         setLoading(true);
         const result = await studyService.getResponses(studyId);
+        console.log('Response data:', result);
         setResponses(result.data || []);
         setLoading(false);
       } catch (err) {
@@ -37,8 +35,8 @@ const ExportPage = () => {
     }
   }, [studyId]);
   
-   // Fetch response count separately using your utility
-   useEffect(() => {
+  // Fetch response count
+  useEffect(() => {
     const fetchResponseCount = async () => {
       if (studyId) {
         const count = await getResponseCount(studyId);
@@ -49,58 +47,134 @@ const ExportPage = () => {
     fetchResponseCount();
   }, [studyId]);
 
+  // Get demographic fields (for data preview)
+  const getDemographicFields = () => {
+    const fields = new Set();
+    responses.forEach(response => {
+      if (response.demographics) {
+        if (response.demographics instanceof Map) {
+          for (const key of response.demographics.keys()) {
+            fields.add(key);
+          }
+        } else if (typeof response.demographics === 'object') {
+          Object.keys(response.demographics).forEach(key => {
+            fields.add(key);
+          });
+        }
+      }
+    });
+    return Array.from(fields).sort();
+  };
 
+  // Get value for a specific demographic field
+  const getDemographicValue = (response, field) => {
+    if (!response.demographics) return '';
+    
+    if (response.demographics instanceof Map) {
+      return response.demographics.get(field) || '';
+    } else if (typeof response.demographics === 'object') {
+      return response.demographics[field] || '';
+    }
+    
+    return '';
+  };
+
+  if (loading) {
+    return <div className={styles.loadingIndicator}>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.errorMessage}>{error}</div>;
+  }
 
   return (
-    <div className={styles.exportContainer}>
-      <main className={styles.mainContent}>
+    <div className={styles.exportPage}>
+      <div className={styles.exportHeader}>
         <h1>Export Study Results</h1>
-       
-        <div className={styles.summaryCards}>
-          <div className={styles.card}>
-            <h3>Status</h3>
-            <div className={styles.cardValue}>
-              Draft
-            </div>
-            <div className={styles.cardDescription}>
-              Study status
-            </div>
+        {responses.length > 0 && (
+          <div className={styles.exportActions}>
+            <ExportDropdown
+              data={responses}
+              fileName={`study-${studyId}-responses`}
+            />
           </div>
-          
-          <div className={styles.card}>
-            <h3>Participants</h3>
-            <div className={styles.cardValue}>
-              {responses.length || 0}
-            </div>
-            <div className={styles.cardDescription}>
-              Total participants
-            </div>
-          </div>
-          
-          <div className={styles.card}>
-            <h3>Responses</h3>
-            <div className={styles.cardValue}>
-              {responseCount || 0}
-            </div>
-            <div className={styles.cardDescription}>
-              Responses shown
-            </div>
-          </div>
+        )}
+      </div>
+      
+      <div className={styles.statGrid}>
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Status</span>
+          <span className={styles.statValue}>Draft</span>
         </div>
         
-        <div className={styles.exportControls}>
-          {responses.length > 0 ? (
-             <ExportDropdown
-             data={responses}
-             fileName={`study-${studyId}-responses`}
-           />
-          ) : (
-           <button className={styles.exportButton} disabled>
-             No data to export
-           </button>
-            )}
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Participants</span>
+          <span className={styles.statValue}>{responses.length || 0}</span>
+        </div>
+        
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Responses</span>
+          <span className={styles.statValue}>{responseCount || 0}</span>
+        </div>
+      </div>
+      
+      {responses.length > 0 && (
+        <div className={styles.previewSection}>
+          <div className={styles.previewHeader}>
+            <h2>Data Preview</h2>
+            <button 
+              className={styles.toggleButton} 
+              onClick={() => setShowPreview(!showPreview)}
+            >
+              {showPreview ? 'Hide' : 'Show'}
+            </button>
           </div>
-      </main>
+          
+          {showPreview && (
+            <div className={styles.tableWrapper}>
+              <table className={styles.dataTable}>
+                <thead>
+                  <tr>
+                    <th>Participant</th>
+                    <th>Status</th>
+                    {getDemographicFields().map(field => (
+                      <th key={field}>{field}</th>
+                    ))}
+                    <th>Responses</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {responses.slice(0, 5).map((response, index) => (
+                    <tr key={index}>
+                      <td>Participant {index + 1}</td>
+                      <td>
+                        <span className={`${styles.statusBadge} ${response.isCompleted ? styles.completed : styles.inProgress}`}>
+                          {response.isCompleted ? 'Completed' : 'In Progress'}
+                        </span>
+                      </td>
+                      {getDemographicFields().map(field => (
+                        <td key={field}>{getDemographicValue(response, field)}</td>
+                      ))}
+                      <td>{response.responses?.length || 0}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {responses.length > 5 && (
+                <div className={styles.tableFooter}>
+                  Showing 5 of {responses.length} participants. Export data to see all.
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+      
+      {responses.length === 0 && !loading && (
+        <div className={styles.noData}>
+          <p>No participant data available yet.</p>
+        </div>
+      )}
     </div>
   );
 };
