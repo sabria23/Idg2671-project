@@ -14,7 +14,10 @@ const Navbar = () => {
 
   return (
     <nav className={styles.navbar}>
-      <div className={styles.logo}>StudyPlatform</div>
+      <Link to="/dashboard"> 
+        <div className={styles.logo}>StudyPlatform</div>
+      </Link>
+     
       <div className={styles.navLinks}>
         <Link to="/dashboard">
           <button className={styles.navButton}>Dashboard</button>

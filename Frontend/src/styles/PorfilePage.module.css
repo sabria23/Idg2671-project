@@ -4,12 +4,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    text-align: center;
   }
 
 .headerSection h1 {
-  font-size: 24px;
+  font-size: 34px;
   font-weight: bold;
-  margin: 0;
+  padding-left: 8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  text-align: center;
 }
   
   .infoContainer {
@@ -44,6 +50,7 @@
     color: white;
     font-size: 24px;
     font-weight: bold;
+    margin: 0 auto;
   }
   
 .usernameProfile {
@@ -231,6 +238,7 @@ input[type=text], select {
     color: white;
     border: none;
     border-radius: 4px;
+    max-width: 100%;
     cursor: pointer;
   }
   
@@ -240,7 +248,21 @@ input[type=text], select {
     color: white;
     border: none;
     border-radius: 4px;
+ 
     cursor: pointer;
+  }
+
+  .editBtn, .cancelBtn {
+    width: 130px;
+    text-align: center;
+  }
+
+  .avatarImage {
+    width: 20%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
   }
   
   .saveBtn {
@@ -297,4 +319,19 @@ input[type=text], select {
       margin-top: 15px;
       align-self: flex-start;
     }
+
+    .headerSection {
+      width: 90%;
+      margin: 20px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+    }
+  
+
+    .infoContainer {
+      align-items: center;
+    }
+  
   }

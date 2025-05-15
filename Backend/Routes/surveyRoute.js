@@ -1,5 +1,5 @@
 import express from "express";
-import { getSurvey, createSession, updateSession, submitAnswer, updateAnswer, completeSession } from "../Controllers/surveyController.js"; // Controllers
+import { getSurvey, createSession, updateSession, submitAnswer, updateAnswer, completeSession, saveDemographicsData } from "../Controllers/surveyController.js"; // Controllers
 //import {  validateSessionId } from "../Validators/surveyValidators.js";
 
 const surveyRouter = express.Router();
@@ -31,5 +31,7 @@ surveyRouter.patch('/:studyId/sessions/:sessionId/responses/:responseId',
 // patch to update to complete? This can maybe be used for denying further accsess based on that the user has already completed
 surveyRouter.patch('/api/studies/studyid/sessions/sessionId', 
     completeSession);
+
+surveyRouter.post('/:studyId/sessions/:sessionId/demographics', saveDemographicsData);
 
 export default surveyRouter;
