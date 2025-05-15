@@ -7,7 +7,8 @@ const SurveyQuestion = ({
   onAnswer,
   onSkip,
   onPrevious,
-  onNext
+  onNext,
+  isLast
 }) => {
   if (!currentQuestion) return <div>Loading question…</div>;
 
@@ -36,7 +37,7 @@ const SurveyQuestion = ({
             Skip Question
           </button>
           <button className="primary-button" onClick={onNext}>
-            Next
+            {isLast ? 'Finish' : 'Next'}
           </button>
         </div>
       </div>
