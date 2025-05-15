@@ -2,67 +2,155 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  margin-bottom: 20px;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+  position: relative;
 }
 
-.filterSection {
+.filterGroup {
   display: flex;
-  gap: 16px;
+  align-items: center;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .filterItem {
+  position: relative;
+}
+
+.filterButton {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.filterLabel {
-  font-size: 14px;
-  font-weight: 500;
-  color: #4b5563;
-  white-space: nowrap;
-}
-
-.filterSelect {
-  padding: 6px 28px 6px 10px;
-  font-size: 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  background-color: white;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20' stroke-width='1.5' stroke='currentColor' class='w-5 h-5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9'%3E%3C/path%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 12px;
-  appearance: none;
-  cursor: pointer;
-}
-
-.filterSelect:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2);
-}
-
-.clearButton {
+  gap: 4px;
   padding: 6px 12px;
   font-size: 14px;
-  font-weight: 500;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
   color: #4b5563;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filterButton:hover {
+  background-color: #f3f4f6;
+}
+
+.activeFilter {
+  background-color: #ebf5ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.activeFilter:hover {
+  background-color: #dbeafe;
+}
+
+.chevronIcon {
+  margin-left: 2px;
+}
+
+.dropdown {
+  position: absolute;
+  z-index: 50;
+  margin-top: 4px;
+  min-width: 180px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.dropdownSection {
+  padding: 6px 0;
+}
+
+.dropdownLabel {
+  padding: 4px 12px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.dropdownItem {
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 14px;
   background-color: transparent;
-  border: 1px solid #d1d5db;
+  border: none;
+  cursor: pointer;
+  color: #374151;
+}
+
+.dropdownItem:hover {
+  background-color: #f9fafb;
+}
+
+.activeItem {
+  background-color: #ebf5ff;
+  color: #1d4ed8;
+}
+
+.activeItem:hover {
+  background-color: #dbeafe;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 4px 0;
+}
+.removeFilter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  border-radius: 9999px;
+  color: #9ca3af;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.filterButton:hover .removeFilter {
+  opacity: 1;
+}
+
+.removeFilter:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #4b5563;
+}
+.addFilterButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #4b5563;
+  background-color: white;
+  border: 1px solid #e5e7eb;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.clearButton:hover {
-  background-color: #f3f4f6;
-  color: #1f2937;
+.addFilterDropdown {
+  right: 0;
+  left: auto;
+  min-width: 150px;
+}
+
+.addFilterButton:hover {
+  background-color: #f9fafb;
 }
 
 /* Mobile responsiveness */
@@ -70,22 +158,14 @@
   .filterBar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 8px;
   }
   
-  .filterSection {
+  .filterGroup {
     width: 100%;
   }
   
-  .filterItem {
-    width: 100%;
-  }
-  
-  .filterSelect {
-    flex: 1;
-  }
-  
-  .clearButton {
-    align-self: flex-end;
+  .addFilterButton {
+    margin-top: 8px;
   }
 }

@@ -1,4 +1,3 @@
-// pages/dashboard/DashboardPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from '../../styles/Dash.module.css';
