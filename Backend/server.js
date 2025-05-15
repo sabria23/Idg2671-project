@@ -18,7 +18,6 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 const port = process.env.PORT || 3000;
-console.log('Allowed origin:', process.env.FRONTEND_URL);
 
 connectToDB();
 
