@@ -46,7 +46,8 @@ const ShareableLink = ({ studyId, published }) => {
         config
       );
       
-      setShareableUrl(response.data.studyUrl || response.data.data.shareableUrl);
+      const url = (response.data.studyUrl || response.data.data.shareableUrl);
+      setShareableUrl(url);
     } catch (err) {
       console.error('Error fetching shareable link:', err);
       setError('Failed to generate link. Please try again.');
