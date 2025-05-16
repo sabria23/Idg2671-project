@@ -132,7 +132,10 @@ export const getDemographicsSettings = async (studyId) => {
     if (!token) {
       throw new Error('Authentication required');
     }
-    
+     // Log the exact URL and token being used (first 10 chars only for security)
+     console.log(`Calling: https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/demographics`);
+     console.log(`Token (first 10 chars): ${token.substring(0, 10)}...`);
+     
     const response = await axios.get(
       `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/demographics`,
       {
