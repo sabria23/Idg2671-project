@@ -129,10 +129,15 @@ export default function QuestionTypeWrapper({
 
   // Single-artifact or non-rating fallback:
   return (
-    <Component
-      question={question}
-      externalValue={value}
-      onExternalChange={setValue}
-    />
+    <>
+      {artifacts.length > 0 && (
+        <ArtifactDisplay fileContent={artifacts} />
+      )}
+      <Component
+        question={question}
+        externalValue={value}
+        onExternalChange={setValue}
+      />
+    </>
   );
 }

@@ -40,9 +40,7 @@ export default function SurveyPage({ mode = 'live' }) {
   // responseId cache so we PATCH when the user edits an answer
   const responseMap = useRef({});
 
-  /* --------------------------------------------------------
-   * 1.  Fetch study meta (page 0) – always contains demographicsConfig
-   * ------------------------------------------------------ */
+  // 1) Fetch study meta (page 0) – always contains demographicsConfig
   useEffect(() => {
     const fetchMeta = async () => {
       try {
@@ -72,9 +70,7 @@ export default function SurveyPage({ mode = 'live' }) {
     fetchMeta();
   }, [studyId, isPreview]);
 
-  /* --------------------------------------------------------
-   * 2.  Session bookkeeping / resume
-   * ------------------------------------------------------ */
+  // 2)  Session bookkeeping / resume
   useEffect(() => {
     if (totalQuestions == null) return;
 
@@ -107,9 +103,7 @@ export default function SurveyPage({ mode = 'live' }) {
     setCurrentStep(0);
   }, [isPreview, studyId, totalQuestions]);
 
-  /* --------------------------------------------------------
-   * 3.  Fetch question for the current page (only when needed)
-   * ------------------------------------------------------ */
+  // 3) Fetch question for the current page (only when needed)
   useEffect(() => {
     if (currentStep < 2) return;
     if (!isPreview && !sessionId) return;
@@ -142,9 +136,7 @@ export default function SurveyPage({ mode = 'live' }) {
     })();
   }, [currentStep, sessionId, studyId, isPreview, totalQuestions]);
 
-  /* --------------------------------------------------------
-   * 4.  Persist session + step in localStorage (only live mode)
-   * ------------------------------------------------------ */
+  // 4)  Persist session + step in localStorage (only live mode)
   useEffect(() => {
     if (!isPreview && sessionId) {
       localStorage.setItem(`survey-session-${studyId}`, sessionId);
@@ -157,9 +149,7 @@ export default function SurveyPage({ mode = 'live' }) {
     }
   }, [currentStep, studyId, isPreview, totalQuestions]);
 
-  /* --------------------------------------------------------
-   * 5.  Handlers
-   * ------------------------------------------------------ */
+  // 5)  Handlers
   const handleStart = async () => {
     if (isPreview) {
       setCurrentStep(2);
@@ -242,12 +232,17 @@ export default function SurveyPage({ mode = 'live' }) {
     if (currentStep === totalQuestions + 1) {
       localStorage.setItem(`survey-completed-${studyId}`, 'true');
     }
+    
+    // If the the participant is on the last question then we will send a request to the backend to complete the session
+    if (!isPreview && currentStep === totalQuestions + 1) {
+      axios.patch(`/api/survey/${studyId}/sessions/${sessionId}/complete`)
+        .catch(err => console.error('Failed to complete session', err));
+    }
     setCurrentStep(s => s + 1);
   };
 
-  /* --------------------------------------------------------
-   * 6.  Render according to step
-   * ------------------------------------------------------ */
+  // 6)  Render according to step
+ 
   if (currentStep === 0) {
     return (
       <SurveyIntro
