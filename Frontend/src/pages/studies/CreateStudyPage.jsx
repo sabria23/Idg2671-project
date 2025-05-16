@@ -58,7 +58,7 @@ const CreateStudyPage = () => {
 
         try {
           const token = localStorage.getItem('token');
-          const url = isEditMode ? `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}` : '/api/studies';
+          const url = isEditMode ? `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}` : 'https://group4-api.sustainability.it.ntnu.no/api/studies';
           console.log('Saving study to URL:', url);
           const response = isEditMode
           ? await axios.patch(url, formData, {
