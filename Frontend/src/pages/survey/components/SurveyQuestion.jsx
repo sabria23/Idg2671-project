@@ -5,7 +5,6 @@ import '../../../styles/displaySurvey.css';
 const SurveyQuestion = ({
   currentQuestion,
   onAnswer,
-  onSkip,
   onPrevious,
   onNext,
   isLast
@@ -19,13 +18,11 @@ const SurveyQuestion = ({
           <h2>{currentQuestion.questionText?.trim() || 'Missing question text'}</h2>
         </div>
 
-        <ArtifactDisplay fileContent={currentQuestion.fileContent} />
-
         <QuestionTypeWrapper
           key={currentQuestion._id}                         // ← force a fresh mount per question
           questionType={currentQuestion.questionType}
           question={currentQuestion}
-          defaultValue={currentQuestion.previousAnswer}     // ← prefill with whatever you saved
+          defaultValue={currentQuestion.previousAnswer || null}     // ← prefill with whatever you saved
           onAnswer={onAnswer}
         />
 
@@ -33,9 +30,7 @@ const SurveyQuestion = ({
           <button className="secondary-button" onClick={onPrevious}>
             Previous
           </button>
-          <button className="skip-button" onClick={onSkip}>
-            Skip Question
-          </button>
+
           <button className="primary-button" onClick={onNext}>
             {isLast ? 'Finish' : 'Next'}
           </button>

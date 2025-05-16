@@ -20,6 +20,8 @@ artifactRouter.get('/', protect, artifactController.getArtifacts);
 // Get artifacts for viewing 
 artifactRouter.get('/:id/view', protect, artifactController.getArtifactView);
 
+// get artifact for survey spesific elements
+artifactRouter.get('/:id/public-view', artifactController.getArtifactPublicView);
 //artifactRouter.get('/user/artifacts', protect, artifactController.getUserArtifacts);
 
 //-----------------DELETE------------------------

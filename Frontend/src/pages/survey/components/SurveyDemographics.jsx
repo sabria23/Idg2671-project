@@ -7,6 +7,7 @@ const SurveyDemographics = ({ studyId, sessionId, onSubmit, onBack, demographics
   const [formData, setFormData] = useState({});
   const [formErrors, setFormErrors] = useState({});
 
+  useEffect(() => setLoading(false), []);
   useEffect(() => {
     // If demographics are disabled, immediately proceed to the next step
     if (demographicsConfig && !demographicsConfig.enabled) {
