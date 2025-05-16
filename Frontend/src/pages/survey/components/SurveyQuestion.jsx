@@ -5,7 +5,6 @@ import '../../../styles/displaySurvey.css';
 const SurveyQuestion = ({
   currentQuestion,
   onAnswer,
-  onSkip,
   onPrevious,
   onNext,
   isLast
@@ -31,9 +30,7 @@ const SurveyQuestion = ({
           <button className="secondary-button" onClick={onPrevious}>
             Previous
           </button>
-          <button className="skip-button" onClick={onSkip}>
-            Skip Question
-          </button>
+
           <button className="primary-button" onClick={onNext}>
             {isLast ? 'Finish' : 'Next'}
           </button>
