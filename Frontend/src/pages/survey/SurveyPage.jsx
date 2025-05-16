@@ -171,7 +171,7 @@ export default function SurveyPage({ mode = 'live' }) {
       const info   = parser.getResult();
       const deviceInfo = `${info.browser.name || 'Browser'} on ${info.os.name || 'OS'}`;
 
-      const res = await axios.post(`/api/survey/${studyId}/sessions`, { deviceInfo });
+      const res = await axios.post(`https://group4-api.sustainability.it.ntnu.no/api/survey/${studyId}/sessions`, { deviceInfo });
       setSessionId(res.data.sessionId);
     } catch (err) {
       console.error('Failed to start session', err);
