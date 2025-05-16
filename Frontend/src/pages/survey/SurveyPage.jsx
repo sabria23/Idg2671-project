@@ -209,18 +209,32 @@ export default function SurveyPage({ mode = 'live' }) {
       if (existing && existing !== 'pending') {
         await axios.patch(
           `/api/survey/${studyId}/sessions/${sessionId}/responses/${existing}`,
-          { participantAnswer: skipped ? null : answer, skipped, answerType }
+          { 
+            participantAnswer: skipped ? null : answer, 
+            skipped,
+            answerType // Add the required answerType field
+          }
         );
       } else {
         responseMap.current[qid] = 'pending';
         const res = await axios.post(
           `/api/survey/${studyId}/sessions/${sessionId}/responses`,
-          { questionId: qid, participantAnswer: skipped ? null : answer, skipped, answerType }
+          { 
+            questionId: qid, 
+            participantAnswer: skipped ? null : answer, 
+            skipped,
+            answerType // Add the required answerType field
+          }
         );
         responseMap.current[qid] = res.data.responseId;
       }
     } catch (err) {
       console.error('Failed to submit answer', err);
+      // Log more detailed error information
+      if (err.response) {
+        console.error('Error response:', err.response.data);
+        console.error('Status code:', err.response.status);
+      }
     }
   };
 

@@ -10,10 +10,16 @@ const SurveyDemographics = ({ studyId, sessionId, onSubmit, onBack, demographics
   useEffect(() => setLoading(false), []);
   useEffect(() => {
     // If demographics are disabled, immediately proceed to the next step
-    if (!demographicsConfig.enabled && !loading) {
+    if (demographicsConfig && !demographicsConfig.enabled) {
+      // Skip to next step by submitting empty data
       onSubmit({});
     }
-  }, [demographicsConfig.enabled, loading, onSubmit]);
+  }, [demographicsConfig, onSubmit]);
+
+   // If demographics are disabled, don't render anything
+   if (demographicsConfig && !demographicsConfig.enabled) {
+    return null;
+  }
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -120,11 +126,7 @@ const SurveyDemographics = ({ studyId, sessionId, onSubmit, onBack, demographics
     }
   };
 
-  // If demographics are disabled, don't render anything
-  if (demographicsConfig && !demographicsConfig.enabled && !loading) {
-    return null;
-  }
-
+ 
   return (
     <div className="survey-container">
       <div className="survey-content">
