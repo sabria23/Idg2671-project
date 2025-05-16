@@ -341,7 +341,7 @@ const generateLink = async (req, res, next) => {
       });
     }
     
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173'; // Update with your correct frontend URL
+    const baseUrl = process.env.FRONTEND_URL || 'https://group4.sustainability.it.ntnu.no'; // Update with your correct frontend URL
     const studyUrl = `${baseUrl}/public/study/${studyId}`;
     
     console.log("Generated URL:", studyUrl);
