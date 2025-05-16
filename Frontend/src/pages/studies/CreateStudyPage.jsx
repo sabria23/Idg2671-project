@@ -90,7 +90,7 @@ const CreateStudyPage = () => {
       try{
         const token = localStorage.getItem('token');
        // const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'; uncomment when in production mode
-        const response = await axios.get(`/api/studies/${studyId}`,{
+        const response = await axios.get(`https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}`,{
           headers:{
             'Authorization': `Bearer ${token}`
           }
