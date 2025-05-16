@@ -85,7 +85,7 @@ const StudyAccess = () => {
           {/* Study content, questions, etc. */}
           <button 
             className={styles.buttonPrimary}
-            onClick={() => navigate(`/study/${studyId}/live`)} // Navigate to the participation page -> marius page
+            onClick={() => navigate(`https://group4-api.sustainability.it.ntnu.no/study/${studyId}/live`)} // Navigate to the participation page -> marius page
           >
             Begin Study
           </button>

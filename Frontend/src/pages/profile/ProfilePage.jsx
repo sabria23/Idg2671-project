@@ -16,7 +16,7 @@ const ProfilePage = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await axios.delete("http://localhost:8000/api/auth/profile", {
+        const response = await axios.delete("https://group4-api.sustainability.it.ntnu.no/api/auth/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -38,7 +38,7 @@ const ProfilePage = () => {
       const fetchUserProfile = async () => {
         try {
           const token = localStorage.getItem("token");
-          const response = await axios.get("http://localhost:8000/api/auth/user", {
+          const response = await axios.get("https://group4-api.sustainability.it.ntnu.no/api/auth/user", {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -61,7 +61,7 @@ const ProfilePage = () => {
         e.preventDefault();
         try {
           const token = localStorage.getItem("token");
-          const response = await axios.put("http://localhost:8000/api/auth/update-profile",
+          const response = await axios.put("https://group4-api.sustainability.it.ntnu.no/api/auth/update-profile",
             { username: editedUsername },
             {
               headers: {
