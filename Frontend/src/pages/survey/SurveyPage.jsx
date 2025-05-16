@@ -45,7 +45,7 @@ export default function SurveyPage({ mode = 'live' }) {
     const fetchMeta = async () => {
       try {
         const res = await axios.get(
-          `https://group4-api.sustainability.it.ntnu.no/api/survey/${studyId}`,
+          `/api/survey/${studyId}`,
           { params: { page: 0, preview: isPreview } }
         );
 
@@ -115,8 +115,8 @@ export default function SurveyPage({ mode = 'live' }) {
     (async () => {
       try {
         const url = isPreview
-          ? `https://group4-api.sustainability.it.ntnu.no/api/survey/${studyId}?page=${page}&preview=true`
-          : `https://group4-api.sustainability.it.ntnu.no/api/survey/${studyId}?page=${page}&sessionId=${sessionId}`;
+          ? `/api/survey/${studyId}?page=${page}&preview=true`
+          : `/api/survey/${studyId}?page=${page}&sessionId=${sessionId}`;
 
         const res = await axios.get(url);
         const { question, previousResponseId, previousAnswer } = res.data;
@@ -171,7 +171,7 @@ export default function SurveyPage({ mode = 'live' }) {
       const info   = parser.getResult();
       const deviceInfo = `${info.browser.name || 'Browser'} on ${info.os.name || 'OS'}`;
 
-      const res = await axios.post(`https://group4-api.sustainability.it.ntnu.no/api/survey/${studyId}/sessions`, { deviceInfo });
+      const res = await axios.post(`/api/survey/${studyId}/sessions`, { deviceInfo });
       setSessionId(res.data.sessionId);
     } catch (err) {
       console.error('Failed to start session', err);
@@ -187,7 +187,7 @@ export default function SurveyPage({ mode = 'live' }) {
 
     try {
       await axios.post(
-        `https://group4-api.sustainability.it.ntnu.no/api/survey/${studyId}/sessions/${sessionId}/demographics`,
+        `/api/survey/${studyId}/sessions/${sessionId}/demographics`,
         answers
       );
       setDemographics(answers);
@@ -208,7 +208,7 @@ export default function SurveyPage({ mode = 'live' }) {
     try {
       if (existing && existing !== 'pending') {
         await axios.patch(
-          `https://group4-api.sustainability.it.ntnu.no/api/survey/${studyId}/sessions/${sessionId}/responses/${existing}`,
+          `/api/survey/${studyId}/sessions/${sessionId}/responses/${existing}`,
           { 
             participantAnswer: skipped ? null : answer, 
             skipped,
@@ -218,7 +218,7 @@ export default function SurveyPage({ mode = 'live' }) {
       } else {
         responseMap.current[qid] = 'pending';
         const res = await axios.post(
-          `https://group4-api.sustainability.it.ntnu.no/api/survey/${studyId}/sessions/${sessionId}/responses`,
+          `/api/survey/${studyId}/sessions/${sessionId}/responses`,
           { 
             questionId: qid, 
             participantAnswer: skipped ? null : answer, 
@@ -249,7 +249,7 @@ export default function SurveyPage({ mode = 'live' }) {
     
     // If the the participant is on the last question then we will send a request to the backend to complete the session
     if (!isPreview && currentStep === totalQuestions + 1) {
-      axios.patch(`https://group4-api.sustainability.it.ntnu.no/api/survey/${studyId}/sessions/${sessionId}/complete`)
+      axios.patch(`/api/survey/${studyId}/sessions/${sessionId}/complete`)
         .catch(err => console.error('Failed to complete session', err));
     }
     setCurrentStep(s => s + 1);
