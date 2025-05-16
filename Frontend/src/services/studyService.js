@@ -134,7 +134,7 @@ export const getDemographicsSettings = async (studyId) => {
     }
     
     const response = await axios.get(
-      `http://localhost:8000/api/studies/${studyId}/demographics`,
+      `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/demographics`,
       {
         headers: {
           Authorization: `Bearer ${token}`
@@ -160,7 +160,7 @@ export const updateDemographicsSettings = async (studyId, demographicsConfig) =>
     }
     
     const response = await axios.post(
-      `http://localhost:8000/api/studies/${studyId}/demographics`,
+      `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/demographics`,
       demographicsConfig,
       {
         headers: {
