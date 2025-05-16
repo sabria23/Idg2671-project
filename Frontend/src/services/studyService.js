@@ -1,7 +1,7 @@
 // https://scrapingant.com/blog/axios-vs-fetch
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = 'https://group4-api.sustainability.it.ntnu.no' || 'http://localhost:8000';
 
 // get auth token
 const getToken = () => {
@@ -135,7 +135,7 @@ export const getDemographicsSettings = async (studyId) => {
      // Log the exact URL and token being used (first 10 chars only for security)
      console.log(`Calling: https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/demographics`);
      console.log(`Token (first 10 chars): ${token.substring(0, 10)}...`);
-     
+
     const response = await axios.get(
       `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/demographics`,
       {

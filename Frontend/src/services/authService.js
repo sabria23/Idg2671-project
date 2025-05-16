@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = 'https://group4-api.sustainability.it.ntnu.no' || 'http://localhost:8000';
 
 // Login user
 export const loginUser = async (username, password) => {
