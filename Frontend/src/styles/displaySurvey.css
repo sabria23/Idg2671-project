@@ -431,7 +431,7 @@
   /* Thank you page */
   .thankyou-container {
     max-width: 600px;
-    margin: 2rem auto;
+    margin: auto;
     padding: 3rem 2rem;
     background-color: white;
     border-radius: 8px;
