@@ -16,7 +16,7 @@ const StudyAccess = () => {
       try {
         setLoading(true);
         
-        const response = await axios.get(`http://localhost:8000/api/studies/public/${studyId}`);
+        const response = await axios.get(`https://group4-api.sustainability.it.ntnu.no/api/studies/public/${studyId}`);
         setStudy(response.data.data);
         setError(null);
         
