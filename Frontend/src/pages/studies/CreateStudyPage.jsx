@@ -116,7 +116,7 @@ const CreateStudyPage = () => {
 
    const handlePreviewClick = () => {
     if(savedStudyId){
-      navigate(`/api/study/${savedStudyId}/preview`);
+      navigate(`/study/${savedStudyId}/preview`);
       console.log('preview button:', url);
     }
    };
