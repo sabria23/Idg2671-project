@@ -47,7 +47,8 @@ const [loading, setLoading] = useState(false);
       console.log("Payload:", { emails, subject, message });
       
       const response = await axios.post(
-        `http://localhost:8000/api/studies/${studyId}/invitations`,
+       // `http://localhost:8000/api/studies/${studyId}/invitations`,
+       `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/invitations`,
         { emails, subject, message },
         config
       );

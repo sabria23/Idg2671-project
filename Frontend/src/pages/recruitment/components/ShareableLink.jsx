@@ -41,7 +41,8 @@ const ShareableLink = ({ studyId, published }) => {
       };
       
       const response = await axios.get(
-        `http://localhost:8000/api/studies/${studyId}/link`, 
+        //`http://localhost:8000/api/studies/${studyId}/link`, 
+        `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/link`,
         config
       );
       
