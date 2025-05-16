@@ -4,7 +4,7 @@ const API_URL = 'https://group4-api.sustainability.it.ntnu.no' || 'http://localh
 // Login user
 export const loginUser = async (username, password) => {
   try {
-    const response = await axios.post(`${API_URL}/api/auth/login`, { username, password });
+    const response = await axios.post(`https://group4-api.sustainability.it.ntnu.no/api/auth/login`, { username, password });
     
     if (response.data && response.data.token) {
       localStorage.setItem('token', response.data.token);
@@ -19,7 +19,7 @@ export const loginUser = async (username, password) => {
 // Register user
 export const registerUser = async (username, email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/api/auth/register`, { username, email, password });
+    const response = await axios.post(`https://group4-api.sustainability.it.ntnu.no/api/auth/register`, { username, email, password });
     return response.data;
   } catch (error) {
     throw error;
@@ -36,7 +36,7 @@ export const getCurrentUser = async () => {
       return null;
     }
     
-    const response = await axios.get(`${API_URL}/api/auth/user`, {
+    const response = await axios.get(`https://group4-api.sustainability.it.ntnu.no/api/auth/user`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     
