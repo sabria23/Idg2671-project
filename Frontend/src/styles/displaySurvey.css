@@ -5,7 +5,7 @@
     padding: 2rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     color: #333;
-    min-height: 100vh;
+    min-height: 70vh;
     display: flex;
     flex-direction: column;
   }
@@ -128,8 +128,15 @@
     margin-bottom: 2rem;
   }
   
+  .question-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
   .question-header {
     margin-bottom: 2rem;
+    text-align: center;
   }
   
   .question-progress {
@@ -546,4 +553,13 @@
       padding: 1rem;
       justify-content: space-between;
     }
+
+    
   }
+
+.rating-item .artifact-grid{
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding-top: 30px;
+    }

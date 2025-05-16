@@ -1,5 +1,6 @@
 .artifact-grid {
   display: flex;
+  justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 1rem;
