@@ -116,7 +116,8 @@ const CreateStudyPage = () => {
 
    const handlePreviewClick = () => {
     if(savedStudyId){
-      navigate(`/study/${savedStudyId}/preview`);
+      navigate(`https://group4-api.sustainability.it.ntnu.no/api/study/${savedStudyId}/preview`);
+      console.log('preview button:', url);
     }
    };
 
