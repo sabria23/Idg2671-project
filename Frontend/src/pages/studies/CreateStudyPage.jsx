@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../styles/createStudy.module.css';
+import createStudyService from '../../services/createStudyService';
 import StudyDetails from './components/StudyDetails';
 import ArtifactsUploader from './components/ArtifactsUploader';
 import QuestionBuilder from './components/QuestionBuilder';
@@ -57,62 +58,42 @@ const CreateStudyPage = () => {
         formData.append('questions', JSON.stringify(questions));
 
         try {
-          const token = localStorage.getItem('token');
-          const url = isEditMode ? `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}` : 'https://group4-api.sustainability.it.ntnu.no/api/studies';
-          console.log('Saving study to URL:', url);
-          const response = isEditMode
-          ? await axios.patch(url, formData, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data'
-          }
-        })
-          : await axios.post(url, formData, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data'
-          }
-        });
-            alert(`Study successfully ${isEditMode ? 'updated' : 'created'}!`);
-            setSavedStudyId(response.data._id || studyId); 
-        } catch (err) {
-            console.error(err);
-            alert('Error creating study');
+          const res = isEditMode
+          ? await createStudyService.updateStudy(studyId, formData)
+          : await createStudyService.createStudy(formData);
+
+          alert(`Study successfully ${isEditMode ? 'updated' : 'created'}!`);
+          setSavedStudyId(res._id || studyId);
+        }catch (err){
+          console.error(err);
+          alert('Error saving study');
         }
     };
 
-   useEffect(() =>{
-    const fetchStudy = async () =>{
-      if(!isEditMode) return;
-      console.log('Fetching study with ID:', studyId);
-     console.log('Using API URL:', `${import.meta.env.VITE_API_URL}/api/studies/${studyId}`);
+    useEffect(() => {
+      const fetchStudy = async () => {
+      if (!isEditMode) return;
 
-      try{
-        const token = localStorage.getItem('token');
-       // const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'; uncomment when in production mode
-        const response = await axios.get(`https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}`,{
-          headers:{
-            'Authorization': `Bearer ${token}`
-          }
-        });
+      try {
+        const data = await createStudyService.fetchStudy(studyId);
 
-        console.log('API response status:', response.status);
-        console.log('Received study data:', response.data);
+        console.log('Received study data:', data);
 
-        const data = response.data;
         setStudyTitle(data.title);
         setStudyDescription(data.description);
         setQuestions(data.questions || []);
         setSavedStudyId(data._id);
+
         console.log('Study data loaded successfully, ID:', data._id);
-      }catch (err){
+    } catch (err) {
         console.error('Got error fetching study:', err);
         alert('Could not fetch the study from the database');
-      }
-    };
+    }
+  };
 
     fetchStudy();
-   }, [isEditMode, studyId]);
+  }, [isEditMode, studyId]);
+
 
    const handlePreviewClick = () => {
     if(savedStudyId){

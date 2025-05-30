@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styles from '../styles/ArtifactUpload.module.css';
+import artifactUploadService from '../../../services/artifactUploadService';
 import { FaRegTimesCircle } from "react-icons/fa";
 
 const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) => {
@@ -9,7 +9,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
   const [uploadStatus, setUploadStatus] = useState('');
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [fileURLs, setFileURLs] = useState({}); // <--- stores blob URLs
+  const [fileURLs, setFileURLs] = useState({});
 
   const acceptedArtifactTypes = {
     image: '.jpg, .jpeg, .png, .gif',
@@ -40,24 +40,15 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
     setUploadStatus('Uploading...');
 
     try {
-      const formData = new FormData();
-      files.forEach(file => formData.append('files', file));
-      const token = localStorage.getItem('token');
+      const uploaded = await artifactUploadService.uploadArtifacts(files);
 
-      const response = await axios.post('https://group4-api.sustainability.it.ntnu.no/api/artifacts', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const uploaded = (response.data.files || []).map((artifact, i) => ({
+      const enriched = uploaded.map((artifact, i) => ({
         ...artifact,
         originalFile: files[i],
         linkedToQuestion: false,
       }));
 
-      setSelectedFiles(prev => [...prev, ...uploaded]);
+      setSelectedFiles(prev => [...prev, ...enriched]);
       setFiles([]);
       setUploadStatus('Upload successful!');
     } catch (error) {
@@ -70,21 +61,13 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
 
   const fetchArtifacts = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('https://group4-api.sustainability.it.ntnu.no/api/artifacts', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const artifacts = response.data || [];
+      const artifacts = await artifactUploadService.fetchAllArtifacts();
       const newFileURLs = {};
 
       for (const artifact of artifacts) {
         try {
-          const res = await fetch(`https://group4-api.sustainability.it.ntnu.no/api/artifacts/${artifact._id}/view`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const blob = await res.blob();
-          newFileURLs[artifact._id] = URL.createObjectURL(blob);
+          const blobURL = await artifactUploadService.fetchArtifactById(artifact._id);
+          newFileURLs[artifact._id] = blobURL;
         } catch (err) {
           console.error(`Failed to load artifact ${artifact._id}`, err);
         }
@@ -121,14 +104,9 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
       console.warn('No artifact id provided');
       return;
     }
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`https://group4-api.sustainability.it.ntnu.no/api/artifacts/${artifactId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
 
+    try {
+      await artifactUploadService.deleteArtifact(artifactId);
       setSelectedFiles(prev => prev.filter(f => f._id !== artifactId));
     } catch (err) {
       console.error('Failed to delete artifact:', err);
@@ -218,7 +196,6 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
         )}
       </div>
 
-      {/* Uploaded files display */}
       <div className={styles['uploadedFiles']}>
         <h3>Uploaded artifacts</h3>
         {selectedFiles.length === 0 ? (
@@ -235,10 +212,7 @@ const ArtifactsUploader = ({ questions, setQuestions, selectedQuestionIndex }) =
                 const fType = (file.originalFile?.type || file.fileType || '').split('/')[0];
 
                 return (
-                  <li
-                    key={file._id || index}
-                    className={styles['artifact-item']}
-                  >
+                  <li key={file._id || index} className={styles['artifact-item']}>
                     <div className={styles['artifact-wrapper']}>
                       {fType === 'image' && fileURL && (
                         <img
