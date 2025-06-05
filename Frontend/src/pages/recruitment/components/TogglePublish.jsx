@@ -3,12 +3,10 @@ import styles from '../../../styles/Recruitment.module.css';
 
 
 const TogglePublish = ({ title, createdDate, published, onToggle }) => {
-  // Format the date for display
   const formattedDate = new Date(createdDate).toLocaleDateString();
 
   return (
     <>
- {/* Study Header */}
  <div className={styles.card}>
  <div className={styles.cardContent}>
    <div className={styles.headerFlex}>

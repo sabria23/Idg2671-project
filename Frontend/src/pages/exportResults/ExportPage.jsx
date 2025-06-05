@@ -20,7 +20,6 @@ const ExportPage = () => {
       try {
         setLoading(true);
         const result = await studyService.getResponses(studyId);
-        console.log('Response data:', result);
         setResponses(result.data || []);
         setLoading(false);
       } catch (err) {
@@ -35,7 +34,6 @@ const ExportPage = () => {
     }
   }, [studyId]);
   
-  // Fetch response count
   useEffect(() => {
     const fetchResponseCount = async () => {
       if (studyId) {
@@ -47,7 +45,6 @@ const ExportPage = () => {
     fetchResponseCount();
   }, [studyId]);
 
-  // Get demographic fields (for data preview)
   const getDemographicFields = () => {
     const fields = new Set();
     responses.forEach(response => {
@@ -66,7 +63,6 @@ const ExportPage = () => {
     return Array.from(fields).sort();
   };
 
-  // Get value for a specific demographic field
   const getDemographicValue = (response, field) => {
     if (!response.demographics) return '';
     

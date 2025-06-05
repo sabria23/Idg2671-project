@@ -1,6 +1,5 @@
 import { getResponses } from "../services/studyService.js";
 
-// Get count of responses for a study
 export const getResponseCount = async (studyId) => {
   try {
     const result = await getResponses(studyId);

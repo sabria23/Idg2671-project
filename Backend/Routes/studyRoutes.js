@@ -31,7 +31,7 @@ studyRouter.patch('/:studyId/questions/:questionId', protect, studyController.pa
 // Delete question from study 
 studyRouter.delete('/:studyId/questions/:questionId', studyController.deleteQuestionById);
 
-// routers for DASHBOARD, found out that when i removed the protect from my route then i suddlenly coud not dleete studies anymore, so i need to have authenticaiton
+// dahsboard routes
 studyRouter.get('/', protect,  dashController.getAllStudies);
 studyRouter.delete('/:studyId', protect, dashController.deleteStudy);
 studyRouter.get('/:studyId/sessions/:sessionid/results', protect, dashController.getResponses);

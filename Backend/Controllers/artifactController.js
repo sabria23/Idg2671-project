@@ -205,56 +205,6 @@ const getArtifactPublicView = async (req, res) => {
   res.send(artifact.fileData);
 };
 
-//--------------DELETE----------------------------
-// Remove a artifact from a question
-// The code is reused from @modestat's oblig2 in full-stack
-/*const deleteArtifactFromQuestion = async (req, res, next) => {
-  try{
-      const { studyId, questionId, artifactId } = req.params;
-
-      // Verify that the resources exist
-      const study = await Study.findById(studyId);
-      if (!study) {
-          const err = new Error('Could not find study');
-          err.statusCode = 404;
-          return next(err);
-      }
-
-      const question = study.questions.id(questionId);
-      if (!question){
-          const err = new Error ('Could not find question');
-          err.statusCode = 404;
-          return next(err);
-      }
-
-      const artifactExists = question.artifactContent?.some(
-          artifact => artifact.artifactId.toString() === artifactId.toString()
-      );
-      if (!artifactExists){
-          const err = new Error('Could not find artifact in this question');
-          err.statusCode = 404;
-          return next(err);
-      }
-
-      // Remove the file reference from the question
-      await Study.updateOne(
-          { _id: studyId, 'questions._id': questionId},
-          { $pull: { 'questions.$.artifactContent': { artifactId: artifactId } } }
-      );
-
-      // Remove the study reference from file
-      await Artifact.findByIdAndUpdate(
-          artifactId,
-          { $pull: { usedInStudies: studyId } }
-      );
-      res.status(200).json({
-          success: true,
-          message: 'File removed from question but still kept in artifact library'
-      });
-  } catch (err){
-      res.status(400).json({ error: err.message});
-  }
-};*/
 
 // Delete the artifact from the collection
 const deleteArtifactFromCollection = async (req, res) => {
@@ -286,5 +236,3 @@ export const artifactController ={
 
 
 
-  //getUserArtifacts,
-  //deleteArtifactFromQuestion,

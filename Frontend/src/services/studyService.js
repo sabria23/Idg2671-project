@@ -1,8 +1,8 @@
 // https://scrapingant.com/blog/axios-vs-fetch
 import axios from 'axios';
 
-const API_URL = 'https://group4-api.sustainability.it.ntnu.no' || 'http://localhost:8000';
-
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+console.log('API URL:', import.meta.env.VITE_API_URL); //not working
 // get auth token
 const getToken = () => {
     return localStorage.getItem('token');
@@ -29,7 +29,7 @@ export const getAllStudies = async ({
             params.append('status', status);
         }
         
-        const response = await axios.get(`https://group4-api.sustainability.it.ntnu.no/api/studies?${params.toString()}`, {
+        const response = await axios.get(`${API_URL}/api/studies?${params.toString()}`, {
             headers: { Authorization: `Bearer ${getToken()}` }
         });
         
@@ -40,9 +40,9 @@ export const getAllStudies = async ({
     }
 };
 //studyRouter.delete('/:studyId', protect, dashController.deleteStudy);
-export const deleteStudy = async (studyId) => { // take in that specific studyId parameter
+export const deleteStudy = async (studyId) => { 
     try {
-        const response = await axios.delete(`https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}`, {
+        const response = await axios.delete(`${API_URL}/api/studies/${studyId}`, {
             headers: { Authorization: `Bearer ${getToken()}`}
         });
         return response.data
@@ -55,7 +55,7 @@ export const deleteStudy = async (studyId) => { // take in that specific studyId
 //studyRouter.get('/:studyId/sessions/responses', protect, dashController.getResponses);
 export const getResponses = async (studyId) => {
     try {
-        const response = await axios.get(`https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/sessions/:sessionId/results`, {
+        const response = await axios.get(`${API_URL}/api/studies/${studyId}/sessions/:sessionId/results`, {
             headers: {Authorization: `Bearer ${getToken()}`}
         });
         return response.data
@@ -69,11 +69,9 @@ export const getResponses = async (studyId) => {
 // update study publication status
 export const updateStudyStatus = async (studyId, published) => {
     try {
-        const response = await axios.patch(`https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}`, 
+        const response = await axios.patch(`${API_URL}/api/studies/${studyId}`, 
             { published },
-            {
-                headers: { Authorization: `Bearer ${getToken()}` }
-            }
+            { headers: { Authorization: `Bearer ${getToken()}` } }
         );
         return response.data;
     } catch (error) {
@@ -84,10 +82,9 @@ export const updateStudyStatus = async (studyId, published) => {
 // Generate study participation link
 export const generateStudyLink = async (studyId) => {
     try {
-        const response = await axios.post(`https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/link`, 
-            {},
+        const response = await axios.post(`${API_URL}/api/studies/${studyId}/link`, 
             {
-                headers: { Authorization: `Bearer ${getToken()}` }
+              headers: { Authorization: `Bearer ${getToken()}` }
             }
         );
         return response.data;
@@ -100,7 +97,7 @@ export const generateStudyLink = async (studyId) => {
 // Send email invitations
 export const sendEmailInvitations = async (studyId, emails) => {
     try {
-        const response = await axios.post(`https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/invitations`, 
+        const response = await axios.post(`${API_URL}/api/studies/${studyId}/invitations`, 
             { emails },
             {
                 headers: { Authorization: `Bearer ${getToken()}` }
@@ -115,7 +112,7 @@ export const sendEmailInvitations = async (studyId, emails) => {
 // Get study by ID -> for publishing study purposes
 export const getStudyById = async (studyId) => {
     try {
-        const response = await axios.get(`https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}`, {
+        const response = await axios.get(`${API_URL}/api/studies/${studyId}`, {
             headers: { Authorization: `Bearer ${getToken()}` }
         });
         return response.data;
@@ -127,21 +124,10 @@ export const getStudyById = async (studyId) => {
 
 export const getDemographicsSettings = async (studyId) => {
   try {
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      throw new Error('Authentication required');
-    }
-     // Log the exact URL and token being used (first 10 chars only for security)
-     console.log(`Calling: https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/demographics`);
-     console.log(`Token (first 10 chars): ${token.substring(0, 10)}...`);
-
     const response = await axios.get(
-      `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/demographics`,
+      `${API_URL}/api/studies/${studyId}/demographics`,
       {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${getToken()}` }
       }
     );
     
@@ -155,30 +141,19 @@ export const getDemographicsSettings = async (studyId) => {
 // Update demographics settings for a study
 export const updateDemographicsSettings = async (studyId, demographicsConfig) => {
   try {
-    const token = localStorage.getItem('token');
-    console.log('Auth token:', token ? 'Token exists' : 'No token found');
-    
-    if (!token) {
-      throw new Error('Authentication required');
-    }
-    
     const response = await axios.post(
-      `https://group4-api.sustainability.it.ntnu.no/api/studies/${studyId}/demographics`,
+      `${API_URL}/api/studies/${studyId}/demographics`,
       demographicsConfig,
       {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${getToken()}` }
       }
     );
-    
     return response.data;
   } catch (error) {
     console.error('Error updating demographics settings:', error);
     throw error;
   }
 };
-
 
 
 export default {

@@ -1,4 +1,3 @@
-// hooks/useStudies.js
 import { useState, useEffect } from 'react';
 import { getAllStudies } from '../../../services/studyService';
 import { handleApiError } from '../../../utils/errorHandler';
@@ -19,13 +18,11 @@ export function useStudies({ page, limit, sortBy, sortOrder, status }) {
     }
   });
 
-  // Fetch studies based on current filters
   useEffect(() => {
     const fetchStudies = async () => {
       try {
         setLoading(true);
         
-        // Only pass status if not 'all'
         const statusFilter = status !== 'all' ? status : null;
         
         const data = await getAllStudies({
@@ -35,8 +32,7 @@ export function useStudies({ page, limit, sortBy, sortOrder, status }) {
           sortOrder,
           status: statusFilter
         });
-        
-        // If backend doesn't return pagination info, create reasonable defaults
+    
         if (!data.pagination) {
           const studies = Array.isArray(data) ? data : data.data || [];
           setStudiesData({
@@ -63,7 +59,7 @@ export function useStudies({ page, limit, sortBy, sortOrder, status }) {
     fetchStudies();
   }, [page, limit, sortBy, sortOrder, status]);
 
-  // Expose the studies, loading state, and pagination info
+
   return {
     studies: Array.isArray(studiesData.data) ? studiesData.data : [],
     loading,

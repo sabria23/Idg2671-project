@@ -7,9 +7,6 @@ import { handleDelete } from '../utils/studyActions.js';
 import SimplePagination from '../components/Pagination.jsx';
 import styles from '../../../styles/Dash.module.css';
 
-/**
- * Presentation component for rendering the list of studies
- */
 const StudiesList = ({ 
   studies, 
   pagination, 
@@ -21,7 +18,7 @@ const StudiesList = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [studyToDelete, setStudyToDelete] = useState(null);
   
-  // Handle study action
+
   const handleExport = (studyId) => {
     navigate(`/export/${studyId}`);
   };
@@ -40,7 +37,6 @@ const StudiesList = ({
       try {
         setLoading(true);
         await handleDelete(studyToDelete);
-        // Refresh the studies list after deletion
         await refreshStudies();
       } catch (error) {
         setError('Failed to delete study. Please try again.');
@@ -52,7 +48,6 @@ const StudiesList = ({
     }
   };
   
-  // If there are no studies, show empty state
   if (studies.length === 0) {
     return (
       <div className={styles.emptyStateContainer}>
@@ -70,7 +65,6 @@ const StudiesList = ({
     );
   }
   
-  // Otherwise, show the list of studies
   return (
     <>
       <div className={styles.studyList}>
@@ -85,7 +79,6 @@ const StudiesList = ({
         ))}
       </div>
       
-      {/* Pagination controls */}
       {pagination && pagination.totalPages > 1 && (
         <SimplePagination
           currentPage={pagination.currentPage}

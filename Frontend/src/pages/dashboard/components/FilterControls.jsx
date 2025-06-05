@@ -1,18 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from '../styles/FilterControls.module.css';
 
-/**
- * Compact FilterControls component for filtering and sorting studies
- */
+
 const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [visibleFilters, setVisibleFilters] = useState({
-    status: true,   // Status filter is visible by default
-    sort: true      // Sort filter is visible by default
+    status: true,   
+    sort: true      
   });
   const dropdownRef = useRef(null);
   
-  // Close dropdown when clicking outside
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -26,20 +24,17 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
     };
   }, []);
 
-  // Toggle dropdown visibility
+
   const toggleDropdown = (dropdown) => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
   
-  // Add a filter to visible filters
   const addFilter = (filterType) => {
     setVisibleFilters({...visibleFilters, [filterType]: true});
     setActiveDropdown(filterType);
   };
   
-  // Remove a filter from visible filters
   const removeFilter = (filterType) => {
-    // Reset the filter to its default value
     if (filterType === 'status') {
       onFilterChange('status', 'all');
     } else if (filterType === 'sort') {
@@ -47,13 +42,11 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
       onFilterChange('sortOrder', 'desc');
     }
     
-    // Hide the filter
     const newVisibleFilters = {...visibleFilters};
     newVisibleFilters[filterType] = false;
     setVisibleFilters(newVisibleFilters);
   };
   
-  // Get display text for current status
   const getStatusText = () => {
     switch(status) {
       case 'published': return 'Published';
@@ -62,7 +55,6 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
     }
   };
   
-  // Get display text for current sort
   const getSortText = () => {
     const direction = sortOrder === 'desc' ? '↓' : '↑';
     switch(sortBy) {
@@ -72,7 +64,6 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
     }
   };
   
-  // Reset all filters to default values
   const resetAllFilters = () => {
     onFilterChange('status', 'all');
     onFilterChange('sortBy', 'createdAt');
@@ -82,9 +73,8 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
   
   return (
     <div className={styles.filterBar} ref={dropdownRef}>
-      {/* Filter controls on the left */}
       <div className={styles.filterGroup}>
-        {/* Status filter */}
+        {/* status filter */}
         {visibleFilters.status && (
           <div className={styles.filterItem}>
             <button 
@@ -95,7 +85,6 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
               <svg className={styles.chevronIcon} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
-              {/* Remove filter button */}
               <button 
                 className={styles.removeFilter}
                 onClick={(e) => {
@@ -145,7 +134,7 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
           </div>
         )}
         
-        {/* Sort filter */}
+        {/* sort filter */}
         {visibleFilters.sort && (
           <div className={styles.filterItem}>
             <button 
@@ -156,7 +145,6 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
               <svg className={styles.chevronIcon} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
-              {/* Remove filter button */}
               <button 
                 className={styles.removeFilter}
                 onClick={(e) => {
@@ -225,7 +213,6 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
         )}
       </div>
       
-      {/* Add filter button on the right */}
       <div className={styles.filterItem}>
         <button
           className={styles.addFilterButton}
@@ -264,7 +251,6 @@ const FilterControls = ({ status, sortBy, sortOrder, onFilterChange }) => {
               </button>
             )}
             
-            {/* Only show divider if we have both options AND reset button */}
             {(!visibleFilters.status || !visibleFilters.sort) && (
               <div className={styles.dropdownDivider}></div>
             )}

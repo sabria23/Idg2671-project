@@ -1,12 +1,5 @@
 import React from 'react';
 import styles from "../../../styles/Demographics.module.css";
-/*
-This component displays a list of demographic fields and provides a way to remove individual fields. 
-It's a "display" component that receives data and callback functions from its parent.*/
-/*Props = The component receives two props:
-
-1. fields: An array of field objects to display
-2. onRemoveField: A function to call when a user wants to remove a field*/
 
 const FieldsList = ({ fields, onRemoveField }) => {
   // If there are no fields to display, show a message

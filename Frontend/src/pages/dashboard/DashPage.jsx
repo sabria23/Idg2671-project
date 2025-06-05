@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import styles from '../../styles/Dash.module.css';
 import FilterControls from './components/FilterControls';
 import StudiesList from './components/StudiesList.jsx';
 import { useStudies } from './hooks/useStudies.js';
 import { useUrlParams } from './hooks/useUrlParams';
-import { useUser } from './hooks/useUser.js'; // Assume this exists or create it
+import { useUser } from './hooks/useUser.js'; 
 import WelcomeHeader from './components/WelcomeHeader';
 
-/**
- * Main Dashboard Page - now with responsibilities split into smaller components and hooks
- */
 const DashboardPage = () => {
   const navigate = useNavigate();
 
-  
-  // Use custom hooks to manage URL parameters and user data
+  // using custom hooks to manage URL parameters and user data
   const { 
     currentPage, 
     limit, 
@@ -28,11 +24,10 @@ const DashboardPage = () => {
   
   const { currentUser } = useUser();
   
-  // Local state for errors and loading state that this component manages
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   
-  // Use the studies hook to fetch and manage studies data
+  // using the studies hook to fetch and manage studies data
   const { 
     studies, 
     loading: studiesLoading, 
@@ -47,7 +42,6 @@ const DashboardPage = () => {
     status 
   });
   
-  // Combine local and hook loading/error states
   const isLoading = loading || studiesLoading;
   const displayError = error || studiesError;
   
@@ -60,10 +54,8 @@ const DashboardPage = () => {
   return (
     <div className={styles.container}>
       <main className={styles.mainContent}>
-        {/* Welcome header as a separate component */}
         <WelcomeHeader username={currentUser?.username} />
 
-        {/* Filter controls */}
         <FilterControls
           status={status}
           sortBy={sortBy}
@@ -71,17 +63,14 @@ const DashboardPage = () => {
           onFilterChange={handleFilterChange}
         />
 
-        {/* Loading indicator */}
         {isLoading && <div className={styles.loadingIndicator}>Loading studies...</div>}
 
-        {/* Error message */}
         {displayError && (
           <div className={styles.errorMessage}>
             {displayError}
           </div>
         )}
 
-        {/* Studies list - only show when not loading and no errors */}
         {!isLoading && !displayError && (
           <StudiesList 
             studies={studies}

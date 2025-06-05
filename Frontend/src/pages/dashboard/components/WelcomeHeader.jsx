@@ -1,10 +1,6 @@
-// components/dashboard/WelcomeHeader.jsx
 import React from 'react';
 import styles from '../../../styles/Dash.module.css';
 
-/**
- * Simple component for the welcome header
- */
 const WelcomeHeader = ({ username }) => {
   const greeting = () => {
     const hours = new Date().getHours();

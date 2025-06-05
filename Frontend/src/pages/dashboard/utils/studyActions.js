@@ -32,13 +32,13 @@ import { deleteStudy } from "../../../services/studyService";
 import { handleApiError } from "../../../utils/errorHandler";
 
 
-// Simplified handleDelete that only requires studyId
+// simplified handleDelete that only requires studyId
 export const handleDelete = async (studyId) => {
     try {
         await deleteStudy(studyId);
-        return true; // Return success
+        return true; 
     } catch (error) {
         console.error("Failed to delete study:", error);
-        throw error; // Rethrow so caller can handle it
+        throw error; 
     }
 };
