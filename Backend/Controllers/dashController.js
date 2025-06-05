@@ -1,4 +1,3 @@
-// i define routes in routes folder and the functionlaity with callbacks fucntions declaring status and messages go here
 import { v4 as uuidv4 } from "uuid";
 import Study from '../Models/studyModel.js';
 import Session from '../Models/participantModel.js';
@@ -18,66 +17,6 @@ console.log('Controller .env path:', path.join(__dirname, '../../.env'));
 
 const result = dotenv.config({ path: path.join(__dirname, '../../.env') });
 
-/*
-As a student, cost is definitely an important factor! Here's a breakdown of the cost-free options:
-Free options for development:
-
-Ethereal Mail: Completely free for development. It creates disposable test accounts and captures emails without sending them.
-Shared development email: You could create a free Gmail account specifically for development that all team members share.
-
-Free/low-cost options for production:
-
-SendGrid: Has a free tier with 100 emails per day
-Mailgun: Has a free trial with 5,000 emails for 3 months
-Brevo (formerly Sendinblue): Free tier with 300 emails per day
-
-Regarding OAuth2 with Gmail:
-
-This is free to implement but requires some setup with Google Cloud Console
-Good for letting users authorize your app to send on their behalf without storing passwords
-
-For a student project, I'd recommend:
-
-Use Ethereal for development (completely free)
-For production, either use SendGrid's free tier or implement the "users provide their credentials" approach
-*/
-/*const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465, // Use secure port
-    secure: true, // Use SSL/TLS
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    },
-    logger: true,
-    debug: true
-  });
-  console.log('Environment Variables in DashController:');
-  console.log('EMAIL_USER:', process.env.EMAIL_USER);
-  console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'Password is set' : 'Password is NOT set');
-  // Add this before your email sending block
-console.log('Email Configuration:', {
-    user: process.env.EMAIL_USER,
-    host: 'smtp.gmail.com',
-    port: 465
-});*/
-
-// @desc Get all studies
-// @route GET /api/studies
-// @access Private (after auth is added)
-// add paginaiton, sort, filter -> The getAllStudies controller has been upgraded to support:
-/*Pagination: Using skip and limit parameters
-Sorting: Dynamic sort fields with ascending/descending options
-Filtering: By publication status (published/draft/all)
-Metadata: Returns comprehensive pagination data for the frontend
-
-Key best practices implemented:
-
-Parameter Validation: Ensures page and limit are positive numbers
-Default Values: Sensible defaults for all parameters
-Lean Queries: Uses lean() for improved performance
-Consistent Response Format: Structured response with metadata and data separation
-Error Handling: Proper error passing to next middleware*/
 const getAllStudies = async (req, res, next ) => {
   try {
     // Extract query parameters with defaults
@@ -238,94 +177,21 @@ const updateStudyStatus = async (req, res, next) => {
    }
 }
 
-// @desc generate a URL link to publish that quiz
-// @route POST /api/studies/:studyId/generate-link
-// IDONT TUHINK THIS GENERATES A UNIQUE URL!!!!
-// @access Private (after auth is added)
-/*const generateLink = async (req, res, next) => {
-    try {
-        const {studyId } = req.params;
-        // Add this line to extract description from request body
-        const { description } = req.body || {};
-       
-         // Check authorization and get the study
-        const study = await checkStudyAuthorization(studyId, req.user._id, "get url link");
-
-        if (!study.published) {
-            const error = new Error('Cannot generate link for unpublished study');
-            error.statusCode = 400;
-            return next(error);
-        }
-
-        /*Generate a unique access token for this link
-        const accessToken = generateRandomToken(16);
-        const shortId = study.accessTokens.length + 1; // Simple sequential numbering
-          // Initialize accessTokens array if it doesn't exist
-          if (!study.accessTokens) {
-            study.accessTokens = [];
-        }
-        
-        // Add the new token to the array
-        study.accessTokens.push({
-            token: accessToken,
-            description: description || `Link ${shortId}`,
-            active: true
-        });
-
-        await study.save();*/
-
-        // Optional: Generate a shorter link or track link usage
-    // This is where you could add code to create a shortened URL or track link clicks
-    
-    // Optional: Store link information in the database
-    // For example, to track when it was generated, by whom, etc.
-
-        /*const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
-        const studyUrl = `${baseUrl}/public/study/${studyId}`;
-
-        res.status(200).json({
-          success: true,
-          message: 'Study link generated successfully',
-          title: study.title,
-          studyUrl: studyUrl,
-          data: {
-            shareableUrl: studyUrl  // Add this to match frontend expectations
-          }
-              // You could also add other fields like:
-        // expiresAt: null,  // If you want links to expire
-        // accessCount: 0,   // If you want to track link usage
-            
-        });
-    } catch (error) {
-        next(error);
-    }
-};*/
 const generateLink = async (req, res, next) => {
   try {
-    console.log("Generate link endpoint called for studyId:", req.params.studyId);
-    
     const { studyId } = req.params;
-    
-    // Debug user information
-    console.log("User making request:", req.user ? req.user._id : "No user");
-    
-    // Check if studyId is valid
+  
     if (!studyId) {
       return res.status(400).json({
         success: false,
         message: 'Study ID is required'
       });
     }
-    
-    // Debug step
-    console.log("About to check study authorization");
+
     
     // Check authorization and get the study
     const study = await checkStudyAuthorization(studyId, req.user._id, "get url link");
-    
-    // Debug study information
-    console.log("Study found:", study ? "Yes" : "No");
-    console.log("Study published status:", study ? study.published : "N/A");
+
     
     if (!study) {
       return res.status(404).json({
@@ -343,8 +209,7 @@ const generateLink = async (req, res, next) => {
     
     const baseUrl = process.env.FRONTEND_URL || 'https://group4.sustainability.it.ntnu.no'; // Update with your correct frontend URL
     const studyUrl = `${baseUrl}/public/study/${studyId}`;
-    
-    console.log("Generated URL:", studyUrl);
+  
     
     return res.status(200).json({
       success: true,
@@ -377,171 +242,8 @@ const generateRandomToken = (bytes = 20) => {
   };
 // @desc Add participants via email
 // @route POST /api/studies/:studyId/participants
-// @access Private (after auth is added)
-/*const emailInvitaitons = async (req, res, next) => {
-    try {
-    const {studyId} = req.params;
-    const { emails } = req.body;
-    // Validate that emails exists, is an array, and isn't empty
-    // This is important because we want to process multiple email invitations at once
-    // The frontend should send: { "emails": ["user1@example.com", "user2@example.com"] }
-    if (!emails || !Array.isArray(emails) || emails.length === 0) {
-        const error = new Error('Please provide an array of email addresses');
-        error.statusCode = 400;
-        return next(error);
-      }
-
-      // Check authorization and get the study
-        const study = await checkStudyAuthorization(studyId, req.user._id, "invate");
-
-     if (!study.published) {
-        const error = new Error('Cannot invite pariticpants to an unpublished study');
-        error.statusCode = 400;
-        return next(error);
-     }
-
-     //create invitation records for each email
-     const invitations = [];
-
-     for (const email of emails) {
-        //generate a unique token for eahc invitation
-        // NEED TO FIND IFNO REGARIDNG THIS
-        const invitationToken = generateRandomToken();
-
-        const invitation = new StudyInvitation({
-            studyId,
-            email,
-            invitationToken,
-            status: 'pending'
-        });
-        await invitation.save(); // This line causes multiple sequential DB operations
-        invitations.push(invitation);
-     }
-     res.status(200).json({
-        message: `${emails.length} participants have been invited to the study`,
-        studyId,
-        invitationCount: invitations.length
-     });
-    } catch (error) {
-        next(error);
-    }
-    
-};*/
-// BETTER APPROACH 
-/*const emailInvitaitons = async (req, res, next) => {
-    try {
-        const { studyId } = req.params;
-        const { emails } = req.body;
-        
-        // Email validation
-        if (!emails || !Array.isArray(emails) || emails.length === 0) {
-            const error = new Error('Please provide an array of email addresses');
-            error.statusCode = 400;
-            return next(error);
-        }
-        
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const invalidEmails = emails.filter(email => !emailRegex.test(email));
-        
-        if (invalidEmails.length > 0) {
-            const error = new Error(`Invalid email format: ${invalidEmails.join(', ')}`);
-            error.statusCode = 400;
-            return next(error);
-        }
-        
-        // Check authorization
-        const study = await checkStudyAuthorization(studyId, req.user._id, "invite");
-        
-        if (!study.published) {
-            const error = new Error('Cannot invite participants to an unpublished study');
-            error.statusCode = 400;
-            return next(error);
-        }
-        
-        // Prepare invitation documents for bulk insert
-        const invitationDocs = emails.map(email => ({
-            studyId,
-            email,
-            invitationToken: generateRandomToken(),
-            status: 'pending'
-        }));
-        
-        // Bulk insert all invitations in a single DB operation
-        const invitations = await StudyInvitation.insertMany(invitationDocs);
-        
-        // TODO: Trigger email sending here (separate service)
-          // Email sending implementation
-          let sentCount = 0;
-          let errorCount = 0;
-          
-          // Use Promise.all to send all emails in parallel
-          await Promise.all(invitations.map(async (invitation) => {
-              try {
-                console.log(`Attempting to send email to: ${invitation.email}`);
-                  // Create email content
-                  const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8000';
-                  const participateUrl = `${baseUrl}/participate/${studyId}?token=${invitation.invitationToken}`;
-                  // https://www.youtube.com/watch?v=FT-AiOcw-50
-                  const mailOptions = {
-                      from: `"Study Platform" <${process.env.EMAIL_USER}>`, // System email address
-                      //replyTo: researcher.email, // Researcher's email for replies
-                      to: invitation.email,
-                      subject: `Invitation to participate in study: ${study.title}`,
-                      html: `
-                          <h1>You're invited to participate in a study</h1>
-                          <p>You have been invited to participate in the study "${study.title}".</p>
-                          <p>${study.description || ''}</p>
-                          <p>Click the link below to start:</p>
-                          <a href="${participateUrl}" style="display: inline-block; padding: 10px 20px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 4px;">
-                              Participate in Study
-                          </a>
-                          <p>Or copy and paste this URL into your browser:</p>
-                          <p>${participateUrl}</p>
-                      `
-                  };
-                  
-                  // Send the email
-                  await transporter.sendMail(mailOptions);
-                  console.log(`Email sent successfully to: ${invitation.email}`);
-
-                  // Update invitation status
-                  invitation.status = 'sent';
-                  invitation.sentAt = new Date();
-                  await invitation.save();
-                  
-                  sentCount++;
-              } catch (emailError) {
-                  console.error(`Failed to send email to ${invitation.email}:`, {
-                    message: emailError.message,
-                    code: emailError.code
-                  });
-                  errorCount++;
-              }
-          }));
-        
-        res.status(201).json({  // 201 Created is more appropriate than 200 OK
-            message: `${emails.length} participants have been invited to the study`,
-            studyId,
-            invitationCount: invitations.length
-        });
-    } catch (error) {
-        next(error);
-    }
-};*/
-
-/*
-This approach:
-
-Uses a much simpler data model
-Still tracks essential information
-Provides success/failure counts
-Maintains a record of sent invitations*/
-export const emailInvitaitons = async (req, res) => {
-  // Add these debug logs at the very beginning
-  console.log("------- Email Invitations Debug -------");
-  console.log("User from auth middleware:", req.user ? req.user._id : "No user");
-  
+// @access Private (after auth is added)    
+export const emailInvitaitons = async (req, res) => {  
   try {
     const { studyId } = req.params;
     // Add this debug log
@@ -551,14 +253,9 @@ export const emailInvitaitons = async (req, res) => {
     
     // Add this code to check if the study exists at all
     const anyStudy = await Study.findById(studyId);
-    console.log("Study exists in DB:", anyStudy ? "Yes" : "No");
     
     if (anyStudy) {
-      console.log("Study published status:", anyStudy.published);
-      console.log("Study creator:", anyStudy.creator);
-      console.log("Current user:", req.user._id);
-      console.log("Creator matches current user:", 
-        anyStudy.creator.toString() === req.user._id.toString());
+        anyStudy.creator.toString() === req.user._id.toString();
     }
     
     // Your original validation
@@ -567,20 +264,14 @@ export const emailInvitaitons = async (req, res) => {
       published: true
     });
     
-    // Add this debug log
-    console.log("Study found with all criteria:", study ? "Yes" : "No");
     
     if (!study) {
-      // Add this debug log
-      console.log("Study validation failed");
       return res.status(404).json({
         success: false,
         message: 'Study not found or not published'
       });
     }
     
-    // Rest of your controller code remains the same
-    // Process email list (handle comma or line separated)
     const emailList = emails
       .split(/[\n,]/)
       .map(email => email.trim())
