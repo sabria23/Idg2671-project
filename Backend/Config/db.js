@@ -9,7 +9,6 @@ const connectToDB = async () => {
         const conn = await mongoose.connect(process.env.MONGO_URI); 
         console.log(process.env.MONGO_URI);  // Check if the URI is correct
 
-        console.log(`MongoDB Connected to main DB: ${conn.connection.host}`.cyan.underline);
         return conn; // Return the connection instance
     } catch (error) {
         console.error("Error connecting to main database:", error);

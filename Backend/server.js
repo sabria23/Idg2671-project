@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import { fileURLToPath } from "url";
-import { dirname, resolve } from "path";
+dotenv.config();
 import userRouter from './Routes/userRoutes.js';
 import studyRouter from './Routes/studyRoutes.js';
 import artifactRouter from "./Routes/artifactRouter.js";
@@ -11,11 +10,6 @@ import errorHandler from "./Middleware/errorHandler.js";
 import cors from 'cors';
 
 const app = express();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-dotenv.config();
-
 const port = process.env.PORT || 3000;
 
 connectToDB();
@@ -24,6 +18,7 @@ const allowedOrigins = [
   'http://localhost:3030',
   'https://group4.sustainability.it.ntnu.no'
 ];
+
 app.use(cors({
   origin: (origin, callback) => {
     console.log('CORS request from origin:', origin);
