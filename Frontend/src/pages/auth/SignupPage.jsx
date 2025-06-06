@@ -15,10 +15,6 @@ const SignupPage = () => {
   const [isAgreeTerms, setIsAgreeTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // if (password !== confirmPass) {
-  //   alert("Password do not match");
-  //   return;
-  // }
 const navigate = useNavigate();
 
   const handleSubmit = async (e) =>{
@@ -153,9 +149,6 @@ const navigate = useNavigate();
               required
               className={errorMessage && errorMessage.includes("confirmPassword") ? "error-input" : ""}
             />
-            {/* {errorMessage && errorMessage.includes("confirmPassword") && (
-                <p className="error-message">{errorMessage}</p>
-              )} */}
           </div>
           
           <div className="form-options">
@@ -170,8 +163,6 @@ const navigate = useNavigate();
             </label>
             <p className="error-message">{errorMessage}</p>
           </div>
-
-          {/* <p className="error-message">{errorMessage}</p> */}
             <p className="success-message">{successMessage}</p>
 
 
