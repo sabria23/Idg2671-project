@@ -40,19 +40,6 @@ const LoginPage = () => {
           setLoading(false);
       }
   };
-      /* axios.post("http://localhost:8000/api/auth/login", {username: userName, password})
-        .then(result => {
-            console.log(result);
-
-            if(result.data && result.data.token) {
-                localStorage.setItem("token", result.data.token);
-                navigate("/dashboard")
-            } else {
-                console.log("Token not found in response");
-            }
-        })
-        .catch(err => console.log(err));
-      };*/
 
   return (
     <div className="auth-container">
@@ -106,15 +93,6 @@ const LoginPage = () => {
                 required
                 onChange={(e) => setPassword(e.target.value)}
                 />
-            </div>
-
-            <div className="form-options">
-              <label className="checkbox-label">
-                <input type="checkbox" name="rememberMe" /> Remember me
-              </label>
-              <Link to="/forgot-password" className="forgot-password">
-                Forgot password?
-              </Link>
             </div>
 
             {error && <p className="error-message">{error}</p>}

@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 const ProfilePage = () => {
     const [username, setUsername] = useState("");
     const [editedUsername, setEditedUsername] = useState("");
-    // const [avatar, setAvatar] = useState(null);
     const [editProfile, setEditProfile] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const navigate = useNavigate();
@@ -95,7 +94,7 @@ const ProfilePage = () => {
         </button>
         ) : (
           <button className={styles.cancelBtn} onClick={() => setEditProfile(false)}>
-            CancelYour
+            Cancel
           </button>
         )}
       </div>
@@ -165,82 +164,7 @@ const ProfilePage = () => {
       </div>
     )}
         </div>
-        
       </div> 
-
-      
-
-   
-  
-    
-      {/* <div className={styles.headerSection}>
-        <h1>Your Profile</h1>
-        <div>
-          {!editProfile ? (
-            <button className={styles.editBtn} onClick={() => setEditProfile(true)}>
-              Edit Profile
-            </button>
-          ) : (
-            <button className={styles.cancelBtn} onClick={() => setEditProfile(false)}>
-              Cancel
-            </button>
-          )}
-        </div>
-      </div> */}
-      
-      {/* <div className={styles.infoContainer}>
-        <div className={styles.profileImg}>J</div>
-        <div className={styles.infoWrapper}>
-          {editProfile ? (
-            <>
-              <div className={styles.formGroup}>
-                <label>Username</label>
-                <input 
-                  type="text" 
-                  value={username}
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Email</label>
-                <input 
-                  type="email"
-                  value={email} 
-                 
-                />
-              </div>
-              <button className={styles.saveBtn}>Save</button>
-            </>
-          ) : (
-            <>
-            <form action="">
-              <input defaultValue={data.username} onChange={handleChange} />
-            </form>
-              <p><strong>Username:</strong>{username}</p>
-              <p><strong>Email:</strong>{email}</p>
-            </>
-          )}
-        </div>
-      </div> */}
-      
-      {/* 
-      
-      <div className={styles.settingContainer}>
-        <div className={styles.settingInfo}>
-          <h3>Password</h3>
-          <p>Change your account password</p>
-        </div>
-        <button className={styles.actionBtn}>Change Password</button>
-      </div>
-      
-      <h2 className={styles.dangerHeader}>Danger Zone</h2>
-      
-      <div className={styles.dangerContainer}>
-        <div className={styles.settingInfo}>
-          <h3>Delete Account</h3>
-          <p>Please be certain you want to delete your account, this action cannot be reversed</p>
-        </div>
-        <button className={styles.deleteBtn}>Delete Account</button>
-      </div> */}
     </>
   )
 }

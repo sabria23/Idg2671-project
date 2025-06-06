@@ -66,8 +66,7 @@ const authenticateLogin = async (req, res, next) => {
         if(!isMatch){
           return res.status(400).json({ message: "invalid username or password"});
         }
-
-        // if(user && (await bcrypt.compare(password, user.password))) {
+        
             res.json({
                 _id: user.id,
                 username: user.username,
@@ -75,13 +74,9 @@ const authenticateLogin = async (req, res, next) => {
                 avatar: user.avatar,
                 token: generateToken(user._id)
             })
-        // } else {
-        //     return res.status(400).json({message: "invalid usrname or password" })
-        // }
     } catch (error) {
         next(error);
     }
-    
 };
 
 // @route post /api/auth/logout 
